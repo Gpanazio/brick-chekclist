@@ -1,0 +1,938 @@
+[
+  {
+    "id": 1,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 3,
+    "descricao": "VMOUNT MÉDIA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 2,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 3,
+    "descricao": "VMOUNT PEQUENA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 3,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 3,
+    "descricao": "VMOUT GRANDE",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 4,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 3,
+    "descricao": "BATERIA FUJIFILM",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 5,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 2,
+    "descricao": "CASE PARA CARTÕES CFAST/SD",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 6,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "CFAST 128GB",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 7,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 7,
+    "descricao": "CFAST 256GB",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 8,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 5,
+    "descricao": "LEITOR CFAST",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 9,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "LEITOR SD",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 10,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "SD CARD 256GB",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 11,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 2,
+    "descricao": "SD CARD 64GB",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 12,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "SSD 1TB SANDISK A",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 13,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "SSD 1TB SANDISK B",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 14,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 2,
+    "descricao": "SSD SAMSUNG 1TB V-NAND",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 15,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "SSD T7 CINZA 500GB",
+    "estado": "BOM",
+    "observacoes": "Não aguenta filmagem na pocket.",
+    "checado": false
+  },
+  {
+    "id": 16,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "IPAD",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 17,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "KIT HOLLYMARS DE TRANSMISSÃO",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 18,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "MONITOR ATOMOS",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 19,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "MONITOR BLACKMAGIC",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 20,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "MONITOR FEELWORLD F5",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 21,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "MONITOR FEELWORLD F6",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 22,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "TABLET",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 23,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "AMARAN 200X",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 24,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "AMARAN 300C",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 25,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "APUTURE 300D",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 26,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "GODOX BICOLOR - SZ 200",
+    "estado": "BOM",
+    "observacoes": "Luz está boa, difusor amassado.",
+    "checado": false
+  },
+  {
+    "id": 27,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "GODOX RGB - SZ 150",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 28,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 2,
+    "descricao": "ZHIYUN MOLUS G200",
+    "estado": "CONSERTO",
+    "observacoes": "Um está no concertp",
+    "checado": false
+  },
+  {
+    "id": 29,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "BASTÃO DE LED YOUNGNUO",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 30,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "GODOX S 60",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 31,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "LED VIDEO LIGHT 1000",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 32,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "NEWER PAINEL LED",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 33,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "PORRADINHA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 34,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 2,
+    "descricao": "SOFTBOX TRIOPO 70 CM",
+    "estado": "BOM",
+    "observacoes": "UM ESTA VELHO",
+    "checado": false
+  },
+  {
+    "id": 35,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "LANTERNA CHINESA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 36,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "OCTABOX GODOX 120 CM",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 37,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 2,
+    "descricao": "OCTABOX TRIOPO 120 CM",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 38,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "OCTABOX TRIOPO 90CM",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 39,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "REBATEDOR CIRCULAR GRANDE",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 40,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 2,
+    "descricao": "REBATEDOR CIRCULAR PEQUENO",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 41,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 3,
+    "descricao": "CABO DTAP-POCKET",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 42,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 1,
+    "descricao": "CABO PLATE NP-POCKET",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 43,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 3,
+    "descricao": "CABO HDMI KONDORBLUE RED",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 44,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 3,
+    "descricao": "CABO HDMI GRANDE",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 45,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 2,
+    "descricao": "CABO SDI-SDI",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 46,
+    "categoria": "PILHA RECARREGÁVEL PHILCO AAA",
+    "quantidade": 3,
+    "descricao": "CABO SDI-MINI SDI",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 47,
+    "categoria": "PROLONGA",
+    "quantidade": 2,
+    "descricao": "TRIPÉ CENTURY",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 48,
+    "categoria": "PROLONGA",
+    "quantidade": 2,
+    "descricao": "TRIPÉ LUZ CINZA 3 ESTÁGIOS",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 49,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 1,
+    "descricao": "TRIPÉ GIRAFA",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 50,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 1,
+    "descricao": "BUTTERFLY 2X2",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 51,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 1,
+    "descricao": "SLIDER PEQUENO",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 52,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 1,
+    "descricao": "SLIDER GRANDE",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 53,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 3,
+    "descricao": "3 TABELA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 54,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 2,
+    "descricao": "CABEÇA DE EFEITO",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 55,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 1,
+    "descricao": "CAIXA DE SOM JBL VERMELHA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 56,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 1,
+    "descricao": "MAQUINA DE FUMAÇA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 57,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 1,
+    "descricao": "MAQUINA DE HAZE",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 58,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 1,
+    "descricao": "KIT Teleprompter",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 59,
+    "categoria": "TRIPÉ LUZ PRETO 2 ESTÁGIOS",
+    "quantidade": 10,
+    "descricao": "RÁDIOS COMUNICADORES",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 60,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "DRONE DJI MAVIC 3 PRO",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 61,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "GIMBAL ZHIYUN CRANE 3S",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 62,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "GIMBAL ZHIYUN CRANE 4",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 63,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "DUAL HANDLE",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 64,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "ZHIYUN FOLLOWFOCUS WIFI",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 65,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "ZHIYUN TRANSMISSOR WIFI",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 66,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "ZHIYUN BATTERY CASE",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 67,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "ZHIYUN HANDLE",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 68,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "ZHIYUN CABLE PACK",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 69,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "TRIPÉ CAMERA MANFROTTO",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 70,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "MILIBOO MTT609A (2 TRAVAS VERMELHAS)",
+    "estado": "BOM",
+    "observacoes": "Capacidade de carga: 15 kg",
+    "checado": false
+  },
+  {
+    "id": 71,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "MILIBOO MTT601A (2 TRAVAS PRETAS)",
+    "estado": "BOM",
+    "observacoes": "Capacidade de carga: 7,98 kg",
+    "checado": false
+  },
+  {
+    "id": 72,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "MILIBOO MTT605A (1 TRAVA)",
+    "estado": "BOM",
+    "observacoes": "Capacidade de carga: 8kg",
+    "checado": false
+  },
+  {
+    "id": 73,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "TRIPÉ CAMERA BENRO",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 74,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 2,
+    "descricao": "ATACAMA K2Everest",
+    "estado": "REGULAR",
+    "observacoes": "Capacidade de carga: 10kg - Somente estúdio Brick",
+    "checado": false
+  },
+  {
+    "id": 75,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "BENRO SLIM TRAVEL",
+    "estado": "BOM",
+    "observacoes": "Capacidade de carga: 4kg",
+    "checado": false
+  },
+  {
+    "id": 76,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "BOOM COMICA VM10 PRO (KIT)",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 77,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "BOOM RODE NTG-3 (PRATEADO)",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 78,
+    "categoria": "SACO DE AREIA",
+    "quantidade": 1,
+    "descricao": "BOOM SEINHEISER (KIT)",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 79,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "GRAVADOR ZOOM H1",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 80,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "GRAVADOR ZOOM H5",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 81,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "GRAVADOR ZOOM H6",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 82,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "GRAVADOR ZOOM H8",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 83,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "HEADSET ONEODIO PRO",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 84,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "KIT LAPELA SEINHEISER",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 85,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 2,
+    "descricao": "KIT LAPELA SONY",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 86,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "LAPELA HOLLYLAND LARK MAX",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 87,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 2,
+    "descricao": "LAPELA HOLLYLAND SEM FIO",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 88,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "SUPORTE BOOM",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 89,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "VARA BOOM",
+    "estado": "N/A",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 90,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 2,
+    "descricao": "CARREAGADOR DUPLO NP",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 91,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "CARREGADOR DE PILHA C4",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 92,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "CARREGADOR DUPLO VMOUNT - DE MESA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 93,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "CARREGADOR VMOUNT",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 94,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "FONTE POCKET",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 95,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 3,
+    "descricao": "FONTE URSA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 96,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 2,
+    "descricao": "CASE VONDER GRANDE",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 97,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "PELICAN 1560 CASE",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 98,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "CASE GRANDE RÍGIDA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 99,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "CASE DE LENTES MEIKE",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 100,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "CASE DE LENTES SLR",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 101,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "CINTO ASSISTENCIA CENA1",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 102,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "BALDE CIRCULAR",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 103,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "BALDE ASSISTÊNCIA",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  },
+  {
+    "id": 104,
+    "categoria": "CABO XLR-XLR",
+    "quantidade": 1,
+    "descricao": "CASE DRONE",
+    "estado": "BOM",
+    "observacoes": "",
+    "checado": false
+  }
+]
