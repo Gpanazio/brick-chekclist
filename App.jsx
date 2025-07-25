@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Checklist from './components/Checklist'
 import { supabase } from './lib/supabase'
+import { Button } from './components/ui/button'
 import './App.css'
-
-console.log('Arquivo App.jsx foi carregado') // Diagnóstico 1
 
 export default function App() {
   const [equipamentos, setEquipamentos] = useState([])
   const [modoAdmin, setModoAdmin] = useState(false)
   const [editados, setEditados] = useState({})
-
-  console.log('modoAdmin:', modoAdmin) // Diagnóstico 2
 
   useEffect(() => {
     carregarEquipamentos()
@@ -62,22 +59,15 @@ export default function App() {
           <h1 className="text-2xl font-bold">Sistema de Checklist</h1>
         </div>
         <div className="flex gap-2">
-          <button className="bg-white text-black px-4 py-2 rounded border">Checklist</button>
-          <button className="bg-white text-black px-4 py-2 rounded border">Histórico</button>
+          <Button variant="outline">Checklist</Button>
+          <Button variant="outline">Histórico</Button>
+
           {!modoAdmin ? (
-            <button
-              className="bg-black text-white px-4 py-2 rounded"
-              onClick={ativarModoAdmin}
-            >
-              Modo Administrador
-            </button>
+            <Button onClick={ativarModoAdmin}>Modo Administrador</Button>
           ) : (
-            <button
-              className="bg-green-600 text-white px-4 py-2 rounded"
-              onClick={salvarAlteracoes}
-            >
+            <Button onClick={salvarAlteracoes} className="bg-green-600 hover:bg-green-700 text-white">
               Salvar Alterações
-            </button>
+            </Button>
           )}
         </div>
       </div>
