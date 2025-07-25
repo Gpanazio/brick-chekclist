@@ -94,4 +94,5 @@
   {"id":89,"categoria":"MONITORAÇÃO","quantidade":1,"descricao":"IPAD","estado":"BOM","observacoes":"","checado":false},
   {"id":90,"categoria":"MONITORAÇÃO","quantidade":1,"descricao":"KIT HOLLYMARS DE TRANSMISSÃO","estado":"BOM","observacoes":"","checado":false},
   {"id":91,"categoria":"MONITORAÇÃO","quantidade":1,"descricao":"MONITOR ATOMOS","estado":"BOM","observacoes":"","checado":false},
-  {"id":92,"categoria":"MONITORAÇÃO","quantidade":1
+  {"id":92,"categoria":"MONITORAÇÃO","quantidade":1,"descricao":"MONITOR BLACKMAGIC","estado":"BOM","observacoes":"","checado":false},
+  {"id
