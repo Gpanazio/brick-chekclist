@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -118,13 +119,13 @@
     @apply bg-background text-foreground;
   }
 }
-/* --- DEBUG: Força visibilidade do botão admin --- */
-button {
-  display: inline-block !important;
+
+/* Estilo apenas para o botÃ£o Modo Administrador */
+button.admin-toggle {
+  display: inline-flex !important;
   visibility: visible !important;
   color: black !important;
   background-color: yellow !important;
-  z-index: 9999 !important;
   border: 2px solid red !important;
+  z-index: 9999 !important;
 }
-
