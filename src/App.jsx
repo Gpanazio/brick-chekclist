@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from './lib/supabase'
-import ChecklistView from './components/ChecklistView'
+import Checklist from './components/Checklist'
 
 function App() {
   const [equipamentos, setEquipamentos] = useState([])
@@ -69,7 +69,7 @@ function App() {
         </div>
       </div>
 
-      <ChecklistView
+      <Checklist
         equipamentos={equipamentos}
         modoAdmin={modoAdmin}
         editados={editados}
