@@ -51,25 +51,25 @@ export default function App() {
   };
 
   return (
-    <div className=\"min-h-screen bg-[#f5f8ff] p-6\">
-      <div className=\"flex justify-between items-center mb-4\">
-        <div className=\"flex items-center gap-2\">
-          <img src=\"/logo.png\" alt=\"BRICK\" className=\"h-10\" />
-          <h1 className=\"text-2xl font-bold\">Sistema de Checklist</h1>
+    <div className="min-h-screen bg-[#f5f8ff] p-6">
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <img src="/logo.png" alt="BRICK" className="h-10" />
+          <h1 className="text-2xl font-bold">Sistema de Checklist</h1>
         </div>
-        <div className=\"flex gap-2\">
-          <button className=\"bg-white text-black px-4 py-2 rounded border\">Checklist</button>
-          <button className=\"bg-white text-black px-4 py-2 rounded border\">Histórico</button>
+        <div className="flex gap-2">
+          <button className="bg-white text-black px-4 py-2 rounded border">Checklist</button>
+          <button className="bg-white text-black px-4 py-2 rounded border">Histórico</button>
           {!modoAdmin ? (
             <button
-              className=\"bg-black text-white px-4 py-2 rounded\"
+              className="bg-black text-white px-4 py-2 rounded"
               onClick={ativarModoAdmin}
             >
               Modo Administrador
             </button>
           ) : (
             <button
-              className=\"bg-green-600 text-white px-4 py-2 rounded\"
+              className="bg-green-600 text-white px-4 py-2 rounded"
               onClick={salvarAlteracoes}
             >
               Salvar Alterações
