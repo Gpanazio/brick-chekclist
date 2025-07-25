@@ -1,9 +1,3 @@
-Aqui está o **JSON completo** reorganizado, com a **ATEM Mini** movida para MONITORAÇÃO, **gimbals** e acessórios separados de drone, e todas as demais categorias mantidas conforme original.
-Se precisar em formato `.json` para download, só pedir!
-
----
-
-```json
 [
   // --- CÂMERAS ---
   {"id":4,"categoria":"CÂMERAS","quantidade":1,"descricao":"POCKET 6K PRO A","estado":"BOM","observacoes":"","checado":false},
