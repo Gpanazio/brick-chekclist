@@ -1,54 +1,55 @@
-import React, { useEffect, useState } from 'react';
-import Checklist from './components/Checklist';
-import { supabase } from './lib/supabase';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import Checklist from './components/Checklist'
+import { supabase } from './lib/supabase'
+import { Button } from './components/ui/button'
+import './App.css'
 
 export default function App() {
-  const [equipamentos, setEquipamentos] = useState([]);
-  const [modoAdmin, setModoAdmin] = useState(false);
-  const [editados, setEditados] = useState({});
+  const [equipamentos, setEquipamentos] = useState([])
+  const [modoAdmin, setModoAdmin] = useState(false)
+  const [editados, setEditados] = useState({})
 
   useEffect(() => {
-    carregarEquipamentos();
-  }, []);
+    carregarEquipamentos()
+  }, [])
 
   const carregarEquipamentos = async () => {
-    const { data, error } = await supabase.from('equipamentos').select('*').order('id');
-    if (!error) setEquipamentos(data);
-  };
+    const { data, error } = await supabase.from('equipamentos').select('*').order('id')
+    if (!error) setEquipamentos(data)
+  }
 
   const ativarModoAdmin = () => {
-    const senha = prompt('Digite a senha de administrador:');
+    const senha = prompt('Digite a senha de administrador:')
     if (senha === 'Brick$2016') {
-      setModoAdmin(true);
+      setModoAdmin(true)
     } else {
-      alert('Senha incorreta!');
+      alert('Senha incorreta!')
     }
-  };
+  }
 
   const salvarAlteracoes = async () => {
     const updates = Object.entries(editados).map(([id, campos]) => ({
       id: parseInt(id),
       ...campos,
-    }));
+    }))
 
-    const { error } = await supabase.from('equipamentos').upsert(updates);
+    const { error } = await supabase.from('equipamentos').upsert(updates)
     if (!error) {
-      alert('Alterações salvas com sucesso!');
-      setEditados({});
-      carregarEquipamentos();
-      setModoAdmin(false);
+      alert('Alterações salvas com sucesso!')
+      setEditados({})
+      carregarEquipamentos()
+      setModoAdmin(false)
     } else {
-      alert('Erro ao salvar alterações!');
+      alert('Erro ao salvar alterações!')
     }
-  };
+  }
 
   const editarCampo = (id, campo, valor) => {
     setEditados(prev => ({
       ...prev,
       [id]: { ...prev[id], [campo]: valor }
-    }));
-  };
+    }))
+  }
 
   return (
     <div className="min-h-screen bg-[#f5f8ff] p-6">
@@ -58,22 +59,15 @@ export default function App() {
           <h1 className="text-2xl font-bold">Sistema de Checklist</h1>
         </div>
         <div className="flex gap-2">
-          <button className="bg-white text-black px-4 py-2 rounded border">Checklist</button>
-          <button className="bg-white text-black px-4 py-2 rounded border">Histórico</button>
+          <Button variant="outline">Checklist</Button>
+          <Button variant="outline">Histórico</Button>
+
           {!modoAdmin ? (
-            <button
-              className="bg-black text-white px-4 py-2 rounded"
-              onClick={ativarModoAdmin}
-            >
-              Modo Administrador
-            </button>
+            <Button onClick={ativarModoAdmin}>Modo Administrador</Button>
           ) : (
-            <button
-              className="bg-green-600 text-white px-4 py-2 rounded"
-              onClick={salvarAlteracoes}
-            >
+            <Button onClick={salvarAlteracoes} className="bg-green-600 hover:bg-green-700 text-white">
               Salvar Alterações
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -85,5 +79,5 @@ export default function App() {
         editarCampo={editarCampo}
       />
     </div>
-  );
+  )
 }
