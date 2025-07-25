@@ -1,23 +1,5 @@
 [
   {
-    "id":1,
-    "categoria":"SEM CATEGORIA",
-    "quantidade":1,
-    "descricao":"Responsáveis",
-    "estado":"Lucas Badini, Mafê",
-    "observacoes":"",
-    "checado":false
-  },
-  {
-    "id":2,
-    "categoria":"SEM CATEGORIA",
-    "quantidade":1,
-    "descricao":"DESCRIÇÃO",
-    "estado":"ESTADO",
-    "observacoes":"OBS.",
-    "checado":false
-  },
-  {
     "id":3,
     "categoria":"CÂMERAS",
     "quantidade":1,
