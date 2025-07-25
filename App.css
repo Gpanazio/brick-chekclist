@@ -118,3 +118,10 @@
     @apply bg-background text-foreground;
   }
 }
+button {
+  display: inline-block !important;
+  visibility: visible !important;
+  color: black !important;
+  background: yellow !important;
+  z-index: 9999 !important;
+}
