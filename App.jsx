@@ -6,6 +6,7 @@ import './App.css'
 export default function App() {
   const [equipamentos, setEquipamentos] = useState([])
   const [modoAdmin, setModoAdmin] = useState(false)
+  console.log('modoAdmin:', modoAdmin)
   const [editados, setEditados] = useState({})
 
   useEffect(() => {
