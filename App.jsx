@@ -3,11 +3,14 @@ import Checklist from './components/Checklist'
 import { supabase } from './lib/supabase'
 import './App.css'
 
+console.log('Arquivo App.jsx foi carregado') // Diagnóstico 1
+
 export default function App() {
   const [equipamentos, setEquipamentos] = useState([])
   const [modoAdmin, setModoAdmin] = useState(false)
-  console.log('modoAdmin:', modoAdmin)
   const [editados, setEditados] = useState({})
+
+  console.log('modoAdmin:', modoAdmin) // Diagnóstico 2
 
   useEffect(() => {
     carregarEquipamentos()
