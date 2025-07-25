@@ -1,12 +1,10 @@
 [
-  // --- CÂMERAS ---
   {"id":4,"categoria":"CÂMERAS","quantidade":1,"descricao":"POCKET 6K PRO A","estado":"BOM","observacoes":"","checado":false},
   {"id":5,"categoria":"CÂMERAS","quantidade":1,"descricao":"POCKET 6K PRO B","estado":"BOM","observacoes":"","checado":false},
   {"id":6,"categoria":"CÂMERAS","quantidade":1,"descricao":"URSA MINI (1 geração)","estado":"BOM","observacoes":"","checado":false},
   {"id":7,"categoria":"CÂMERAS","quantidade":1,"descricao":"URSA MINI PRO G2","estado":"BOM","observacoes":"","checado":false},
   {"id":8,"categoria":"CÂMERAS","quantidade":1,"descricao":"FUJI X-H2S FUJIFILM","estado":"BOM","observacoes":"","checado":false},
 
-  // --- LENTES ---
   {"id":9,"categoria":"LENTES","quantidade":1,"descricao":"DZO 20-50MM ","estado":"BOM","observacoes":"","checado":false},
   {"id":10,"categoria":"LENTES","quantidade":1,"descricao":"DZO 55-105MM ","estado":"BOM","observacoes":"","checado":false},
   {"id":11,"categoria":"LENTES","quantidade":1,"descricao":"CANON 50MM MACRO","estado":"BOM","observacoes":"","checado":false},
@@ -21,7 +19,6 @@
   {"id":20,"categoria":"LENTES","quantidade":1,"descricao":"Fuji 35mm f1.4 - Automática","estado":"BOM","observacoes":"","checado":false},
   {"id":21,"categoria":"LENTES","quantidade":1,"descricao":"HELIOS-44-2 58MM","estado":"BOM","observacoes":"","checado":false},
 
-  // --- FILTROS E ADAPTADORES ---
   {"id":22,"categoria":"FILTROS E ADAPTADORES","quantidade":1,"descricao":"ANÉIS DE ADAPTAÇÃO STEP DOWN/UP","estado":"BOM","observacoes":"","checado":false},
   {"id":23,"categoria":"FILTROS E ADAPTADORES","quantidade":1,"descricao":"ANEL ADAPTADOR EF MOUNT - HELIOS","estado":"BOM","observacoes":"","checado":false},
   {"id":24,"categoria":"FILTROS E ADAPTADORES","quantidade":1,"descricao":"BCMM URSA PL MOUNT","estado":"BOM","observacoes":"","checado":false},
@@ -38,7 +35,6 @@
   {"id":35,"categoria":"FILTROS E ADAPTADORES","quantidade":1,"descricao":"SLR MAGIC - ANAMORPHOT 1,33X - 50 82 MM","estado":"BOM","observacoes":"","checado":false},
   {"id":36,"categoria":"FILTROS E ADAPTADORES","quantidade":1,"descricao":"SLR MAGIC - RANGEFINDER CINE 82 MM","estado":"BOM","observacoes":"","checado":false},
 
-  // --- ACESSÓRIOS DE CÂMERA ---
   {"id":37,"categoria":"ACESSÓRIOS DE CÂMERA","quantidade":2,"descricao":"ADAPTADOR LONGARINA DUPLO","estado":"","observacoes":"","checado":false},
   {"id":38,"categoria":"ACESSÓRIOS DE CÂMERA","quantidade":1,"descricao":"ADAPTADOR LONGARINA ÚNICO","estado":"","observacoes":"","checado":false},
   {"id":39,"categoria":"ACESSÓRIOS DE CÂMERA","quantidade":1,"descricao":"ADAPTADOR ROSETTE BOLT-ON MOUNT","estado":"BOM","observacoes":"","checado":false},
@@ -72,7 +68,6 @@
   {"id":67,"categoria":"ACESSÓRIOS DE CÂMERA","quantidade":2,"descricao":"TOP HANDLE URSA","estado":"BOM","observacoes":"","checado":false},
   {"id":68,"categoria":"ACESSÓRIOS DE CÂMERA","quantidade":1,"descricao":"VIEWFINDER BLACKMAGIC","estado":"","observacoes":"","checado":false},
 
-  // --- BATERIAS/PILHAS ---
   {"id":69,"categoria":"BATERIAS/PILHAS","quantidade":10,"descricao":"NP GRANDE","estado":"BOM","observacoes":"","checado":false},
   {"id":70,"categoria":"BATERIAS/PILHAS","quantidade":1,"descricao":"NP MÉDIA","estado":"BOM","observacoes":"","checado":false},
   {"id":71,"categoria":"BATERIAS/PILHAS","quantidade":10,"descricao":"NP PEQUENA","estado":"BOM","observacoes":"","checado":false},
@@ -83,7 +78,6 @@
   {"id":76,"categoria":"BATERIAS/PILHAS","quantidade":3,"descricao":"VMOUT GRANDE","estado":"BOM","observacoes":"","checado":false},
   {"id":77,"categoria":"BATERIAS/PILHAS","quantidade":3,"descricao":"BATERIA FUJIFILM","estado":"BOM","observacoes":"","checado":false},
 
-  // --- CARTÕES E LEITORES ---
   {"id":78,"categoria":"CARTÕES E LEITORES","quantidade":2,"descricao":"CASE PARA CARTÕES CFAST/SD","estado":"","observacoes":"","checado":false},
   {"id":79,"categoria":"CARTÕES E LEITORES","quantidade":1,"descricao":"CFAST 128GB","estado":"","observacoes":"","checado":false},
   {"id":80,"categoria":"CARTÕES E LEITORES","quantidade":7,"descricao":"CFAST 256GB","estado":"","observacoes":"","checado":false},
@@ -96,9 +90,8 @@
   {"id":87,"categoria":"CARTÕES E LEITORES","quantidade":2,"descricao":"SSD SAMSUNG 1TB V-NAND ","estado":"BOM","observacoes":"","checado":false},
   {"id":88,"categoria":"CARTÕES E LEITORES","quantidade":1,"descricao":"SSD T7 CINZA 500GB","estado":"BOM","observacoes":"Não aguenta filmagem na pocket.","checado":false},
 
-  // --- MONITORAÇÃO ---
   {"id":3,"categoria":"MONITORAÇÃO","quantidade":1,"descricao":"PLACA ATEM MINI BLACKMAGIC","estado":"BOM","observacoes":"","checado":false},
   {"id":89,"categoria":"MONITORAÇÃO","quantidade":1,"descricao":"IPAD","estado":"BOM","observacoes":"","checado":false},
   {"id":90,"categoria":"MONITORAÇÃO","quantidade":1,"descricao":"KIT HOLLYMARS DE TRANSMISSÃO","estado":"BOM","observacoes":"","checado":false},
   {"id":91,"categoria":"MONITORAÇÃO","quantidade":1,"descricao":"MONITOR ATOMOS","estado":"BOM","observacoes":"","checado":false},
-  {"id":92
+  {"id":92,"categoria":"MONITORAÇÃO","quantidade":1
