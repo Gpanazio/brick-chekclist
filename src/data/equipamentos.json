@@ -1,6 +1,24 @@
 [
   {
     "id":1,
+    "categoria":"SEM CATEGORIA",
+    "quantidade":1,
+    "descricao":"Responsáveis",
+    "estado":"Lucas Badini, Mafê",
+    "observacoes":"",
+    "checado":false
+  },
+  {
+    "id":2,
+    "categoria":"SEM CATEGORIA",
+    "quantidade":1,
+    "descricao":"DESCRIÇÃO",
+    "estado":"ESTADO",
+    "observacoes":"OBS.",
+    "checado":false
+  },
+  {
+    "id":3,
     "categoria":"CÂMERAS",
     "quantidade":1,
     "descricao":"PLACA ATEM MINI BLACKMAGIC",
@@ -9,7 +27,7 @@
     "checado":false
   },
   {
-    "id":2,
+    "id":4,
     "categoria":"CÂMERAS",
     "quantidade":1,
     "descricao":"POCKET 6K PRO A",
@@ -18,7 +36,7 @@
     "checado":false
   },
   {
-    "id":3,
+    "id":5,
     "categoria":"CÂMERAS",
     "quantidade":1,
     "descricao":"POCKET 6K PRO B",
@@ -27,7 +45,7 @@
     "checado":false
   },
   {
-    "id":4,
+    "id":6,
     "categoria":"CÂMERAS",
     "quantidade":1,
     "descricao":"URSA MINI (1 geração)",
@@ -36,7 +54,7 @@
     "checado":false
   },
   {
-    "id":5,
+    "id":7,
     "categoria":"CÂMERAS",
     "quantidade":1,
     "descricao":"URSA MINI PRO G2",
@@ -45,7 +63,7 @@
     "checado":false
   },
   {
-    "id":6,
+    "id":8,
     "categoria":"CÂMERAS",
     "quantidade":1,
     "descricao":"FUJI X-H2S FUJIFILM",
@@ -54,7 +72,7 @@
     "checado":false
   },
   {
-    "id":7,
+    "id":9,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"DZO 20-50MM ",
@@ -63,7 +81,7 @@
     "checado":false
   },
   {
-    "id":8,
+    "id":10,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"DZO 55-105MM ",
@@ -72,7 +90,7 @@
     "checado":false
   },
   {
-    "id":9,
+    "id":11,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"CANON 50MM MACRO",
@@ -81,7 +99,7 @@
     "checado":false
   },
   {
-    "id":10,
+    "id":12,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"MEIKE 18MM",
@@ -90,7 +108,7 @@
     "checado":false
   },
   {
-    "id":11,
+    "id":13,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"MEIKE 35MM",
@@ -99,7 +117,7 @@
     "checado":false
   },
   {
-    "id":12,
+    "id":14,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"MEIKE 50MM",
@@ -108,7 +126,7 @@
     "checado":false
   },
   {
-    "id":13,
+    "id":15,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"MEIKE 75MM",
@@ -117,7 +135,7 @@
     "checado":false
   },
   {
-    "id":14,
+    "id":16,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"IRIX 15MM",
@@ -126,7 +144,7 @@
     "checado":false
   },
   {
-    "id":15,
+    "id":17,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"SLR 25MM",
@@ -135,7 +153,7 @@
     "checado":false
   },
   {
-    "id":16,
+    "id":18,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"SLR 50MM",
@@ -144,7 +162,7 @@
     "checado":false
   },
   {
-    "id":17,
+    "id":19,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"SLR 85MM",
@@ -153,7 +171,7 @@
     "checado":false
   },
   {
-    "id":18,
+    "id":20,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"Fuji 35mm f1.4 - Automática",
@@ -162,7 +180,7 @@
     "checado":false
   },
   {
-    "id":19,
+    "id":21,
     "categoria":"LENTES",
     "quantidade":1,
     "descricao":"HELIOS-44-2 58MM",
@@ -171,8 +189,8 @@
     "checado":false
   },
   {
-    "id":20,
-    "categoria":"LENTES",
+    "id":22,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"ANÉIS DE ADAPTAÇÃO STEP DOWN\/UP",
     "estado":"BOM",
@@ -180,8 +198,8 @@
     "checado":false
   },
   {
-    "id":21,
-    "categoria":"LENTES",
+    "id":23,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"ANEL ADAPTADOR EF MOUNT - HELIOS",
     "estado":"BOM",
@@ -189,8 +207,8 @@
     "checado":false
   },
   {
-    "id":22,
-    "categoria":"LENTES",
+    "id":24,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"BCMM URSA PL MOUNT",
     "estado":"BOM",
@@ -198,8 +216,8 @@
     "checado":false
   },
   {
-    "id":23,
-    "categoria":"LENTES",
+    "id":25,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"CONJUNTO DE FILTROS CLOSE UP",
     "estado":"BOM",
@@ -207,8 +225,8 @@
     "checado":false
   },
   {
-    "id":24,
-    "categoria":"LENTES",
+    "id":26,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"FILTRO BLACK PROMIST 1\/2 77MM",
     "estado":"BOM",
@@ -216,8 +234,8 @@
     "checado":false
   },
   {
-    "id":25,
-    "categoria":"LENTES",
+    "id":27,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"FILTRO BLACK PROMIST 1\/4 77MM",
     "estado":"BOM",
@@ -225,8 +243,8 @@
     "checado":false
   },
   {
-    "id":26,
-    "categoria":"LENTES",
+    "id":28,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"FILTRO CIR - PL SLIM HOYA 77MM (82MM)",
     "estado":"BOM",
@@ -234,8 +252,8 @@
     "checado":false
   },
   {
-    "id":27,
-    "categoria":"LENTES",
+    "id":29,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"FILTRO GLIMMERGLASS TIFFEN 82MM",
     "estado":"BOM",
@@ -243,8 +261,8 @@
     "checado":false
   },
   {
-    "id":28,
-    "categoria":"LENTES",
+    "id":30,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"FILTRO ND VARIÁVEL POLAROID 49MM",
     "estado":"BOM",
@@ -252,8 +270,8 @@
     "checado":false
   },
   {
-    "id":29,
-    "categoria":"LENTES",
+    "id":31,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"FILTRO ND VARIÁVEL TIFFEN 77MM",
     "estado":"BOM",
@@ -261,8 +279,8 @@
     "checado":false
   },
   {
-    "id":30,
-    "categoria":"LENTES",
+    "id":32,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"FILTRO ND VARIÁVEL TIFFEN 82MM",
     "estado":"BOM",
@@ -270,8 +288,8 @@
     "checado":false
   },
   {
-    "id":31,
-    "categoria":"LENTES",
+    "id":33,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":2,
     "descricao":"FILTRO UV & IR CUT HOYA 77MM",
     "estado":"BOM",
@@ -279,8 +297,8 @@
     "checado":false
   },
   {
-    "id":32,
-    "categoria":"LENTES",
+    "id":34,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"METABONES MOUNT ",
     "estado":"BOM",
@@ -288,8 +306,8 @@
     "checado":false
   },
   {
-    "id":33,
-    "categoria":"LENTES",
+    "id":35,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"SLR MAGIC - ANAMORPHOT 1,33X - 50 82 MM",
     "estado":"BOM",
@@ -297,8 +315,8 @@
     "checado":false
   },
   {
-    "id":34,
-    "categoria":"LENTES",
+    "id":36,
+    "categoria":"FILTROS E ADAPTADORES",
     "quantidade":1,
     "descricao":"SLR MAGIC - RANGEFINDER CINE 82 MM",
     "estado":"BOM",
@@ -306,8 +324,8 @@
     "checado":false
   },
   {
-    "id":35,
-    "categoria":"LENTES",
+    "id":37,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":2,
     "descricao":"ADAPTADOR LONGARINA DUPLO",
     "estado":"",
@@ -315,8 +333,8 @@
     "checado":false
   },
   {
-    "id":36,
-    "categoria":"LENTES",
+    "id":38,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"ADAPTADOR LONGARINA ÚNICO",
     "estado":"",
@@ -324,8 +342,8 @@
     "checado":false
   },
   {
-    "id":37,
-    "categoria":"LENTES",
+    "id":39,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"ADAPTADOR ROSETTE BOLT-ON MOUNT",
     "estado":"BOM",
@@ -333,8 +351,8 @@
     "checado":false
   },
   {
-    "id":38,
-    "categoria":"LENTES",
+    "id":40,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"BASE PLATE SMALLRIG PLACA BASE DUPLA",
     "estado":"BOM",
@@ -342,8 +360,8 @@
     "checado":false
   },
   {
-    "id":39,
-    "categoria":"LENTES",
+    "id":41,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"CHAVE MULTIUSO SMALL RIG",
     "estado":"BOM",
@@ -351,8 +369,8 @@
     "checado":false
   },
   {
-    "id":40,
-    "categoria":"LENTES",
+    "id":42,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"FOLLOW FOCUS MANUAL",
     "estado":"BOM",
@@ -360,8 +378,8 @@
     "checado":false
   },
   {
-    "id":41,
-    "categoria":"LENTES",
+    "id":43,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"FOLLOW FOCUS WI-FI SMALLRIG",
     "estado":"BOM",
@@ -369,8 +387,8 @@
     "checado":false
   },
   {
-    "id":42,
-    "categoria":"LENTES",
+    "id":44,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":2,
     "descricao":"GARRA SUPORTE V-MOUNT ",
     "estado":"",
@@ -378,8 +396,8 @@
     "checado":false
   },
   {
-    "id":43,
-    "categoria":"LENTES",
+    "id":45,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"GARRA TRIPÉ",
     "estado":"",
@@ -387,8 +405,8 @@
     "checado":false
   },
   {
-    "id":44,
-    "categoria":"LENTES",
+    "id":46,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"KIT ADAPTADOR NATORAIL SMALLRIG",
     "estado":"BOM",
@@ -396,8 +414,8 @@
     "checado":false
   },
   {
-    "id":45,
-    "categoria":"LENTES",
+    "id":47,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":6,
     "descricao":"MAGIC ARM SMALL BALL HEAD GRANDE",
     "estado":"BOM",
@@ -405,8 +423,8 @@
     "checado":false
   },
   {
-    "id":46,
-    "categoria":"LENTES",
+    "id":48,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":3,
     "descricao":"MAGIC ARM SMALL BALL HEAD PEQUENO",
     "estado":"BOM",
@@ -414,8 +432,8 @@
     "checado":false
   },
   {
-    "id":47,
-    "categoria":"LENTES",
+    "id":49,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"MATTEBOX TILTA",
     "estado":"BOM",
@@ -423,8 +441,8 @@
     "checado":false
   },
   {
-    "id":48,
-    "categoria":"LENTES",
+    "id":50,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"PAR LONGARINAS GRANDES SMALLRIG ",
     "estado":"BOM",
@@ -432,8 +450,8 @@
     "checado":false
   },
   {
-    "id":49,
-    "categoria":"LENTES",
+    "id":51,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":2,
     "descricao":"PAR LONGARINAS PEQUENAS",
     "estado":"BOM",
@@ -441,8 +459,8 @@
     "checado":false
   },
   {
-    "id":50,
-    "categoria":"LENTES",
+    "id":52,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"PLATE NP",
     "estado":"",
@@ -450,8 +468,8 @@
     "checado":false
   },
   {
-    "id":51,
-    "categoria":"LENTES",
+    "id":53,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"PLATE VMONT VERTICAL",
     "estado":"BOM",
@@ -459,8 +477,8 @@
     "checado":false
   },
   {
-    "id":52,
-    "categoria":"LENTES",
+    "id":54,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"PLATE VMOUNT HORIZONTAL",
     "estado":"BOM",
@@ -468,8 +486,8 @@
     "checado":false
   },
   {
-    "id":53,
-    "categoria":"LENTES",
+    "id":55,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"QUICKRELEASE KONDORBLUE",
     "estado":"BOM",
@@ -477,8 +495,8 @@
     "checado":false
   },
   {
-    "id":54,
-    "categoria":"LENTES",
+    "id":56,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"SHOULDER PAD BLACKMAGIC",
     "estado":"",
@@ -486,8 +504,8 @@
     "checado":false
   },
   {
-    "id":55,
-    "categoria":"LENTES",
+    "id":57,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"SHOULDER-MOUNT KIT FOR THE URSA MINI",
     "estado":"",
@@ -495,8 +513,8 @@
     "checado":false
   },
   {
-    "id":56,
-    "categoria":"LENTES",
+    "id":58,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":3,
     "descricao":"SIDE GRIP BLACKMAGIC URSA",
     "estado":"BOM",
@@ -504,8 +522,8 @@
     "checado":false
   },
   {
-    "id":57,
-    "categoria":"LENTES",
+    "id":59,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"SIDE GRIP POCKET",
     "estado":"",
@@ -513,8 +531,8 @@
     "checado":false
   },
   {
-    "id":58,
-    "categoria":"LENTES",
+    "id":60,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"SUPORTE LENTE SMALLRIG",
     "estado":"BOM",
@@ -522,8 +540,8 @@
     "checado":false
   },
   {
-    "id":59,
-    "categoria":"LENTES",
+    "id":61,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"SUPORTE SIDE GRIP",
     "estado":"",
@@ -531,8 +549,8 @@
     "checado":false
   },
   {
-    "id":60,
-    "categoria":"LENTES",
+    "id":62,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":2,
     "descricao":"SUPORTE SSD",
     "estado":"BOM",
@@ -540,8 +558,8 @@
     "checado":false
   },
   {
-    "id":61,
-    "categoria":"LENTES",
+    "id":63,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"SUPORTE SSD MAGICRIG",
     "estado":"",
@@ -549,8 +567,8 @@
     "checado":false
   },
   {
-    "id":62,
-    "categoria":"LENTES",
+    "id":64,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"TOP HANDLE CAGE POCKET",
     "estado":"BOM",
@@ -558,8 +576,8 @@
     "checado":false
   },
   {
-    "id":63,
-    "categoria":"LENTES",
+    "id":65,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"TOP HANDLE MAGICRIG",
     "estado":"",
@@ -567,8 +585,8 @@
     "checado":false
   },
   {
-    "id":64,
-    "categoria":"LENTES",
+    "id":66,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":2,
     "descricao":"TOP HANDLE PUNHO SUPERIOR",
     "estado":"BOM",
@@ -576,8 +594,8 @@
     "checado":false
   },
   {
-    "id":65,
-    "categoria":"LENTES",
+    "id":67,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":2,
     "descricao":"TOP HANDLE URSA",
     "estado":"BOM",
@@ -585,8 +603,8 @@
     "checado":false
   },
   {
-    "id":66,
-    "categoria":"LENTES",
+    "id":68,
+    "categoria":"ACESSÓRIOS DE CÂMERA",
     "quantidade":1,
     "descricao":"VIEWFINDER BLACKMAGIC",
     "estado":"",
@@ -594,8 +612,8 @@
     "checado":false
   },
   {
-    "id":67,
-    "categoria":"LENTES",
+    "id":69,
+    "categoria":"BATERIAS\/PILHAS",
     "quantidade":10,
     "descricao":"NP GRANDE",
     "estado":"BOM",
@@ -603,8 +621,8 @@
     "checado":false
   },
   {
-    "id":68,
-    "categoria":"LENTES",
+    "id":70,
+    "categoria":"BATERIAS\/PILHAS",
     "quantidade":1,
     "descricao":"NP MÉDIA",
     "estado":"BOM",
@@ -612,8 +630,8 @@
     "checado":false
   },
   {
-    "id":69,
-    "categoria":"LENTES",
+    "id":71,
+    "categoria":"BATERIAS\/PILHAS",
     "quantidade":10,
     "descricao":"NP PEQUENA",
     "estado":"BOM",
@@ -621,8 +639,8 @@
     "checado":false
   },
   {
-    "id":70,
-    "categoria":"LENTES",
+    "id":72,
+    "categoria":"BATERIAS\/PILHAS",
     "quantidade":1,
     "descricao":"PILHA RECARREGÁVEL ELENOP AAA",
     "estado":"",
@@ -630,8 +648,8 @@
     "checado":false
   },
   {
-    "id":71,
-    "categoria":"LENTES",
+    "id":73,
+    "categoria":"BATERIAS\/PILHAS",
     "quantidade":1,
     "descricao":"PILHA RECARREGÁVEL PHILCO AAA",
     "estado":"",
@@ -639,8 +657,8 @@
     "checado":false
   },
   {
-    "id":72,
-    "categoria":"LENTES",
+    "id":74,
+    "categoria":"BATERIAS\/PILHAS",
     "quantidade":3,
     "descricao":"VMOUNT MÉDIA",
     "estado":"BOM",
@@ -648,8 +666,8 @@
     "checado":false
   },
   {
-    "id":73,
-    "categoria":"LENTES",
+    "id":75,
+    "categoria":"BATERIAS\/PILHAS",
     "quantidade":3,
     "descricao":"VMOUNT PEQUENA",
     "estado":"BOM",
@@ -657,8 +675,8 @@
     "checado":false
   },
   {
-    "id":74,
-    "categoria":"LENTES",
+    "id":76,
+    "categoria":"BATERIAS\/PILHAS",
     "quantidade":3,
     "descricao":"VMOUT GRANDE",
     "estado":"BOM",
@@ -666,8 +684,8 @@
     "checado":false
   },
   {
-    "id":75,
-    "categoria":"LENTES",
+    "id":77,
+    "categoria":"BATERIAS\/PILHAS",
     "quantidade":3,
     "descricao":"BATERIA FUJIFILM",
     "estado":"BOM",
@@ -675,8 +693,8 @@
     "checado":false
   },
   {
-    "id":76,
-    "categoria":"LENTES",
+    "id":78,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":2,
     "descricao":"CASE PARA CARTÕES CFAST\/SD",
     "estado":"",
@@ -684,8 +702,8 @@
     "checado":false
   },
   {
-    "id":77,
-    "categoria":"LENTES",
+    "id":79,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":1,
     "descricao":"CFAST 128GB",
     "estado":"",
@@ -693,8 +711,8 @@
     "checado":false
   },
   {
-    "id":78,
-    "categoria":"LENTES",
+    "id":80,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":7,
     "descricao":"CFAST 256GB",
     "estado":"",
@@ -702,8 +720,8 @@
     "checado":false
   },
   {
-    "id":79,
-    "categoria":"LENTES",
+    "id":81,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":5,
     "descricao":"LEITOR CFAST",
     "estado":"",
@@ -711,8 +729,8 @@
     "checado":false
   },
   {
-    "id":80,
-    "categoria":"LENTES",
+    "id":82,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":1,
     "descricao":"LEITOR SD",
     "estado":"",
@@ -720,8 +738,8 @@
     "checado":false
   },
   {
-    "id":81,
-    "categoria":"LENTES",
+    "id":83,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":1,
     "descricao":"SD CARD 256GB",
     "estado":"BOM",
@@ -729,8 +747,8 @@
     "checado":false
   },
   {
-    "id":82,
-    "categoria":"LENTES",
+    "id":84,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":2,
     "descricao":"SD CARD 64GB",
     "estado":"",
@@ -738,8 +756,8 @@
     "checado":false
   },
   {
-    "id":83,
-    "categoria":"LENTES",
+    "id":85,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":1,
     "descricao":"SSD 1TB SANDISK A",
     "estado":"BOM",
@@ -747,8 +765,8 @@
     "checado":false
   },
   {
-    "id":84,
-    "categoria":"LENTES",
+    "id":86,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":1,
     "descricao":"SSD 1TB SANDISK B",
     "estado":"",
@@ -756,8 +774,8 @@
     "checado":false
   },
   {
-    "id":85,
-    "categoria":"LENTES",
+    "id":87,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":2,
     "descricao":"SSD SAMSUNG 1TB V-NAND ",
     "estado":"BOM",
@@ -765,8 +783,8 @@
     "checado":false
   },
   {
-    "id":86,
-    "categoria":"LENTES",
+    "id":88,
+    "categoria":"CARTÕES E LEITORES",
     "quantidade":1,
     "descricao":"SSD T7 CINZA 500GB",
     "estado":"BOM",
@@ -774,7 +792,7 @@
     "checado":false
   },
   {
-    "id":87,
+    "id":89,
     "categoria":"MONITORAÇÃO",
     "quantidade":1,
     "descricao":"IPAD",
@@ -783,7 +801,7 @@
     "checado":false
   },
   {
-    "id":88,
+    "id":90,
     "categoria":"MONITORAÇÃO",
     "quantidade":1,
     "descricao":"KIT HOLLYMARS DE TRANSMISSÃO",
@@ -792,7 +810,7 @@
     "checado":false
   },
   {
-    "id":89,
+    "id":91,
     "categoria":"MONITORAÇÃO",
     "quantidade":1,
     "descricao":"MONITOR ATOMOS",
@@ -801,7 +819,7 @@
     "checado":false
   },
   {
-    "id":90,
+    "id":92,
     "categoria":"MONITORAÇÃO",
     "quantidade":1,
     "descricao":"MONITOR BLACKMAGIC",
@@ -810,7 +828,7 @@
     "checado":false
   },
   {
-    "id":91,
+    "id":93,
     "categoria":"MONITORAÇÃO",
     "quantidade":1,
     "descricao":"MONITOR FEELWORLD F5",
@@ -819,7 +837,7 @@
     "checado":false
   },
   {
-    "id":92,
+    "id":94,
     "categoria":"MONITORAÇÃO",
     "quantidade":1,
     "descricao":"MONITOR FEELWORLD F6",
@@ -828,7 +846,7 @@
     "checado":false
   },
   {
-    "id":93,
+    "id":95,
     "categoria":"MONITORAÇÃO",
     "quantidade":1,
     "descricao":"TABLET",
@@ -837,7 +855,7 @@
     "checado":false
   },
   {
-    "id":94,
+    "id":96,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"AMARAN 200X",
@@ -846,7 +864,7 @@
     "checado":false
   },
   {
-    "id":95,
+    "id":97,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"AMARAN 300C",
@@ -855,7 +873,7 @@
     "checado":false
   },
   {
-    "id":96,
+    "id":98,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"APUTURE 300D",
@@ -864,7 +882,7 @@
     "checado":false
   },
   {
-    "id":97,
+    "id":99,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"GODOX BICOLOR - SZ 200",
@@ -873,7 +891,7 @@
     "checado":false
   },
   {
-    "id":98,
+    "id":100,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"GODOX RGB - SZ 150",
@@ -882,7 +900,7 @@
     "checado":false
   },
   {
-    "id":99,
+    "id":101,
     "categoria":"LUZES",
     "quantidade":2,
     "descricao":"ZHIYUN MOLUS G200 ",
@@ -891,7 +909,7 @@
     "checado":false
   },
   {
-    "id":100,
+    "id":102,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"BASTÃO DE LED YOUNGNUO",
@@ -900,7 +918,7 @@
     "checado":false
   },
   {
-    "id":101,
+    "id":103,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"GODOX S 60",
@@ -909,7 +927,7 @@
     "checado":false
   },
   {
-    "id":102,
+    "id":104,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"LED VIDEO LIGHT 1000",
@@ -918,7 +936,7 @@
     "checado":false
   },
   {
-    "id":103,
+    "id":105,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"NEWER PAINEL LED",
@@ -927,7 +945,7 @@
     "checado":false
   },
   {
-    "id":104,
+    "id":106,
     "categoria":"LUZES",
     "quantidade":1,
     "descricao":"PORRADINHA",
@@ -936,8 +954,8 @@
     "checado":false
   },
   {
-    "id":105,
-    "categoria":"LUZES",
+    "id":107,
+    "categoria":"MODIFICADORES DE LUZ",
     "quantidade":2,
     "descricao":"SOFTBOX TRIOPO 70 CM",
     "estado":"BOM",
@@ -945,8 +963,8 @@
     "checado":false
   },
   {
-    "id":106,
-    "categoria":"LUZES",
+    "id":108,
+    "categoria":"MODIFICADORES DE LUZ",
     "quantidade":1,
     "descricao":"LANTERNA CHINESA",
     "estado":"BOM",
@@ -954,8 +972,8 @@
     "checado":false
   },
   {
-    "id":107,
-    "categoria":"LUZES",
+    "id":109,
+    "categoria":"MODIFICADORES DE LUZ",
     "quantidade":1,
     "descricao":"OCTABOX GODOX 120 CM",
     "estado":"BOM",
@@ -963,8 +981,8 @@
     "checado":false
   },
   {
-    "id":108,
-    "categoria":"LUZES",
+    "id":110,
+    "categoria":"MODIFICADORES DE LUZ",
     "quantidade":2,
     "descricao":"OCTABOX TRIOPO 120 CM ",
     "estado":"BOM",
@@ -972,8 +990,8 @@
     "checado":false
   },
   {
-    "id":109,
-    "categoria":"LUZES",
+    "id":111,
+    "categoria":"MODIFICADORES DE LUZ",
     "quantidade":1,
     "descricao":"OCTABOX TRIOPO 90CM",
     "estado":"",
@@ -981,8 +999,8 @@
     "checado":false
   },
   {
-    "id":110,
-    "categoria":"LUZES",
+    "id":112,
+    "categoria":"MODIFICADORES DE LUZ",
     "quantidade":1,
     "descricao":"REBATEDOR CIRCULAR GRANDE",
     "estado":"BOM",
@@ -990,8 +1008,8 @@
     "checado":false
   },
   {
-    "id":111,
-    "categoria":"LUZES",
+    "id":113,
+    "categoria":"MODIFICADORES DE LUZ",
     "quantidade":2,
     "descricao":"REBATEDOR CIRCULAR PEQUENO",
     "estado":"BOM",
@@ -999,7 +1017,7 @@
     "checado":false
   },
   {
-    "id":112,
+    "id":114,
     "categoria":"CABOS",
     "quantidade":3,
     "descricao":"CABO DTAP-POCKET",
@@ -1008,7 +1026,7 @@
     "checado":false
   },
   {
-    "id":113,
+    "id":115,
     "categoria":"CABOS",
     "quantidade":1,
     "descricao":"CABO PLATE NP-POCKET",
@@ -1017,7 +1035,7 @@
     "checado":false
   },
   {
-    "id":114,
+    "id":116,
     "categoria":"CABOS",
     "quantidade":3,
     "descricao":"CABO HDMI KONDORBLUE RED",
@@ -1026,7 +1044,7 @@
     "checado":false
   },
   {
-    "id":115,
+    "id":117,
     "categoria":"CABOS",
     "quantidade":3,
     "descricao":"CABO HDMI GRANDE",
@@ -1035,7 +1053,7 @@
     "checado":false
   },
   {
-    "id":116,
+    "id":118,
     "categoria":"CABOS",
     "quantidade":2,
     "descricao":"CABO SDI-SDI",
@@ -1044,7 +1062,7 @@
     "checado":false
   },
   {
-    "id":117,
+    "id":119,
     "categoria":"CABOS",
     "quantidade":3,
     "descricao":"CABO SDI-MINI SDI",
@@ -1053,7 +1071,7 @@
     "checado":false
   },
   {
-    "id":118,
+    "id":120,
     "categoria":"CABOS",
     "quantidade":1,
     "descricao":"FILTRO DE LINHA",
@@ -1062,7 +1080,7 @@
     "checado":false
   },
   {
-    "id":119,
+    "id":121,
     "categoria":"CABOS",
     "quantidade":1,
     "descricao":"PROLONGA ",
@@ -1071,7 +1089,7 @@
     "checado":false
   },
   {
-    "id":120,
+    "id":122,
     "categoria":"MAQUINÁRIA",
     "quantidade":2,
     "descricao":"TRIPÉ CENTURY",
@@ -1080,7 +1098,7 @@
     "checado":false
   },
   {
-    "id":121,
+    "id":123,
     "categoria":"MAQUINÁRIA",
     "quantidade":2,
     "descricao":"TRIPÉ LUZ CINZA 3 ESTÁGIOS",
@@ -1089,7 +1107,7 @@
     "checado":false
   },
   {
-    "id":122,
+    "id":124,
     "categoria":"MAQUINÁRIA",
     "quantidade":1,
     "descricao":"TRIPÉ LUZ PRETO 2 ESTÁGIOS ",
@@ -1098,7 +1116,7 @@
     "checado":false
   },
   {
-    "id":123,
+    "id":125,
     "categoria":"MAQUINÁRIA",
     "quantidade":1,
     "descricao":"TRIPÉ GIRAFA",
@@ -1107,7 +1125,7 @@
     "checado":false
   },
   {
-    "id":124,
+    "id":126,
     "categoria":"MAQUINÁRIA",
     "quantidade":1,
     "descricao":"BUTTERFLY 2X2",
@@ -1116,7 +1134,7 @@
     "checado":false
   },
   {
-    "id":125,
+    "id":127,
     "categoria":"MAQUINÁRIA",
     "quantidade":1,
     "descricao":"SLIDER PEQUENO",
@@ -1125,7 +1143,7 @@
     "checado":false
   },
   {
-    "id":126,
+    "id":128,
     "categoria":"MAQUINÁRIA",
     "quantidade":1,
     "descricao":"SLIDER GRANDE",
@@ -1134,8 +1152,8 @@
     "checado":false
   },
   {
-    "id":127,
-    "categoria":"MAQUINÁRIA",
+    "id":129,
+    "categoria":"ITENS DE SET",
     "quantidade":3,
     "descricao":"3 TABELA",
     "estado":"BOM",
@@ -1143,8 +1161,8 @@
     "checado":false
   },
   {
-    "id":128,
-    "categoria":"MAQUINÁRIA",
+    "id":130,
+    "categoria":"ITENS DE SET",
     "quantidade":2,
     "descricao":"CABEÇA DE EFEITO",
     "estado":"BOM",
@@ -1152,8 +1170,8 @@
     "checado":false
   },
   {
-    "id":129,
-    "categoria":"MAQUINÁRIA",
+    "id":131,
+    "categoria":"ITENS DE SET",
     "quantidade":1,
     "descricao":"CAIXA DE SOM JBL VERMELHA ",
     "estado":"BOM",
@@ -1161,8 +1179,8 @@
     "checado":false
   },
   {
-    "id":130,
-    "categoria":"MAQUINÁRIA",
+    "id":132,
+    "categoria":"ITENS DE SET",
     "quantidade":1,
     "descricao":"MAQUINA DE FUMAÇA",
     "estado":"BOM",
@@ -1170,8 +1188,8 @@
     "checado":false
   },
   {
-    "id":131,
-    "categoria":"MAQUINÁRIA",
+    "id":133,
+    "categoria":"ITENS DE SET",
     "quantidade":1,
     "descricao":"MAQUINA DE HAZE",
     "estado":"BOM",
@@ -1179,8 +1197,8 @@
     "checado":false
   },
   {
-    "id":132,
-    "categoria":"MAQUINÁRIA",
+    "id":134,
+    "categoria":"ITENS DE SET",
     "quantidade":1,
     "descricao":"KIT Teleprompter",
     "estado":"BOM",
@@ -1188,8 +1206,8 @@
     "checado":false
   },
   {
-    "id":133,
-    "categoria":"MAQUINÁRIA",
+    "id":135,
+    "categoria":"ITENS DE SET",
     "quantidade":10,
     "descricao":"RÁDIOS COMUNICADORES",
     "estado":"BOM",
@@ -1197,8 +1215,8 @@
     "checado":false
   },
   {
-    "id":134,
-    "categoria":"MAQUINÁRIA",
+    "id":136,
+    "categoria":"ITENS DE SET",
     "quantidade":1,
     "descricao":"SACO DE AREIA",
     "estado":"BOM",
@@ -1206,7 +1224,7 @@
     "checado":false
   },
   {
-    "id":135,
+    "id":137,
     "categoria":"DRONE",
     "quantidade":1,
     "descricao":"DRONE DJI MAVIC 3 PRO",
@@ -1215,7 +1233,7 @@
     "checado":false
   },
   {
-    "id":136,
+    "id":138,
     "categoria":"DRONE",
     "quantidade":1,
     "descricao":"GIMBAL ZHIYUN CRANE 3S",
@@ -1224,7 +1242,7 @@
     "checado":false
   },
   {
-    "id":137,
+    "id":139,
     "categoria":"DRONE",
     "quantidade":1,
     "descricao":"GIMBAL ZHIYUN CRANE 4",
@@ -1233,7 +1251,7 @@
     "checado":false
   },
   {
-    "id":138,
+    "id":140,
     "categoria":"DRONE",
     "quantidade":1,
     "descricao":"DUAL HANDLE",
@@ -1242,7 +1260,7 @@
     "checado":false
   },
   {
-    "id":139,
+    "id":141,
     "categoria":"DRONE",
     "quantidade":1,
     "descricao":"ZHIYUN FOLLOWFOCUS WIFI",
@@ -1251,7 +1269,7 @@
     "checado":false
   },
   {
-    "id":140,
+    "id":142,
     "categoria":"DRONE",
     "quantidade":1,
     "descricao":"ZHIYUN TRANSMISSOR WIFI",
@@ -1260,7 +1278,7 @@
     "checado":false
   },
   {
-    "id":141,
+    "id":143,
     "categoria":"DRONE",
     "quantidade":1,
     "descricao":"ZHIYUN BATTERY CASE",
@@ -1269,7 +1287,7 @@
     "checado":false
   },
   {
-    "id":142,
+    "id":144,
     "categoria":"DRONE",
     "quantidade":1,
     "descricao":"ZHIYUN HANDLE",
@@ -1278,7 +1296,7 @@
     "checado":false
   },
   {
-    "id":143,
+    "id":145,
     "categoria":"DRONE",
     "quantidade":1,
     "descricao":"ZHIYUN CABLE PACK",
@@ -1287,7 +1305,7 @@
     "checado":false
   },
   {
-    "id":144,
+    "id":146,
     "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"TRIPÉ CAMERA MANFROTTO",
@@ -1296,7 +1314,7 @@
     "checado":false
   },
   {
-    "id":145,
+    "id":147,
     "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"MILIBOO MTT609A (2 TRAVAS VERMELHAS)",
@@ -1305,7 +1323,7 @@
     "checado":false
   },
   {
-    "id":146,
+    "id":148,
     "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"MILIBOO MTT601A (2 TRAVAS PRETAS)",
@@ -1314,7 +1332,7 @@
     "checado":false
   },
   {
-    "id":147,
+    "id":149,
     "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"MILIBOO MTT605A (1 TRAVA)",
@@ -1323,7 +1341,7 @@
     "checado":false
   },
   {
-    "id":148,
+    "id":150,
     "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"TRIPÉ CAMERA BENRO",
@@ -1332,7 +1350,7 @@
     "checado":false
   },
   {
-    "id":149,
+    "id":151,
     "categoria":"TRIPÉS",
     "quantidade":2,
     "descricao":"ATACAMA K2Everest",
@@ -1341,7 +1359,7 @@
     "checado":false
   },
   {
-    "id":150,
+    "id":152,
     "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"BENRO SLIM TRAVEL",
@@ -1350,8 +1368,8 @@
     "checado":false
   },
   {
-    "id":151,
-    "categoria":"ÁUDIO",
+    "id":153,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"BOOM COMICA VM10 PRO (KIT)",
     "estado":"BOM",
@@ -1359,8 +1377,8 @@
     "checado":false
   },
   {
-    "id":152,
-    "categoria":"ÁUDIO",
+    "id":154,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"BOOM RODE NTG-3 (PRATEADO) ",
     "estado":"BOM",
@@ -1368,8 +1386,8 @@
     "checado":false
   },
   {
-    "id":153,
-    "categoria":"ÁUDIO",
+    "id":155,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"BOOM SEINHEISER (KIT)",
     "estado":"BOM",
@@ -1377,8 +1395,8 @@
     "checado":false
   },
   {
-    "id":154,
-    "categoria":"ÁUDIO",
+    "id":156,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"CABO P2-P2",
     "estado":"",
@@ -1386,8 +1404,8 @@
     "checado":false
   },
   {
-    "id":155,
-    "categoria":"ÁUDIO",
+    "id":157,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"CABO P2-XLR",
     "estado":"BOM",
@@ -1395,8 +1413,8 @@
     "checado":false
   },
   {
-    "id":156,
-    "categoria":"ÁUDIO",
+    "id":158,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"CABO XLR MINI - XLR (POCKET)",
     "estado":"",
@@ -1404,8 +1422,8 @@
     "checado":false
   },
   {
-    "id":157,
-    "categoria":"ÁUDIO",
+    "id":159,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"CABO XLR-XLR",
     "estado":"",
@@ -1413,8 +1431,8 @@
     "checado":false
   },
   {
-    "id":158,
-    "categoria":"ÁUDIO",
+    "id":160,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"GRAVADOR ZOOM H1",
     "estado":"BOM",
@@ -1422,8 +1440,8 @@
     "checado":false
   },
   {
-    "id":159,
-    "categoria":"ÁUDIO",
+    "id":161,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"GRAVADOR ZOOM H5",
     "estado":"BOM",
@@ -1431,8 +1449,8 @@
     "checado":false
   },
   {
-    "id":160,
-    "categoria":"ÁUDIO",
+    "id":162,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"GRAVADOR ZOOM H6",
     "estado":"BOM",
@@ -1440,8 +1458,8 @@
     "checado":false
   },
   {
-    "id":161,
-    "categoria":"ÁUDIO",
+    "id":163,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"GRAVADOR ZOOM H8",
     "estado":"BOM",
@@ -1449,8 +1467,8 @@
     "checado":false
   },
   {
-    "id":162,
-    "categoria":"ÁUDIO",
+    "id":164,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"HEADSET ONEODIO PRO ",
     "estado":"BOM",
@@ -1458,8 +1476,8 @@
     "checado":false
   },
   {
-    "id":163,
-    "categoria":"ÁUDIO",
+    "id":165,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"KIT LAPELA SEINHEISER",
     "estado":"BOM",
@@ -1467,8 +1485,8 @@
     "checado":false
   },
   {
-    "id":164,
-    "categoria":"ÁUDIO",
+    "id":166,
+    "categoria":"TRIPÉS",
     "quantidade":2,
     "descricao":"KIT LAPELA SONY",
     "estado":"BOM",
@@ -1476,8 +1494,8 @@
     "checado":false
   },
   {
-    "id":165,
-    "categoria":"ÁUDIO",
+    "id":167,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"LAPELA HOLLYLAND LARK MAX",
     "estado":"BOM",
@@ -1485,8 +1503,8 @@
     "checado":false
   },
   {
-    "id":166,
-    "categoria":"ÁUDIO",
+    "id":168,
+    "categoria":"TRIPÉS",
     "quantidade":2,
     "descricao":"LAPELA HOLLYLAND SEM FIO",
     "estado":"BOM",
@@ -1494,8 +1512,8 @@
     "checado":false
   },
   {
-    "id":167,
-    "categoria":"ÁUDIO",
+    "id":169,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"SUPORTE BOOM",
     "estado":"BOM",
@@ -1503,8 +1521,8 @@
     "checado":false
   },
   {
-    "id":168,
-    "categoria":"ÁUDIO",
+    "id":170,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"VARA BOOM",
     "estado":"",
@@ -1512,8 +1530,8 @@
     "checado":false
   },
   {
-    "id":169,
-    "categoria":"ÁUDIO",
+    "id":171,
+    "categoria":"TRIPÉS",
     "quantidade":2,
     "descricao":"CARREAGADOR DUPLO NP",
     "estado":"BOM",
@@ -1521,8 +1539,8 @@
     "checado":false
   },
   {
-    "id":170,
-    "categoria":"ÁUDIO",
+    "id":172,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"CARREGADOR DE PILHA C4",
     "estado":"BOM",
@@ -1530,8 +1548,8 @@
     "checado":false
   },
   {
-    "id":171,
-    "categoria":"ÁUDIO",
+    "id":173,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"CARREGADOR DUPLO VMOUNT - DE MESA",
     "estado":"BOM",
@@ -1539,8 +1557,8 @@
     "checado":false
   },
   {
-    "id":172,
-    "categoria":"ÁUDIO",
+    "id":174,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"CARREGADOR VMOUNT ",
     "estado":"BOM",
@@ -1548,8 +1566,8 @@
     "checado":false
   },
   {
-    "id":173,
-    "categoria":"ÁUDIO",
+    "id":175,
+    "categoria":"TRIPÉS",
     "quantidade":1,
     "descricao":"FONTE POCKET",
     "estado":"BOM",
@@ -1557,8 +1575,8 @@
     "checado":false
   },
   {
-    "id":174,
-    "categoria":"ÁUDIO",
+    "id":176,
+    "categoria":"TRIPÉS",
     "quantidade":3,
     "descricao":"FONTE URSA",
     "estado":"BOM",
@@ -1566,7 +1584,7 @@
     "checado":false
   },
   {
-    "id":175,
+    "id":177,
     "categoria":"CASES",
     "quantidade":2,
     "descricao":"CASE VONDER GRANDE",
@@ -1575,7 +1593,7 @@
     "checado":false
   },
   {
-    "id":176,
+    "id":178,
     "categoria":"CASES",
     "quantidade":1,
     "descricao":"PELICAN 1560 CASE",
@@ -1584,7 +1602,7 @@
     "checado":false
   },
   {
-    "id":177,
+    "id":179,
     "categoria":"CASES",
     "quantidade":1,
     "descricao":"CASE GRANDE RÍGIDA ",
@@ -1593,7 +1611,7 @@
     "checado":false
   },
   {
-    "id":178,
+    "id":180,
     "categoria":"CASES",
     "quantidade":1,
     "descricao":"CASE DE LENTES MEIKE",
@@ -1602,7 +1620,7 @@
     "checado":false
   },
   {
-    "id":179,
+    "id":181,
     "categoria":"CASES",
     "quantidade":1,
     "descricao":"CASE DE LENTES SLR",
@@ -1611,7 +1629,7 @@
     "checado":false
   },
   {
-    "id":180,
+    "id":182,
     "categoria":"CASES",
     "quantidade":1,
     "descricao":"CINTO ASSISTENCIA CENA1",
@@ -1620,7 +1638,7 @@
     "checado":false
   },
   {
-    "id":181,
+    "id":183,
     "categoria":"CASES",
     "quantidade":1,
     "descricao":"BALDE CIRCULAR",
@@ -1629,7 +1647,7 @@
     "checado":false
   },
   {
-    "id":182,
+    "id":184,
     "categoria":"CASES",
     "quantidade":1,
     "descricao":"BALDE ASSISTÊNCIA ",
@@ -1638,7 +1656,7 @@
     "checado":false
   },
   {
-    "id":183,
+    "id":185,
     "categoria":"CASES",
     "quantidade":1,
     "descricao":"CASE DRONE",
