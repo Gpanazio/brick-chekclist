@@ -118,10 +118,13 @@
     @apply bg-background text-foreground;
   }
 }
+/* --- DEBUG: Força visibilidade do botão admin --- */
 button {
   display: inline-block !important;
   visibility: visible !important;
   color: black !important;
-  background: yellow !important;
+  background-color: yellow !important;
   z-index: 9999 !important;
+  border: 2px solid red !important;
 }
+
