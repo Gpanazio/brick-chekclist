@@ -1351,7 +1351,7 @@
   },
   {
     "id": 153,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "BOOM COMICA VM10 PRO (KIT)",
     "estado": "BOM",
@@ -1360,7 +1360,7 @@
   },
   {
     "id": 154,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "BOOM RODE NTG-3 (PRATEADO) ",
     "estado": "BOM",
@@ -1369,7 +1369,7 @@
   },
   {
     "id": 155,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "BOOM SEINHEISER (KIT)",
     "estado": "BOM",
@@ -1378,7 +1378,7 @@
   },
   {
     "id": 156,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "CABO P2-P2",
     "estado": "",
@@ -1387,7 +1387,7 @@
   },
   {
     "id": 157,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "CABO P2-XLR",
     "estado": "BOM",
@@ -1396,7 +1396,7 @@
   },
   {
     "id": 158,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "CABO XLR MINI - XLR (POCKET)",
     "estado": "",
@@ -1405,7 +1405,7 @@
   },
   {
     "id": 159,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "CABO XLR-XLR",
     "estado": "",
@@ -1414,7 +1414,7 @@
   },
   {
     "id": 160,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "GRAVADOR ZOOM H1",
     "estado": "BOM",
@@ -1423,7 +1423,7 @@
   },
   {
     "id": 161,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "GRAVADOR ZOOM H5",
     "estado": "BOM",
@@ -1432,7 +1432,7 @@
   },
   {
     "id": 162,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "GRAVADOR ZOOM H6",
     "estado": "BOM",
@@ -1441,7 +1441,7 @@
   },
   {
     "id": 163,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "GRAVADOR ZOOM H8",
     "estado": "BOM",
@@ -1450,7 +1450,7 @@
   },
   {
     "id": 164,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "HEADSET ONEODIO PRO ",
     "estado": "BOM",
@@ -1459,7 +1459,7 @@
   },
   {
     "id": 165,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "KIT LAPELA SEINHEISER",
     "estado": "BOM",
@@ -1468,7 +1468,7 @@
   },
   {
     "id": 166,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 2,
     "descricao": "KIT LAPELA SONY",
     "estado": "BOM",
@@ -1477,7 +1477,7 @@
   },
   {
     "id": 167,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "LAPELA HOLLYLAND LARK MAX",
     "estado": "BOM",
@@ -1486,7 +1486,7 @@
   },
   {
     "id": 168,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 2,
     "descricao": "LAPELA HOLLYLAND SEM FIO",
     "estado": "BOM",
@@ -1495,7 +1495,7 @@
   },
   {
     "id": 169,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "SUPORTE BOOM",
     "estado": "BOM",
@@ -1504,7 +1504,7 @@
   },
   {
     "id": 170,
-    "categoria": "TRIPÉS",
+    "categoria": "ÁUDIO",
     "quantidade": 1,
     "descricao": "VARA BOOM",
     "estado": "",
@@ -1513,16 +1513,16 @@
   },
   {
     "id": 171,
-    "categoria": "TRIPÉS",
+    "categoria": "CARREGADORES E FONTES",
     "quantidade": 2,
-    "descricao": "CARREAGADOR DUPLO NP",
+    "descricao": "CARREGADOR DUPLO NP",
     "estado": "BOM",
     "observacoes": "",
     "checado": false
   },
   {
     "id": 172,
-    "categoria": "TRIPÉS",
+    "categoria": "CARREGADORES E FONTES",
     "quantidade": 1,
     "descricao": "CARREGADOR DE PILHA C4",
     "estado": "BOM",
@@ -1531,7 +1531,7 @@
   },
   {
     "id": 173,
-    "categoria": "TRIPÉS",
+    "categoria": "CARREGADORES E FONTES",
     "quantidade": 1,
     "descricao": "CARREGADOR DUPLO VMOUNT - DE MESA",
     "estado": "BOM",
@@ -1540,7 +1540,7 @@
   },
   {
     "id": 174,
-    "categoria": "TRIPÉS",
+    "categoria": "CARREGADORES E FONTES",
     "quantidade": 1,
     "descricao": "CARREGADOR VMOUNT ",
     "estado": "BOM",
@@ -1549,7 +1549,7 @@
   },
   {
     "id": 175,
-    "categoria": "TRIPÉS",
+    "categoria": "CARREGADORES E FONTES",
     "quantidade": 1,
     "descricao": "FONTE POCKET",
     "estado": "BOM",
@@ -1558,7 +1558,7 @@
   },
   {
     "id": 176,
-    "categoria": "TRIPÉS",
+    "categoria": "CARREGADORES E FONTES",
     "quantidade": 3,
     "descricao": "FONTE URSA",
     "estado": "BOM",
@@ -1646,3 +1646,4 @@
     "observacoes": "",
     "checado": false
   }
+]
