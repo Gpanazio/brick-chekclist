@@ -1216,7 +1216,7 @@
   },
   {
     "id": 138,
-    "categoria": "DRONE",
+    "categoria": "GIMBAL E ACESSÓRIOS",
     "quantidade": 1,
     "descricao": "GIMBAL ZHIYUN CRANE 3S",
     "estado": "",
@@ -1225,16 +1225,16 @@
   },
   {
     "id": 139,
-    "categoria": "DRONE",
+    "categoria": "GIMBAL E ACESSÓRIOS",
     "quantidade": 1,
     "descricao": "GIMBAL ZHIYUN CRANE 4",
-    "estado": "",
+    "estado": "BOM",
     "observacoes": "",
     "checado": false
   },
   {
     "id": 140,
-    "categoria": "DRONE",
+    "categoria": "GIMBAL E ACESSÓRIOS",
     "quantidade": 1,
     "descricao": "DUAL HANDLE",
     "estado": "",
@@ -1243,7 +1243,7 @@
   },
   {
     "id": 141,
-    "categoria": "DRONE",
+    "categoria": "GIMBAL E ACESSÓRIOS",
     "quantidade": 1,
     "descricao": "ZHIYUN FOLLOWFOCUS WIFI",
     "estado": "",
@@ -1252,7 +1252,7 @@
   },
   {
     "id": 142,
-    "categoria": "DRONE",
+    "categoria": "GIMBAL E ACESSÓRIOS",
     "quantidade": 1,
     "descricao": "ZHIYUN TRANSMISSOR WIFI",
     "estado": "",
@@ -1261,7 +1261,7 @@
   },
   {
     "id": 143,
-    "categoria": "DRONE",
+    "categoria": "GIMBAL E ACESSÓRIOS",
     "quantidade": 1,
     "descricao": "ZHIYUN BATTERY CASE",
     "estado": "",
@@ -1270,7 +1270,7 @@
   },
   {
     "id": 144,
-    "categoria": "DRONE",
+    "categoria": "GIMBAL E ACESSÓRIOS",
     "quantidade": 1,
     "descricao": "ZHIYUN HANDLE",
     "estado": "",
@@ -1279,7 +1279,7 @@
   },
   {
     "id": 145,
-    "categoria": "DRONE",
+    "categoria": "GIMBAL E ACESSÓRIOS",
     "quantidade": 1,
     "descricao": "ZHIYUN CABLE PACK",
     "estado": "",
