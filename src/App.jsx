@@ -4,11 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.j
 import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
-import { CheckCircle, Circle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2 } from 'lucide-react'
+import { CheckCircle, Circle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Shield } from 'lucide-react'
 import jsPDF from 'jspdf'
 import equipamentosData from './data/equipamentos.json'
 import logoBrick from './assets/02.png'
 import { supabase } from './lib/supabase.js'
+import AdminEquipamentos from './AdminEquipamentos.jsx'
 import './App.css'
 
 function App() {
@@ -120,7 +121,7 @@ function App() {
   // Salvar log no Supabase
   const salvarLogSupabase = async (responsavel, dataJob, equipamentosChecados) => {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('logs')
         .insert([
           {
@@ -443,6 +444,20 @@ function App() {
               <History className="w-4 h-4 mr-2" />
               Histórico
             </Button>
+            <Button
+              variant={abaAtiva === 'admin' ? 'default' : 'outline'}
+              onClick={() => {
+                const senha = prompt('Digite a senha de admin:')
+                if (senha === 'Brick$2016') {
+                  setAbaAtiva('admin')
+                } else {
+                  alert('Senha incorreta!')
+                }
+              }}
+            >
+              <Shield className="w-4 h-4 mr-2" />
+              Admin
+            </Button>
           </div>
         </div>
 
@@ -673,6 +688,11 @@ function App() {
               )}
             </CardContent>
           </Card>
+        )}
+
+        {/* Conteúdo da aba Admin */}
+        {abaAtiva === 'admin' && (
+          <AdminEquipamentos />
         )}
 
         {/* Rodapé */}
