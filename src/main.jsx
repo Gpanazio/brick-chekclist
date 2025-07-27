@@ -7,7 +7,7 @@ import App from './App.jsx'
 
 // 1. Defina a versão atual do seu site aqui.
 //    Toda vez que você fizer uma grande atualização, MUDE ESTE NÚMERO (ex: para '1.0.2').
-const SUA_VERSAO_ATUAL = '1.0.1';
+const SUA_VERSAO_ATUAL = '1.0.2';
 
 // 2. Este código faz a mágica acontecer. Não precisa mexer aqui.
 try {
