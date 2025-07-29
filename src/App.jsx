@@ -8,7 +8,7 @@ import { CheckCircle, Circle, Upload, RotateCcw, FileText, Minus, Plus, History,
 import jsPDF from 'jspdf'
 import equipamentosData from './data/equipamentos.json'
 import logoBrick from './assets/02.png'
-import { supabase } from './lib/supabase.js'
+import { supabase } from '@/lib/supabase.js'
 import './App.css'
 
 function App() {
@@ -120,7 +120,7 @@ function App() {
   // Salvar log no Supabase
   const salvarLogSupabase = async (responsavel, dataJob, equipamentosChecados) => {
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('logs')
         .insert([
           {

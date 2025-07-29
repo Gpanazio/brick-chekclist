@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { supabase } from '../lib/supabase'
 
 const Checklist = ({ equipamentos, modoAdmin, editados, editarCampo }) => {
   // Agrupa equipamentos por categoria
