@@ -527,7 +527,7 @@ function App() {
                           
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <span className={`font-medium ${equipamento.checado ? 'line-through text-gray-500' : ''}`}>
+                              <span className={`font-medium ${equipamento.checado ? 'text-gray-500' : ''}`}>
                                 {equipamento.descricao}
                               </span>
                               {equipamento.checado && (
