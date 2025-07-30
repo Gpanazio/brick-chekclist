@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { CheckCircle, Circle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2 } from 'lucide-react'
+import AdminEquipamentos from './AdminEquipamentos.jsx'
 import jsPDF from 'jspdf'
 import equipamentosData from './data/equipamentos.json'
 import logoBrick from './assets/02.png'
@@ -15,7 +16,7 @@ function App() {
   const [equipamentos, setEquipamentos] = useState([])
   const [filtroCategoria, setFiltroCategoria] = useState("todas")
   const [progresso, setProgresso] = useState({ checados: 0, total: 0 })
-  const [abaAtiva, setAbaAtiva] = useState("checklist") // 'checklist' ou 'logs'
+  const [abaAtiva, setAbaAtiva] = useState("checklist") // 'checklist', 'logs' ou 'admin'
   const [logs, setLogs] = useState([])
   const [carregandoLogs, setCarregandoLogs] = useState(false)
 
@@ -436,15 +437,22 @@ function App() {
               <FileText className="w-4 h-4 mr-2" />
               Checklist
             </Button>
-            <Button
-              variant={abaAtiva === 'logs' ? 'default' : 'outline'}
-              onClick={() => setAbaAtiva('logs')}
-            >
-              <History className="w-4 h-4 mr-2" />
-              Histórico
-            </Button>
-          </div>
+          <Button
+            variant={abaAtiva === 'logs' ? 'default' : 'outline'}
+            onClick={() => setAbaAtiva('logs')}
+          >
+            <History className="w-4 h-4 mr-2" />
+            Histórico
+          </Button>
+          <Button
+            variant={abaAtiva === 'admin' ? 'default' : 'outline'}
+            onClick={() => setAbaAtiva('admin')}
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Admin
+          </Button>
         </div>
+      </div>
 
         {/* Conteúdo da aba Checklist */}
         {abaAtiva === 'checklist' && (
@@ -671,6 +679,15 @@ function App() {
                   ))}
                 </div>
               )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Conteúdo da aba Admin */}
+        {abaAtiva === 'admin' && (
+          <Card>
+            <CardContent>
+              <AdminEquipamentos />
             </CardContent>
           </Card>
         )}
