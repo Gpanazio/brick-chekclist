@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase.js'
+import equipamentosData from './data/equipamentos.json'
 import { Input } from '@/components/ui/input.jsx'
 import { Button, buttonVariants } from '@/components/ui/button.jsx'
 import {
@@ -60,6 +61,14 @@ function AdminEquipamentos() {
   const [selectedId, setSelectedId] = useState('')
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deletePwd, setDeletePwd] = useState('')
+  const [editId, setEditId] = useState('')
+  const [editValues, setEditValues] = useState({
+    categoria: '',
+    descricao: '',
+    quantidade: 1,
+    estado: 'BOM',
+    observacoes: '',
+  })
   const form = useForm({
     resolver: zodResolver(equipamentoSchema),
     defaultValues: {
@@ -76,6 +85,27 @@ function AdminEquipamentos() {
   }, [])
 
   useEffect(() => {
+    if (!editId && equipamentos.length) {
+      setEditId(String(equipamentos[0].id))
+    }
+  }, [equipamentos, editId])
+
+  useEffect(() => {
+    if (editId) {
+      const eq = equipamentos.find((e) => String(e.id) === String(editId))
+      if (eq) {
+        setEditValues({
+          categoria: eq.categoria,
+          descricao: eq.descricao,
+          quantidade: eq.quantidade,
+          estado: eq.estado,
+          observacoes: eq.observacoes || '',
+        })
+      }
+    }
+  }, [editId, equipamentos])
+
+  useEffect(() => {
     if (!selectedId && equipamentos.length) {
       setSelectedId(String(equipamentos[0].id))
     }
@@ -86,8 +116,12 @@ function AdminEquipamentos() {
       .from('equipamentos')
       .select('*')
       .order('id')
-    if (!error) {
+
+    if (!error && data && data.length) {
       setEquipamentos(data)
+    } else {
+      // fallback to local data when supabase is not configured
+      setEquipamentos(equipamentosData)
     }
   }
 
@@ -122,6 +156,20 @@ function AdminEquipamentos() {
     if (!error) {
       carregarEquipamentos()
     }
+  }
+
+  const handleEditChange = (campo, valor) => {
+    setEditValues((prev) => ({ ...prev, [campo]: valor }))
+  }
+
+  const handleUpdateSelectedFromForm = async () => {
+    if (!editId) return
+    const senha = prompt('Digite a senha:')
+    if (senha !== 'Brick$2016') {
+      alert('Senha incorreta')
+      return
+    }
+    await atualizarEquipamento({ id: parseInt(editId), ...editValues })
   }
 
   const handleDeleteSelected = async () => {
@@ -219,6 +267,7 @@ function AdminEquipamentos() {
       <Tabs value={tab} onValueChange={setTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="adicionar">Incluir</TabsTrigger>
+          <TabsTrigger value="alterar">Alterar</TabsTrigger>
           <TabsTrigger value="excluir">Excluir</TabsTrigger>
         </TabsList>
 
@@ -283,6 +332,56 @@ function AdminEquipamentos() {
               <Button type="submit" className="col-span-2">Adicionar</Button>
             </form>
           </Form>
+        </TabsContent>
+
+        <TabsContent value="alterar">
+          <div className="space-y-2">
+            <Select value={editId} onValueChange={setEditId}>
+              <SelectTrigger className="w-[250px]">
+                <SelectValue placeholder="Selecione o equipamento" />
+              </SelectTrigger>
+              <SelectContent>
+                {equipamentos.map((eq) => (
+                  <SelectItem key={eq.id} value={String(eq.id)}>
+                    {eq.descricao}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {editId && (
+              <form onSubmit={(e) => { e.preventDefault(); handleUpdateSelectedFromForm() }} className="grid grid-cols-2 gap-2">
+                <Input
+                  value={editValues.categoria}
+                  onChange={(e) => handleEditChange('categoria', e.target.value)}
+                  placeholder="Categoria"
+                />
+                <Input
+                  value={editValues.descricao}
+                  onChange={(e) => handleEditChange('descricao', e.target.value)}
+                  placeholder="Descrição"
+                />
+                <Input
+                  type="number"
+                  value={editValues.quantidade}
+                  onChange={(e) => handleEditChange('quantidade', parseInt(e.target.value) || 1)}
+                  placeholder="Quantidade"
+                  className="w-20"
+                />
+                <Input
+                  value={editValues.estado}
+                  onChange={(e) => handleEditChange('estado', e.target.value)}
+                  placeholder="Estado"
+                />
+                <Input
+                  value={editValues.observacoes}
+                  onChange={(e) => handleEditChange('observacoes', e.target.value)}
+                  placeholder="Observações"
+                  className="col-span-2"
+                />
+                <Button type="submit" className="col-span-2">Salvar</Button>
+              </form>
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="excluir">
