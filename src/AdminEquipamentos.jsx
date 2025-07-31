@@ -22,6 +22,19 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog.jsx'
 import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from '@/components/ui/tabs.jsx'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select.jsx'
+import {
   Form,
   FormField,
   FormItem,
@@ -43,6 +56,10 @@ const equipamentoSchema = z.object({
 
 function AdminEquipamentos() {
   const [equipamentos, setEquipamentos] = useState([])
+  const [tab, setTab] = useState('adicionar')
+  const [selectedId, setSelectedId] = useState('')
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deletePwd, setDeletePwd] = useState('')
   const form = useForm({
     resolver: zodResolver(equipamentoSchema),
     defaultValues: {
@@ -57,6 +74,12 @@ function AdminEquipamentos() {
   useEffect(() => {
     carregarEquipamentos()
   }, [])
+
+  useEffect(() => {
+    if (equipamentos.length && !selectedId) {
+      setSelectedId(String(equipamentos[0].id))
+    }
+  }, [equipamentos])
 
   const carregarEquipamentos = async () => {
     const { data, error } = await supabase
@@ -101,6 +124,17 @@ function AdminEquipamentos() {
     }
   }
 
+  const handleDeleteSelected = async () => {
+    if (!selectedId) return
+    if (deletePwd !== 'Brick$2016') {
+      alert('Senha incorreta')
+      return
+    }
+    await deletarEquipamento(parseInt(selectedId))
+    setDeletePwd('')
+    setDeleteOpen(false)
+  }
+
   const atualizarLocal = (id, campo, valor) => {
     setEquipamentos(prev => prev.map(eq => (eq.id === id ? { ...eq, [campo]: valor } : eq)))
   }
@@ -108,8 +142,6 @@ function AdminEquipamentos() {
   const EquipmentRow = ({ equip }) => {
     const [updateOpen, setUpdateOpen] = useState(false)
     const [updatePwd, setUpdatePwd] = useState('')
-    const [deleteOpen, setDeleteOpen] = useState(false)
-    const [deletePwd, setDeletePwd] = useState('')
 
     const handleUpdate = async () => {
       if (updatePwd !== 'Brick$2016') {
@@ -118,15 +150,6 @@ function AdminEquipamentos() {
       }
       await atualizarEquipamento(equip)
       setUpdateOpen(false)
-    }
-
-    const handleDelete = async () => {
-      if (deletePwd !== 'Brick$2016') {
-        alert('Senha incorreta')
-        return
-      }
-      await deletarEquipamento(equip.id)
-      setDeleteOpen(false)
     }
 
     return (
@@ -184,22 +207,6 @@ function AdminEquipamentos() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <AlertDialog open={deleteOpen} onOpenChange={(o) => { setDeleteOpen(o); if (!o) setDeletePwd('') }}>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm">Excluir</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-                <AlertDialogDescription>Digite a senha para excluir o equipamento.</AlertDialogDescription>
-              </AlertDialogHeader>
-              <Input type="password" value={deletePwd} onChange={(e) => setDeletePwd(e.target.value)} placeholder="Senha" />
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction className={buttonVariants({ variant: 'destructive' })} onClick={handleDelete}>Excluir</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
         </TableCell>
       </TableRow>
     )
@@ -209,84 +216,128 @@ function AdminEquipamentos() {
     <div className="space-y-4 p-4">
       <h2 className="text-xl font-bold">Administração de Equipamentos</h2>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(salvarNovo)} className="grid grid-cols-2 gap-2">
-          <FormField
-            name="categoria"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="Categoria" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="descricao"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="Descrição" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="quantidade"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input type="number" placeholder="Quantidade" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="estado"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="Estado" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            name="observacoes"
-            render={({ field }) => (
-              <FormItem className="col-span-2">
-                <FormControl>
-                  <Input placeholder="Observações" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="col-span-2">Adicionar</Button>
-        </form>
-      </Form>
+      <Tabs value={tab} onValueChange={setTab} className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="adicionar">Incluir</TabsTrigger>
+          <TabsTrigger value="excluir">Excluir</TabsTrigger>
+          <TabsTrigger value="alterar">Alterar</TabsTrigger>
+        </TabsList>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Categoria</TableHead>
-            <TableHead>Descrição</TableHead>
-            <TableHead>Qtd.</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Observações</TableHead>
-            <TableHead>Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {equipamentos.map((eq) => (
-            <EquipmentRow key={eq.id} equip={eq} />
-          ))}
-        </TableBody>
-      </Table>
+        <TabsContent value="adicionar">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(salvarNovo)} className="grid grid-cols-2 gap-2">
+              <FormField
+                name="categoria"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Categoria" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="descricao"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Descrição" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="quantidade"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input type="number" placeholder="Quantidade" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="estado"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Estado" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="observacoes"
+                render={({ field }) => (
+                  <FormItem className="col-span-2">
+                    <FormControl>
+                      <Input placeholder="Observações" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="col-span-2">Adicionar</Button>
+            </form>
+          </Form>
+        </TabsContent>
+
+        <TabsContent value="excluir">
+          <div className="flex items-end gap-2">
+            <Select value={selectedId || undefined} onValueChange={setSelectedId}>
+              <SelectTrigger className="w-[250px]">
+                <SelectValue placeholder="Selecione o equipamento" />
+              </SelectTrigger>
+              <SelectContent>
+                {equipamentos.map((eq) => (
+                  <SelectItem key={eq.id} value={String(eq.id)}>
+                    {eq.descricao}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <AlertDialog open={deleteOpen} onOpenChange={(o) => { setDeleteOpen(o); if (!o) setDeletePwd('') }}>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">Excluir</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                  <AlertDialogDescription>Digite a senha para excluir o equipamento.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <Input type="password" value={deletePwd} onChange={(e) => setDeletePwd(e.target.value)} placeholder="Senha" />
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction className={buttonVariants({ variant: 'destructive' })} onClick={handleDeleteSelected}>Excluir</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </TabsContent>
+        <TabsContent value="alterar" className="space-y-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Categoria</TableHead>
+                <TableHead>Descrição</TableHead>
+                <TableHead>Qtd.</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Observações</TableHead>
+                <TableHead>Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {equipamentos.map((eq) => (
+                <EquipmentRow key={eq.id} equip={eq} />
+              ))}
+            </TableBody>
+          </Table>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
