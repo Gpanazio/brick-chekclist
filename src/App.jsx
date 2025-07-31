@@ -15,6 +15,7 @@ import './App.css'
 function App() {
   const [equipamentos, setEquipamentos] = useState([])
   const [filtroCategoria, setFiltroCategoria] = useState("todas")
+  const [filtroTexto, setFiltroTexto] = useState("")
   const [progresso, setProgresso] = useState({ checados: 0, total: 0 })
   const [abaAtiva, setAbaAtiva] = useState("checklist") // 'checklist', 'logs' ou 'admin'
   const [logs, setLogs] = useState([])
@@ -396,10 +397,17 @@ function App() {
   // Obter categorias únicas
   const categorias = [...new Set((equipamentos || []).map(eq => eq.categoria))]
 
-  // Filtrar equipamentos por categoria
-  const equipamentosFiltrados = filtroCategoria === 'todas' 
-    ? equipamentos 
-    : equipamentos.filter(eq => eq.categoria === filtroCategoria)
+  // Filtrar equipamentos por categoria e texto
+  const equipamentosFiltrados = equipamentos.filter(eq => {
+    const categoriaOK =
+      filtroCategoria === 'todas' || eq.categoria === filtroCategoria
+    const texto = filtroTexto.toLowerCase()
+    const textoOK =
+      texto === '' ||
+      eq.descricao.toLowerCase().includes(texto) ||
+      eq.categoria.toLowerCase().includes(texto)
+    return categoriaOK && textoOK
+  })
 
   // Agrupar equipamentos por categoria
   const equipamentosPorCategoria = equipamentosFiltrados.reduce((acc, eq) => {
@@ -483,7 +491,13 @@ function App() {
 
             {/* Filtros por categoria */}
             <Card className="mb-6">
-              <CardContent className="p-4">
+              <CardContent className="p-4 space-y-4">
+                <Input
+                  placeholder="Filtrar por descrição ou categoria"
+                  value={filtroTexto}
+                  onChange={(e) => setFiltroTexto(e.target.value)}
+                  className="max-w-xs"
+                />
                 <div className="flex flex-wrap gap-2">
                   <Button
                     variant={filtroCategoria === 'todas' ? 'default' : 'outline'}
