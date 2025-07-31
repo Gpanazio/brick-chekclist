@@ -1,14 +1,57 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase.js'
+import { Input } from '@/components/ui/input.jsx'
+import { Button, buttonVariants } from '@/components/ui/button.jsx'
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from '@/components/ui/table.jsx'
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from '@/components/ui/alert-dialog.jsx'
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@/components/ui/form.jsx'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+
+const equipamentoSchema = z.object({
+  categoria: z.string().min(1, 'Informe a categoria'),
+  descricao: z.string().min(1, 'Informe a descrição'),
+  quantidade: z.coerce.number().min(1, 'Quantidade mínima 1'),
+  estado: z.string().min(1, 'Informe o estado'),
+  observacoes: z.string().optional(),
+})
 
 function AdminEquipamentos() {
   const [equipamentos, setEquipamentos] = useState([])
-  const [novo, setNovo] = useState({
-    categoria: '',
-    descricao: '',
-    quantidade: 1,
-    estado: 'BOM',
-    observacoes: ''
+  const form = useForm({
+    resolver: zodResolver(equipamentoSchema),
+    defaultValues: {
+      categoria: '',
+      descricao: '',
+      quantidade: 1,
+      estado: 'BOM',
+      observacoes: '',
+    },
   })
 
   useEffect(() => {
@@ -25,19 +68,17 @@ function AdminEquipamentos() {
     }
   }
 
-  const salvarNovo = async () => {
+  const salvarNovo = async (values) => {
     const senha = prompt('Digite a senha:')
     if (senha !== 'Brick$2016') return alert('Senha incorreta')
-    const { error } = await supabase.from('equipamentos').insert([novo])
+    const { error } = await supabase.from('equipamentos').insert([values])
     if (!error) {
-      setNovo({ categoria: '', descricao: '', quantidade: 1, estado: 'BOM', observacoes: '' })
+      form.reset()
       carregarEquipamentos()
     }
   }
 
   const atualizarEquipamento = async (equip) => {
-    const senha = prompt('Digite a senha:')
-    if (senha !== 'Brick$2016') return alert('Senha incorreta')
     const { error } = await supabase
       .from('equipamentos')
       .update({
@@ -45,7 +86,7 @@ function AdminEquipamentos() {
         descricao: equip.descricao,
         quantidade: equip.quantidade,
         estado: equip.estado,
-        observacoes: equip.observacoes
+        observacoes: equip.observacoes,
       })
       .eq('id', equip.id)
     if (!error) {
@@ -54,8 +95,6 @@ function AdminEquipamentos() {
   }
 
   const deletarEquipamento = async (id) => {
-    const senha = prompt('Digite a senha:')
-    if (senha !== 'Brick$2016') return alert('Senha incorreta')
     const { error } = await supabase.from('equipamentos').delete().eq('id', id)
     if (!error) {
       carregarEquipamentos()
@@ -66,112 +105,188 @@ function AdminEquipamentos() {
     setEquipamentos(prev => prev.map(eq => (eq.id === id ? { ...eq, [campo]: valor } : eq)))
   }
 
+  const EquipmentRow = ({ equip }) => {
+    const [updateOpen, setUpdateOpen] = useState(false)
+    const [updatePwd, setUpdatePwd] = useState('')
+    const [deleteOpen, setDeleteOpen] = useState(false)
+    const [deletePwd, setDeletePwd] = useState('')
+
+    const handleUpdate = async () => {
+      if (updatePwd !== 'Brick$2016') {
+        alert('Senha incorreta')
+        return
+      }
+      await atualizarEquipamento(equip)
+      setUpdateOpen(false)
+    }
+
+    const handleDelete = async () => {
+      if (deletePwd !== 'Brick$2016') {
+        alert('Senha incorreta')
+        return
+      }
+      await deletarEquipamento(equip.id)
+      setDeleteOpen(false)
+    }
+
+    return (
+      <TableRow key={equip.id} className="odd:bg-gray-50">
+        <TableCell>
+          <Input
+            className="w-full"
+            value={equip.categoria}
+            onChange={(e) => atualizarLocal(equip.id, 'categoria', e.target.value)}
+          />
+        </TableCell>
+        <TableCell>
+          <Input
+            className="w-full"
+            value={equip.descricao}
+            onChange={(e) => atualizarLocal(equip.id, 'descricao', e.target.value)}
+          />
+        </TableCell>
+        <TableCell>
+          <Input
+            type="number"
+            className="w-16"
+            value={equip.quantidade}
+            onChange={(e) => atualizarLocal(equip.id, 'quantidade', parseInt(e.target.value) || 1)}
+          />
+        </TableCell>
+        <TableCell>
+          <Input
+            className="w-full"
+            value={equip.estado}
+            onChange={(e) => atualizarLocal(equip.id, 'estado', e.target.value)}
+          />
+        </TableCell>
+        <TableCell>
+          <Input
+            className="w-full"
+            value={equip.observacoes || ''}
+            onChange={(e) => atualizarLocal(equip.id, 'observacoes', e.target.value)}
+          />
+        </TableCell>
+        <TableCell className="space-x-2">
+          <AlertDialog open={updateOpen} onOpenChange={(o) => { setUpdateOpen(o); if (!o) setUpdatePwd('') }}>
+            <AlertDialogTrigger asChild>
+              <Button size="sm">Salvar</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirmar atualização</AlertDialogTitle>
+                <AlertDialogDescription>Digite a senha para salvar as alterações.</AlertDialogDescription>
+              </AlertDialogHeader>
+              <Input type="password" value={updatePwd} onChange={(e) => setUpdatePwd(e.target.value)} placeholder="Senha" />
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleUpdate}>Confirmar</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <AlertDialog open={deleteOpen} onOpenChange={(o) => { setDeleteOpen(o); if (!o) setDeletePwd('') }}>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm">Excluir</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                <AlertDialogDescription>Digite a senha para excluir o equipamento.</AlertDialogDescription>
+              </AlertDialogHeader>
+              <Input type="password" value={deletePwd} onChange={(e) => setDeletePwd(e.target.value)} placeholder="Senha" />
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction className={buttonVariants({ variant: 'destructive' })} onClick={handleDelete}>Excluir</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </TableCell>
+      </TableRow>
+    )
+  }
+
   return (
     <div className="space-y-4 p-4">
       <h2 className="text-xl font-bold">Administração de Equipamentos</h2>
 
-      <div className="grid grid-cols-2 gap-2">
-        <input
-          placeholder="Categoria"
-          value={novo.categoria}
-          onChange={(e) => setNovo({ ...novo, categoria: e.target.value })}
-        />
-        <input
-          placeholder="Descrição"
-          value={novo.descricao}
-          onChange={(e) => setNovo({ ...novo, descricao: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Quantidade"
-          value={novo.quantidade}
-          onChange={(e) => setNovo({ ...novo, quantidade: parseInt(e.target.value) || 1 })}
-        />
-        <input
-          placeholder="Estado"
-          value={novo.estado}
-          onChange={(e) => setNovo({ ...novo, estado: e.target.value })}
-        />
-        <input
-          placeholder="Observações"
-          value={novo.observacoes}
-          onChange={(e) => setNovo({ ...novo, observacoes: e.target.value })}
-        />
-      </div>
-      <button className="bg-blue-600 text-white px-4 py-2 rounded" onClick={salvarNovo}>
-        Adicionar
-      </button>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(salvarNovo)} className="grid grid-cols-2 gap-2">
+          <FormField
+            name="categoria"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input placeholder="Categoria" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="descricao"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input placeholder="Descrição" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="quantidade"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input type="number" placeholder="Quantidade" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="estado"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input placeholder="Estado" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="observacoes"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormControl>
+                  <Input placeholder="Observações" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" className="col-span-2">Adicionar</Button>
+        </form>
+      </Form>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm border">
-          <thead>
-            <tr>
-              <th className="p-2 border">Categoria</th>
-              <th className="p-2 border">Descrição</th>
-              <th className="p-2 border">Qtd.</th>
-              <th className="p-2 border">Estado</th>
-              <th className="p-2 border">Observações</th>
-              <th className="p-2 border">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {equipamentos.map((eq) => (
-              <tr key={eq.id} className="odd:bg-gray-50">
-                <td className="p-1 border">
-                  <input
-                    className="w-full"
-                    value={eq.categoria}
-                    onChange={(e) => atualizarLocal(eq.id, 'categoria', e.target.value)}
-                  />
-                </td>
-                <td className="p-1 border">
-                  <input
-                    className="w-full"
-                    value={eq.descricao}
-                    onChange={(e) => atualizarLocal(eq.id, 'descricao', e.target.value)}
-                  />
-                </td>
-                <td className="p-1 border">
-                  <input
-                    type="number"
-                    className="w-16"
-                    value={eq.quantidade}
-                    onChange={(e) => atualizarLocal(eq.id, 'quantidade', parseInt(e.target.value) || 1)}
-                  />
-                </td>
-                <td className="p-1 border">
-                  <input
-                    className="w-full"
-                    value={eq.estado}
-                    onChange={(e) => atualizarLocal(eq.id, 'estado', e.target.value)}
-                  />
-                </td>
-                <td className="p-1 border">
-                  <input
-                    className="w-full"
-                    value={eq.observacoes || ''}
-                    onChange={(e) => atualizarLocal(eq.id, 'observacoes', e.target.value)}
-                  />
-                </td>
-                <td className="p-1 border space-x-2">
-                  <button
-                    className="bg-green-600 text-white px-2 py-1 rounded"
-                    onClick={() => atualizarEquipamento(eq)}
-                  >
-                    Salvar
-                  </button>
-                  <button
-                    className="bg-red-600 text-white px-2 py-1 rounded"
-                    onClick={() => deletarEquipamento(eq.id)}
-                  >
-                    Excluir
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Categoria</TableHead>
+            <TableHead>Descrição</TableHead>
+            <TableHead>Qtd.</TableHead>
+            <TableHead>Estado</TableHead>
+            <TableHead>Observações</TableHead>
+            <TableHead>Ações</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {equipamentos.map((eq) => (
+            <EquipmentRow key={eq.id} equip={eq} />
+          ))}
+        </TableBody>
+      </Table>
     </div>
   )
 }
