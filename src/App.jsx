@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.j
 import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
-import { CheckCircle, Circle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2 } from 'lucide-react'
+import { CheckCircle, Circle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Search } from 'lucide-react'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
+import QuickSearch from './QuickSearch.jsx'
 import jsPDF from 'jspdf'
 import equipamentosData from './data/equipamentos.json'
 import logoBrick from './assets/02.png'
@@ -20,6 +21,7 @@ function App() {
   const [abaAtiva, setAbaAtiva] = useState("checklist") // 'checklist', 'logs' ou 'admin'
   const [logs, setLogs] = useState([])
   const [carregandoLogs, setCarregandoLogs] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
 
   async function fetchEquipamentos() {
     try {
@@ -448,9 +450,9 @@ function App() {
         {/* Cabeçalho */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">
-            <img 
-              src={logoBrick} 
-              alt="BRICK Logo" 
+            <img
+              src={logoBrick}
+              alt="BRICK Logo"
               className="h-12 w-auto"
             />
             <div>
@@ -458,6 +460,10 @@ function App() {
                 Sistema de Checklist
               </h1>
             </div>
+            <Button variant="outline" size="icon" className="ml-auto" onClick={() => setSearchOpen(true)}>
+              <Search className="w-4 h-4" />
+              <span className="sr-only">Buscar</span>
+            </Button>
           </div>
           
           {/* Navegação por abas */}
@@ -736,6 +742,15 @@ function App() {
           <p>Última atualização: {new Date().toLocaleDateString('pt-BR')}</p>
         </div>
       </div>
+      <QuickSearch
+        open={searchOpen}
+        onOpenChange={setSearchOpen}
+        equipamentos={equipamentos}
+        onSelect={(id) => {
+          alternarEquipamento(id)
+          setSearchOpen(false)
+        }}
+      />
     </div>
   )
 }
