@@ -55,7 +55,7 @@ const equipamentoSchema = z.object({
   observacoes: z.string().optional(),
 })
 
-function AdminEquipamentos() {
+function AdminEquipamentos({ onEquipamentosChanged }) {
   const [equipamentos, setEquipamentos] = useState([])
   const [tab, setTab] = useState('adicionar')
   const [selectedId, setSelectedId] = useState('')
@@ -132,6 +132,7 @@ function AdminEquipamentos() {
     if (!error) {
       form.reset()
       carregarEquipamentos()
+      if (onEquipamentosChanged) onEquipamentosChanged()
     }
   }
 
@@ -148,6 +149,7 @@ function AdminEquipamentos() {
       .eq('id', equip.id)
     if (!error) {
       carregarEquipamentos()
+      if (onEquipamentosChanged) onEquipamentosChanged()
     }
   }
 
@@ -155,6 +157,7 @@ function AdminEquipamentos() {
     const { error } = await supabase.from('equipamentos').delete().eq('id', id)
     if (!error) {
       carregarEquipamentos()
+      if (onEquipamentosChanged) onEquipamentosChanged()
     }
   }
 
