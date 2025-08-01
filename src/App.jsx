@@ -21,21 +21,45 @@ function App() {
   const [logs, setLogs] = useState([])
   const [carregandoLogs, setCarregandoLogs] = useState(false)
 
-  // Carregar dados dos equipamentos
-  useEffect(() => {
-    // Tentar carregar estado salvo do localStorage
-    const estadoSalvo = localStorage.getItem('equipamentos-checklist')
-    if (estadoSalvo) {
-      const equipamentosSalvos = JSON.parse(estadoSalvo)
-      setEquipamentos(equipamentosSalvos)
-    } else {
-      // Adicionar campo quantidadeLevando para itens com quantidade > 1
+  async function fetchEquipamentos() {
+    try {
+      const { data, error } = await supabase
+        .from('equipamentos')
+        .select('*')
+        .order('id')
+
+      let lista
+      if (!error && data && data.length) {
+        lista = data.map(eq => ({
+          ...eq,
+          quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade,
+          checado: false,
+        }))
+      } else {
+        lista = (equipamentosData || []).map(eq => ({
+          ...eq,
+          quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade,
+        }))
+      }
+      setEquipamentos(lista)
+      localStorage.setItem('equipamentos-checklist', JSON.stringify(lista))
+    } catch (error) {
+      console.error('Erro ao carregar equipamentos:', error)
       const equipamentosComQuantidade = (equipamentosData || []).map(eq => ({
         ...eq,
-        quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade
+        quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade,
       }))
       setEquipamentos(equipamentosComQuantidade)
+      localStorage.setItem(
+        'equipamentos-checklist',
+        JSON.stringify(equipamentosComQuantidade)
+      )
     }
+  }
+
+  // Carregar dados dos equipamentos
+  useEffect(() => {
+    fetchEquipamentos()
   }, [])
 
   // Atualizar progresso quando equipamentos mudarem
@@ -701,7 +725,7 @@ function App() {
         {abaAtiva === 'admin' && (
           <Card>
             <CardContent>
-              <AdminEquipamentos />
+              <AdminEquipamentos onEquipamentosChanged={fetchEquipamentos} />
             </CardContent>
           </Card>
         )}
