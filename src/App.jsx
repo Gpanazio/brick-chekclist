@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.j
 import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
-import { CheckCircle, Circle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Search } from 'lucide-react'
+import { CheckCircle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Search } from 'lucide-react'
 import ThemeToggle from './ThemeToggle.jsx'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
@@ -16,8 +16,6 @@ import './App.css'
 
 function App() {
   const [equipamentos, setEquipamentos] = useState([])
-  const [filtroCategoria, setFiltroCategoria] = useState("todas")
-  const [filtroTexto, setFiltroTexto] = useState("")
   const [progresso, setProgresso] = useState({ checados: 0, total: 0 })
   const [abaAtiva, setAbaAtiva] = useState("checklist") // 'checklist', 'logs' ou 'admin'
   const [logs, setLogs] = useState([])
@@ -423,23 +421,8 @@ function App() {
     }
   }
 
-  // Obter categorias únicas
-  const categorias = [...new Set((equipamentos || []).map(eq => eq.categoria))]
-
-  // Filtrar equipamentos por categoria e texto
-  const equipamentosFiltrados = equipamentos.filter(eq => {
-    const categoriaOK =
-      filtroCategoria === 'todas' || eq.categoria === filtroCategoria
-    const texto = filtroTexto.toLowerCase()
-    const textoOK =
-      texto === '' ||
-      eq.descricao.toLowerCase().includes(texto) ||
-      eq.categoria.toLowerCase().includes(texto)
-    return categoriaOK && textoOK
-  })
-
   // Agrupar equipamentos por categoria
-  const equipamentosPorCategoria = equipamentosFiltrados.reduce((acc, eq) => {
+  const equipamentosPorCategoria = equipamentos.reduce((acc, eq) => {
     if (!acc[eq.categoria]) {
       acc[eq.categoria] = []
     }
@@ -535,37 +518,6 @@ function App() {
               ></div>
             </div>
           </div>
-
-            {/* Filtros por categoria */}
-            <Card className="mb-6">
-              <CardContent className="p-4 space-y-4">
-                <Input
-                  placeholder="Filtrar por descrição ou categoria"
-                  value={filtroTexto}
-                  onChange={(e) => setFiltroTexto(e.target.value)}
-                  className="max-w-xs"
-                />
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant={filtroCategoria === 'todas' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setFiltroCategoria('todas')}
-                  >
-                    Todas as Categorias
-                  </Button>
-                  {categorias.map(categoria => (
-                    <Button
-                      key={categoria}
-                      variant={filtroCategoria === categoria ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setFiltroCategoria(categoria)}
-                    >
-                      {categoria}
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
 
             {/* Lista de equipamentos por categoria */}
             <div className="space-y-6">
