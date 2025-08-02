@@ -429,6 +429,9 @@ function App() {
     return acc
   }, {})
 
+  const categorias = Object.keys(equipamentosPorCategoria)
+  const getCategoriaId = (nome) => `cat-${nome.replace(/\s+/g, '-')}`
+
   const logsFiltrados = logs.filter((log) => {
     const data = new Date(log.data_exportacao)
     if (filtroInicio && data < new Date(filtroInicio)) return false
@@ -510,17 +513,40 @@ function App() {
               <span>Itens Checados: {progresso.checados}</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div 
+              <div
                 className="bg-blue-600 h-2.5 rounded-full"
                 style={{ width: `${(progresso.checados / progresso.total) * 100}%` }}
               ></div>
             </div>
           </div>
 
-            {/* Lista de equipamentos por categoria */}
-            <div className="space-y-6">
-              {Object.entries(equipamentosPorCategoria).map(([categoria, itens]) => (
-                <Card key={categoria} className="overflow-hidden">
+          <Card className="mb-6">
+            <CardContent className="flex flex-wrap gap-2 p-4">
+              {categorias.map((cat) => (
+                <Badge
+                  key={cat}
+                  variant="secondary"
+                  className="cursor-pointer"
+                  onClick={() =>
+                    document
+                      .getElementById(getCategoriaId(cat))
+                      ?.scrollIntoView({ behavior: 'smooth' })
+                  }
+                >
+                  {cat}
+                </Badge>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Lista de equipamentos por categoria */}
+          <div className="space-y-6">
+            {Object.entries(equipamentosPorCategoria).map(([categoria, itens]) => (
+                <Card
+                  key={categoria}
+                  id={getCategoriaId(categoria)}
+                  className="overflow-hidden"
+                >
                   <CardHeader className="bg-gray-50">
                     <CardTitle className="flex items-center justify-between">
                       <span>{categoria}</span>
