@@ -5,7 +5,6 @@ import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { CheckCircle, Circle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Search } from 'lucide-react'
-import ThemeToggle from './ThemeToggle.jsx'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
 import jsPDF from 'jspdf'
@@ -476,7 +475,6 @@ function App() {
                 Sistema de Checklist
               </h1>
             </div>
-            <ThemeToggle />
             <Button variant="outline" size="icon" onClick={() => setSearchOpen(true)}>
               <Search className="w-4 h-4" />
               <span className="sr-only">Buscar</span>
