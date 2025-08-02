@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { CheckCircle, Circle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Search } from 'lucide-react'
+import ThemeToggle from './ThemeToggle.jsx'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
 import jsPDF from 'jspdf'
@@ -22,6 +23,8 @@ function App() {
   const [logs, setLogs] = useState([])
   const [carregandoLogs, setCarregandoLogs] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [filtroInicio, setFiltroInicio] = useState('')
+  const [filtroFim, setFiltroFim] = useState('')
 
   async function fetchEquipamentos() {
     try {
@@ -444,6 +447,19 @@ function App() {
     return acc
   }, {})
 
+  const logsFiltrados = logs.filter((log) => {
+    const data = new Date(log.data_exportacao)
+    if (filtroInicio && data < new Date(filtroInicio)) return false
+    if (filtroFim && data > new Date(filtroFim)) return false
+    return true
+  })
+
+  const totalLogs = logsFiltrados.length
+  const totalEquipamentosSelecionados = logsFiltrados.reduce(
+    (sum, l) => sum + (l.total_checados || 0),
+    0
+  )
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="max-w-6xl mx-auto">
@@ -460,7 +476,8 @@ function App() {
                 Sistema de Checklist
               </h1>
             </div>
-            <Button variant="outline" size="icon" className="ml-auto" onClick={() => setSearchOpen(true)}>
+            <ThemeToggle />
+            <Button variant="outline" size="icon" onClick={() => setSearchOpen(true)}>
               <Search className="w-4 h-4" />
               <span className="sr-only">Buscar</span>
             </Button>
@@ -656,19 +673,27 @@ function App() {
                   {carregandoLogs ? 'Carregando...' : 'Atualizar'}
                 </Button>
               </CardTitle>
+              <div className="flex items-center gap-2 mt-4">
+                <Input type="date" value={filtroInicio} onChange={(e) => setFiltroInicio(e.target.value)} />
+                <span className="mx-1">-</span>
+                <Input type="date" value={filtroFim} onChange={(e) => setFiltroFim(e.target.value)} />
+              </div>
             </CardHeader>
             <CardContent>
               {carregandoLogs ? (
                 <div className="text-center py-8">
                   <p>Carregando logs...</p>
                 </div>
-              ) : logs.length === 0 ? (
+              ) : logsFiltrados.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500">Nenhum log encontrado</p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {logs.map(log => (
+                  <div className="text-sm text-gray-700">
+                    {totalLogs} registros - {totalEquipamentosSelecionados} equipamentos selecionados
+                  </div>
+                  {logsFiltrados.map(log => (
                     <Card key={log.id} className="border-l-4 border-l-blue-500">
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between">
