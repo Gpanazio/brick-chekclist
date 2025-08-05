@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase.js'
-import equipamentosData from './data/equipamentos.json'
 import { Input } from '@/components/ui/input.jsx'
 import { Button, buttonVariants } from '@/components/ui/button.jsx'
 import {
@@ -117,24 +116,29 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
   }, [equipamentos, selectedId])
 
   const carregarEquipamentos = async () => {
-    const { data, error } = await supabase
-      .from('equipamentos')
-      .select('*')
-      .order('id')
+    try {
+      const { data, error } = await supabase
+        .from('equipamentos')
+        .select('*')
+        .order('id')
 
-    const local = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+      if (error) throw error
 
-    let lista = []
-    if (!error && data && data.length) {
-      lista = [...data, ...local.filter(l => !data.some(d => d.id === l.id))]
-    } else {
-      lista = local.length
-        ? [...local, ...equipamentosData.filter(eq => !local.some(l => l.id === eq.id))]
-        : equipamentosData
+      const lista = data || []
+      setEquipamentos(lista)
+
+      const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+      const cacheHash = JSON.stringify(cache)
+      const dataHash = JSON.stringify(lista)
+
+      if (cacheHash !== dataHash) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(lista))
+        if (cache.length) alert('Lista de equipamentos atualizada')
+      }
+    } catch (err) {
+      console.error('Erro ao carregar equipamentos:', err)
+      alert('Erro ao carregar equipamentos')
     }
-
-    setEquipamentos(lista)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lista))
   }
 
   const salvarNovo = async () => {
