@@ -137,27 +137,41 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
   }
 
   const atualizarEquipamento = async (equip) => {
-    const { error } = await supabase
-      .from('equipamentos')
-      .update({
-        categoria: equip.categoria,
-        descricao: equip.descricao,
-        quantidade: equip.quantidade,
-        estado: equip.estado,
-        observacoes: equip.observacoes,
-      })
-      .eq('id', equip.id)
-    if (!error) {
-      carregarEquipamentos()
+    try {
+      const { error } = await supabase
+        .from('equipamentos')
+        .update({
+          categoria: equip.categoria,
+          descricao: equip.descricao,
+          quantidade: equip.quantidade,
+          estado: equip.estado,
+          observacoes: equip.observacoes,
+        })
+        .eq('id', equip.id)
+      if (error) throw error
+      await carregarEquipamentos()
       if (onEquipamentosChanged) onEquipamentosChanged()
+      return true
+    } catch (error) {
+      console.error('Erro ao atualizar equipamento:', error)
+      alert('Erro ao atualizar equipamento')
+      await carregarEquipamentos()
+      return false
     }
   }
 
   const deletarEquipamento = async (id) => {
-    const { error } = await supabase.from('equipamentos').delete().eq('id', id)
-    if (!error) {
-      carregarEquipamentos()
+    try {
+      const { error } = await supabase.from('equipamentos').delete().eq('id', id)
+      if (error) throw error
+      await carregarEquipamentos()
       if (onEquipamentosChanged) onEquipamentosChanged()
+      return true
+    } catch (error) {
+      console.error('Erro ao excluir equipamento:', error)
+      alert('Erro ao excluir equipamento')
+      await carregarEquipamentos()
+      return false
     }
   }
 
@@ -181,9 +195,11 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       alert('Senha incorreta')
       return
     }
-    await deletarEquipamento(parseInt(selectedId))
-    setDeletePwd('')
-    setDeleteOpen(false)
+    const success = await deletarEquipamento(parseInt(selectedId))
+    if (success) {
+      setDeletePwd('')
+      setDeleteOpen(false)
+    }
   }
 
   const atualizarLocal = (id, campo, valor) => {
@@ -199,8 +215,11 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
         alert('Senha incorreta')
         return
       }
-      await atualizarEquipamento(equip)
-      setUpdateOpen(false)
+      const success = await atualizarEquipamento(equip)
+      if (success) {
+        setUpdateOpen(false)
+        setUpdatePwd('')
+      }
     }
 
     return (
