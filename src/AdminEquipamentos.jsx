@@ -61,6 +61,9 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
   const [selectedId, setSelectedId] = useState('')
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deletePwd, setDeletePwd] = useState('')
+  const [addOpen, setAddOpen] = useState(false)
+  const [addPwd, setAddPwd] = useState('')
+  const [addValues, setAddValues] = useState(null)
   const [editId, setEditId] = useState('')
   const [editValues, setEditValues] = useState({
     categoria: '',
@@ -125,15 +128,25 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
     }
   }
 
-  const salvarNovo = async (values) => {
-    const senha = prompt('Digite a senha:')
-    if (senha !== 'Brick$2016') return alert('Senha incorreta')
-    const { error } = await supabase.from('equipamentos').insert([values])
+  const salvarNovo = async () => {
+    if (addPwd !== 'Brick$2016') {
+      alert('Senha incorreta')
+      return
+    }
+    const { error } = await supabase.from('equipamentos').insert([addValues])
     if (!error) {
       form.reset()
       carregarEquipamentos()
       if (onEquipamentosChanged) onEquipamentosChanged()
     }
+    setAddPwd('')
+    setAddOpen(false)
+    setAddValues(null)
+  }
+
+  const handleAddSubmit = (values) => {
+    setAddValues(values)
+    setAddOpen(true)
   }
 
   const atualizarEquipamento = async (equip) => {
@@ -276,7 +289,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
 
         <TabsContent value="adicionar">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(salvarNovo)} className="grid grid-cols-2 gap-2">
+            <form onSubmit={form.handleSubmit(handleAddSubmit)} className="grid grid-cols-2 gap-2">
               <FormField
                 name="categoria"
                 render={({ field }) => (
@@ -335,6 +348,19 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
               <Button type="submit" className="col-span-2">Adicionar</Button>
             </form>
           </Form>
+          <AlertDialog open={addOpen} onOpenChange={(o) => { setAddOpen(o); if (!o) { setAddPwd(''); setAddValues(null) } }}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirmar inclusão</AlertDialogTitle>
+                <AlertDialogDescription>Digite a senha para adicionar o equipamento.</AlertDialogDescription>
+              </AlertDialogHeader>
+              <Input type="password" value={addPwd} onChange={(e) => setAddPwd(e.target.value)} placeholder="Senha" />
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={salvarNovo}>Confirmar</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </TabsContent>
 
         <TabsContent value="alterar">
