@@ -24,6 +24,7 @@ function App() {
   const [filtroFim, setFiltroFim] = useState('')
 
   async function fetchEquipamentos() {
+    const local = JSON.parse(localStorage.getItem('equipamentos-checklist') || '[]')
     try {
       const { data, error } = await supabase
         .from('equipamentos')
@@ -37,25 +38,25 @@ function App() {
           quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade,
           checado: false,
         }))
+        lista = [...lista, ...local.filter(l => !lista.some(e => e.id === l.id))]
       } else {
-        lista = (equipamentosData || []).map(eq => ({
+        const base = (equipamentosData || []).map(eq => ({
           ...eq,
           quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade,
         }))
+        lista = local.length ? [...local, ...base.filter(b => !local.some(l => l.id === b.id))] : base
       }
       setEquipamentos(lista)
       localStorage.setItem('equipamentos-checklist', JSON.stringify(lista))
     } catch (error) {
       console.error('Erro ao carregar equipamentos:', error)
-      const equipamentosComQuantidade = (equipamentosData || []).map(eq => ({
+      const base = (equipamentosData || []).map(eq => ({
         ...eq,
         quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade,
       }))
-      setEquipamentos(equipamentosComQuantidade)
-      localStorage.setItem(
-        'equipamentos-checklist',
-        JSON.stringify(equipamentosComQuantidade)
-      )
+      const lista = local.length ? [...local, ...base.filter(b => !local.some(l => l.id === b.id))] : base
+      setEquipamentos(lista)
+      localStorage.setItem('equipamentos-checklist', JSON.stringify(lista))
     }
   }
 
