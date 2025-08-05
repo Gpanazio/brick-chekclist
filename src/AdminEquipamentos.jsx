@@ -55,6 +55,8 @@ const equipamentoSchema = z.object({
   observacoes: z.string().optional(),
 })
 
+const STORAGE_KEY = 'equipamentos-admin'
+
 function AdminEquipamentos({ onEquipamentosChanged }) {
   const [equipamentos, setEquipamentos] = useState([])
   const [tab, setTab] = useState('adicionar')
@@ -117,12 +119,19 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       .select('*')
       .order('id')
 
+    const local = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+
+    let lista = []
     if (!error && data && data.length) {
-      setEquipamentos(data)
+      lista = [...data, ...local.filter(l => !data.some(d => d.id === l.id))]
     } else {
-      // fallback to local data when supabase is not configured
-      setEquipamentos(equipamentosData)
+      lista = local.length
+        ? [...local, ...equipamentosData.filter(eq => !local.some(l => l.id === eq.id))]
+        : equipamentosData
     }
+
+    setEquipamentos(lista)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(lista))
   }
 
   const salvarNovo = async (values) => {
