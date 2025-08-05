@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase.js'
+import { sincronizarCacheEquipamentos } from '@/lib/cache.js'
 import { Input } from '@/components/ui/input.jsx'
 import { Button, buttonVariants } from '@/components/ui/button.jsx'
 import {
@@ -85,7 +86,10 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
   })
 
   useEffect(() => {
-    carregarEquipamentos()
+    (async () => {
+      const lista = await carregarEquipamentos()
+      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
+    })()
   }, [])
 
   useEffect(() => {
@@ -126,18 +130,11 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
 
       const lista = data || []
       setEquipamentos(lista)
-
-      const cache = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
-      const cacheHash = JSON.stringify(cache)
-      const dataHash = JSON.stringify(lista)
-
-      if (cacheHash !== dataHash) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(lista))
-        if (cache.length) alert('Lista de equipamentos atualizada')
-      }
+      return lista
     } catch (err) {
       console.error('Erro ao carregar equipamentos:', err)
       alert('Erro ao carregar equipamentos')
+      return null
     }
   }
 
@@ -149,7 +146,8 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
     const { error } = await supabase.from('equipamentos').insert([addValues])
     if (!error) {
       form.reset()
-      carregarEquipamentos()
+      const lista = await carregarEquipamentos()
+      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
       if (onEquipamentosChanged) onEquipamentosChanged()
     }
     setAddPwd('')
@@ -175,13 +173,15 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
         })
         .eq('id', equip.id)
       if (error) throw error
-      await carregarEquipamentos()
+      const lista = await carregarEquipamentos()
+      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
       if (onEquipamentosChanged) onEquipamentosChanged()
       return true
     } catch (error) {
       console.error('Erro ao atualizar equipamento:', error)
       alert('Erro ao atualizar equipamento')
-      await carregarEquipamentos()
+      const lista = await carregarEquipamentos()
+      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
       return false
     }
   }
@@ -190,13 +190,15 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
     try {
       const { error } = await supabase.from('equipamentos').delete().eq('id', id)
       if (error) throw error
-      await carregarEquipamentos()
+      const lista = await carregarEquipamentos()
+      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
       if (onEquipamentosChanged) onEquipamentosChanged()
       return true
     } catch (error) {
       console.error('Erro ao excluir equipamento:', error)
       alert('Erro ao excluir equipamento')
-      await carregarEquipamentos()
+      const lista = await carregarEquipamentos()
+      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
       return false
     }
   }
