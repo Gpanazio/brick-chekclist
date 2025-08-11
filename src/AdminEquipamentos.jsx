@@ -64,6 +64,8 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
   const [selectedId, setSelectedId] = useState('')
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deletePwd, setDeletePwd] = useState('')
+  const [editOpen, setEditOpen] = useState(false)
+  const [editPwd, setEditPwd] = useState('')
   const [addOpen, setAddOpen] = useState(false)
   const [addPwd, setAddPwd] = useState('')
   const [addValues, setAddValues] = useState(null)
@@ -133,14 +135,14 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       return lista
     } catch (err) {
       console.error('Erro ao carregar equipamentos:', err)
-      alert('Erro ao carregar equipamentos')
+      toast.error('Erro ao carregar equipamentos')
       return null
     }
   }
 
   const salvarNovo = async () => {
     if (addPwd !== 'Brick$2016') {
-      alert('Senha incorreta')
+      toast.error('Senha incorreta')
       return
     }
     const { error } = await supabase.from('equipamentos').insert([addValues])
@@ -185,7 +187,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       return true
     } catch (error) {
       console.error('Erro ao atualizar equipamento:', error)
-      alert('Erro ao atualizar equipamento')
+      toast.error('Erro ao atualizar equipamento')
       const lista = await carregarEquipamentos()
       if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
       return false
@@ -202,7 +204,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       return true
     } catch (error) {
       console.error('Erro ao excluir equipamento:', error)
-      alert('Erro ao excluir equipamento')
+      toast.error('Erro ao excluir equipamento')
       const lista = await carregarEquipamentos()
       if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
       return false
@@ -213,20 +215,25 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
     setEditValues((prev) => ({ ...prev, [campo]: valor }))
   }
 
-  const handleUpdateSelectedFromForm = async () => {
+  const handleUpdateSelectedFromForm = () => {
     if (!editId) return
-    const senha = prompt('Digite a senha:')
-    if (senha !== 'Brick$2016') {
-      alert('Senha incorreta')
+    setEditOpen(true)
+  }
+
+  const confirmUpdateSelectedFromForm = async () => {
+    if (editPwd !== 'Brick$2016') {
+      toast.error('Senha incorreta')
       return
     }
     await atualizarEquipamento({ id: parseInt(editId), ...editValues })
+    setEditOpen(false)
+    setEditPwd('')
   }
 
   const handleDeleteSelected = async () => {
     if (!selectedId) return
     if (deletePwd !== 'Brick$2016') {
-      alert('Senha incorreta')
+      toast.error('Senha incorreta')
       return
     }
     const success = await deletarEquipamento(parseInt(selectedId))
@@ -246,7 +253,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
 
     const handleUpdate = async () => {
       if (updatePwd !== 'Brick$2016') {
-        alert('Senha incorreta')
+        toast.error('Senha incorreta')
         return
       }
       const success = await atualizarEquipamento(equip)
@@ -418,37 +425,52 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
               </SelectContent>
             </Select>
             {editId && (
-              <form onSubmit={(e) => { e.preventDefault(); handleUpdateSelectedFromForm() }} className="grid grid-cols-2 gap-2">
-                <Input
-                  value={editValues.categoria}
-                  onChange={(e) => handleEditChange('categoria', e.target.value)}
-                  placeholder="Categoria"
-                />
-                <Input
-                  value={editValues.descricao}
-                  onChange={(e) => handleEditChange('descricao', e.target.value)}
-                  placeholder="Descrição"
-                />
-                <Input
-                  type="number"
-                  value={editValues.quantidade}
-                  onChange={(e) => handleEditChange('quantidade', parseInt(e.target.value) || 1)}
-                  placeholder="Quantidade"
-                  className="w-20"
-                />
-                <Input
-                  value={editValues.estado}
-                  onChange={(e) => handleEditChange('estado', e.target.value)}
-                  placeholder="Estado"
-                />
-                <Input
-                  value={editValues.observacoes}
-                  onChange={(e) => handleEditChange('observacoes', e.target.value)}
-                  placeholder="Observações"
-                  className="col-span-2"
-                />
-                <Button type="submit" className="col-span-2">Salvar</Button>
-              </form>
+              <>
+                <form onSubmit={(e) => { e.preventDefault(); handleUpdateSelectedFromForm() }} className="grid grid-cols-2 gap-2">
+                  <Input
+                    value={editValues.categoria}
+                    onChange={(e) => handleEditChange('categoria', e.target.value)}
+                    placeholder="Categoria"
+                  />
+                  <Input
+                    value={editValues.descricao}
+                    onChange={(e) => handleEditChange('descricao', e.target.value)}
+                    placeholder="Descrição"
+                  />
+                  <Input
+                    type="number"
+                    value={editValues.quantidade}
+                    onChange={(e) => handleEditChange('quantidade', parseInt(e.target.value) || 1)}
+                    placeholder="Quantidade"
+                    className="w-20"
+                  />
+                  <Input
+                    value={editValues.estado}
+                    onChange={(e) => handleEditChange('estado', e.target.value)}
+                    placeholder="Estado"
+                  />
+                  <Input
+                    value={editValues.observacoes}
+                    onChange={(e) => handleEditChange('observacoes', e.target.value)}
+                    placeholder="Observações"
+                    className="col-span-2"
+                  />
+                  <Button type="submit" className="col-span-2">Salvar</Button>
+                </form>
+                <AlertDialog open={editOpen} onOpenChange={(o) => { setEditOpen(o); if (!o) setEditPwd('') }}>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirmar atualização</AlertDialogTitle>
+                      <AlertDialogDescription>Digite a senha para salvar as alterações.</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <Input type="password" value={editPwd} onChange={(e) => setEditPwd(e.target.value)} placeholder="Senha" />
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={confirmUpdateSelectedFromForm}>Confirmar</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
             )}
           </div>
         </TabsContent>

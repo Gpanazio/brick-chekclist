@@ -4,7 +4,27 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.j
 import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog.jsx'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from '@/components/ui/dialog.jsx'
 import { CheckCircle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Search } from 'lucide-react'
+import { toast } from 'sonner'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
 import jsPDF from 'jspdf'
@@ -22,6 +42,13 @@ function App() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [filtroInicio, setFiltroInicio] = useState('')
   const [filtroFim, setFiltroFim] = useState('')
+  const [resetOpen, setResetOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deletePwd, setDeletePwd] = useState('')
+  const [logToDelete, setLogToDelete] = useState(null)
+  const [exportOpen, setExportOpen] = useState(false)
+  const [exportResponsavel, setExportResponsavel] = useState('')
+  const [exportDataJob, setExportDataJob] = useState('')
 
   const carregarEquipamentos = () =>
     fetchEquipamentos({ supabase }).then(setEquipamentos)
@@ -50,15 +77,14 @@ function App() {
 
   // Resetar todos os checkboxes
   const resetarTodos = () => {
-    if (confirm('Tem certeza que deseja desmarcar todos os itens?')) {
-      const equipamentosResetados = equipamentos.map(eq => ({ 
-        ...eq, 
-        checado: false,
-        quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade
-      }))
-      setEquipamentos(equipamentosResetados)
-      salvarAutomaticamente(equipamentosResetados) // Salvamento automático
-    }
+    const equipamentosResetados = equipamentos.map(eq => ({
+      ...eq,
+      checado: false,
+      quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade
+    }))
+    setEquipamentos(equipamentosResetados)
+    salvarAutomaticamente(equipamentosResetados) // Salvamento automático
+    setResetOpen(false)
   }
 
   // Alternar estado de um equipamento
@@ -93,13 +119,13 @@ function App() {
       
       if (error) {
         console.error('Erro ao carregar logs:', error)
-        alert('Erro ao carregar histórico de logs')
+        toast.error('Erro ao carregar histórico de logs')
       } else {
         setLogs(data || [])
       }
     } catch (error) {
       console.error('Erro ao conectar com o Supabase:', error)
-      alert('Erro ao conectar com o banco de dados')
+      toast.error('Erro ao conectar com o banco de dados')
     } finally {
       setCarregandoLogs(false)
     }
@@ -129,42 +155,43 @@ function App() {
       
       if (error) {
         console.error('Erro ao salvar log no Supabase:', error)
-        alert('Erro ao salvar log no banco de dados')
+        toast.error('Erro ao salvar log no banco de dados')
       } else {
         console.log('Log salvo no Supabase com sucesso')
       }
     } catch (error) {
       console.error('Erro ao conectar com o Supabase para salvar log:', error)
-      alert('Erro ao conectar com o banco de dados')
+      toast.error('Erro ao conectar com o banco de dados')
     }
   }
 
   // Deletar log do Supabase (com proteção por senha)
-  const deletarLog = async (logId) => {
-    const senha = prompt('Digite a senha para deletar este log:')
-    if (senha !== 'Brick$2016') {
-      alert('Senha incorreta!')
+  const deletarLog = async () => {
+    if (deletePwd !== 'Brick$2016') {
+      toast.error('Senha incorreta!')
       return
     }
-    
-    if (!confirm('Tem certeza que deseja deletar este log?')) return
-    
+
     try {
       const { error } = await supabase
         .from('logs')
         .delete()
-        .eq('id', logId)
-      
+        .eq('id', logToDelete)
+
       if (error) {
         console.error('Erro ao deletar log:', error)
-        alert('Erro ao deletar log')
+        toast.error('Erro ao deletar log')
       } else {
-        setLogs(logs.filter(log => log.id !== logId))
-        alert('Log deletado com sucesso!')
+        setLogs(logs.filter(log => log.id !== logToDelete))
+        toast.success('Log deletado com sucesso!')
       }
     } catch (error) {
       console.error('Erro ao deletar log:', error)
-      alert('Erro ao conectar com o banco de dados')
+      toast.error('Erro ao conectar com o banco de dados')
+    } finally {
+      setDeletePwd('')
+      setDeleteOpen(false)
+      setLogToDelete(null)
     }
   }
 
@@ -271,23 +298,17 @@ function App() {
   }
 
   // Exportar para PDF (apenas itens selecionados)
-  const exportarPDF = () => {
-    const responsavel = prompt("Nome do Responsável:")
-    if (!responsavel) return
-
-    const dataJob = prompt("Data ou Nome do Job (Ex: 10/06/2025 - Projeto X):")
-    if (!dataJob) return
-
+  const exportarPDF = async (responsavel, dataJob) => {
     // Filtrar apenas equipamentos checados
     const equipamentosChecados = equipamentos.filter(eq => eq.checado)
-    
+
     if (equipamentosChecados.length === 0) {
-      alert("Nenhum item selecionado para exportar!")
-      return
+      toast.error('Nenhum item selecionado para exportar!')
+      return false
     }
 
     // Salvar log no Supabase
-    salvarLogSupabase(responsavel, dataJob, equipamentosChecados)
+    await salvarLogSupabase(responsavel, dataJob, equipamentosChecados)
 
     const pdf = new jsPDF()
     const pageWidth = pdf.internal.pageSize.width
@@ -385,6 +406,8 @@ function App() {
       const nomeArquivo = `checklist-equipamentos-${new Date().toISOString().split("T")[0]}.pdf`
       pdf.save(nomeArquivo)
     }
+
+    return true
   }
 
   // Agrupar equipamentos por categoria
@@ -464,11 +487,11 @@ function App() {
         {abaAtiva === 'checklist' && (
           <>
           <div className="flex gap-2 mb-6">
-            <Button onClick={exportarPDF} variant="outline" size="sm">
+            <Button onClick={() => setExportOpen(true)} variant="outline" size="sm">
               <FileText className="w-4 h-4 mr-2" />
               PDF
             </Button>
-            <Button onClick={resetarTodos} variant="outline" size="sm">
+            <Button onClick={() => setResetOpen(true)} variant="outline" size="sm">
               <RotateCcw className="w-4 h-4 mr-2" />
               Resetar
             </Button>
@@ -679,7 +702,7 @@ function App() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => deletarLog(log.id)}
+                              onClick={() => { setLogToDelete(log.id); setDeleteOpen(true) }}
                               className="text-red-600 hover:text-red-800"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -719,6 +742,65 @@ function App() {
           setSearchOpen(false)
         }}
       />
+
+      <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Desmarcar todos os itens?</AlertDialogTitle>
+            <AlertDialogDescription>Essa ação irá desmarcar todos os equipamentos.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={resetarTodos}>Confirmar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={deleteOpen} onOpenChange={(o) => { setDeleteOpen(o); if (!o) { setDeletePwd(''); setLogToDelete(null) } }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir log</AlertDialogTitle>
+            <AlertDialogDescription>Digite a senha para confirmar a exclusão.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <Input type="password" value={deletePwd} onChange={(e) => setDeletePwd(e.target.value)} placeholder="Senha" />
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={deletarLog}>Confirmar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog open={exportOpen} onOpenChange={(o) => { setExportOpen(o); if (!o) { setExportResponsavel(''); setExportDataJob(''); } }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Exportar PDF</DialogTitle>
+            <DialogDescription>Informe os dados para exportação.</DialogDescription>
+          </DialogHeader>
+          <Input
+            value={exportResponsavel}
+            onChange={(e) => setExportResponsavel(e.target.value)}
+            placeholder="Nome do Responsável"
+          />
+          <Input
+            value={exportDataJob}
+            onChange={(e) => setExportDataJob(e.target.value)}
+            placeholder="Data ou Nome do Job"
+          />
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancelar</Button>
+            </DialogClose>
+            <Button onClick={async () => {
+              const ok = await exportarPDF(exportResponsavel, exportDataJob)
+              if (ok) {
+                setExportOpen(false)
+                setExportResponsavel('')
+                setExportDataJob('')
+              }
+            }}>Exportar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
