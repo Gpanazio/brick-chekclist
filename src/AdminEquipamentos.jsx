@@ -139,7 +139,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
   }
 
   const salvarNovo = async () => {
-    if (addPwd !== 'Brick$2016') {
+    if (addPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
       alert('Senha incorreta')
       return
     }
@@ -216,7 +216,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
   const handleUpdateSelectedFromForm = async () => {
     if (!editId) return
     const senha = prompt('Digite a senha:')
-    if (senha !== 'Brick$2016') {
+    if (senha !== import.meta.env.VITE_ADMIN_PASSWORD) {
       alert('Senha incorreta')
       return
     }
@@ -225,7 +225,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
 
   const handleDeleteSelected = async () => {
     if (!selectedId) return
-    if (deletePwd !== 'Brick$2016') {
+    if (deletePwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
       alert('Senha incorreta')
       return
     }
@@ -245,7 +245,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
     const [updatePwd, setUpdatePwd] = useState('')
 
     const handleUpdate = async () => {
-      if (updatePwd !== 'Brick$2016') {
+      if (updatePwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
         alert('Senha incorreta')
         return
       }

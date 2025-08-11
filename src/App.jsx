@@ -142,7 +142,7 @@ function App() {
   // Deletar log do Supabase (com proteção por senha)
   const deletarLog = async (logId) => {
     const senha = prompt('Digite a senha para deletar este log:')
-    if (senha !== 'Brick$2016') {
+    if (senha !== import.meta.env.VITE_ADMIN_PASSWORD) {
       alert('Senha incorreta!')
       return
     }
