@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button.jsx'
+import { Button, buttonVariants } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -11,6 +11,9 @@ import logoBrick from './assets/02.png'
 import { gerarChecklistPDF } from '@/lib/pdf.js'
 import { supabase } from '@/lib/supabase.js'
 import { fetchEquipamentos } from '@/lib/fetchEquipamentos.js'
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog.jsx'
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog.jsx'
+import { toast } from 'sonner'
 import './App.css'
 
 function App() {
@@ -22,6 +25,13 @@ function App() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [filtroInicio, setFiltroInicio] = useState('')
   const [filtroFim, setFiltroFim] = useState('')
+  const [resetOpen, setResetOpen] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
+  const [responsavel, setResponsavel] = useState('')
+  const [dataJob, setDataJob] = useState('')
+  const [deleteLogOpen, setDeleteLogOpen] = useState(false)
+  const [deleteLogPwd, setDeleteLogPwd] = useState('')
+  const [logSelecionado, setLogSelecionado] = useState(null)
 
   const carregarEquipamentos = () =>
     fetchEquipamentos({ supabase }).then(setEquipamentos)
@@ -50,15 +60,15 @@ function App() {
 
   // Resetar todos os checkboxes
   const resetarTodos = () => {
-    if (confirm('Tem certeza que deseja desmarcar todos os itens?')) {
-      const equipamentosResetados = equipamentos.map(eq => ({ 
-        ...eq, 
-        checado: false,
-        quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade
-      }))
-      setEquipamentos(equipamentosResetados)
-      salvarAutomaticamente(equipamentosResetados) // Salvamento automático
-    }
+    const equipamentosResetados = equipamentos.map(eq => ({
+      ...eq,
+      checado: false,
+      quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade
+    }))
+    setEquipamentos(equipamentosResetados)
+    salvarAutomaticamente(equipamentosResetados)
+    toast('Itens desmarcados')
+    setResetOpen(false)
   }
 
   // Alternar estado de um equipamento
@@ -93,13 +103,13 @@ function App() {
       
       if (error) {
         console.error('Erro ao carregar logs:', error)
-        alert('Erro ao carregar histórico de logs')
+        toast.error('Erro ao carregar histórico de logs')
       } else {
         setLogs(data || [])
       }
     } catch (error) {
       console.error('Erro ao conectar com o Supabase:', error)
-      alert('Erro ao conectar com o banco de dados')
+      toast.error('Erro ao conectar com o banco de dados')
     } finally {
       setCarregandoLogs(false)
     }
@@ -129,42 +139,43 @@ function App() {
       
       if (error) {
         console.error('Erro ao salvar log no Supabase:', error)
-        alert('Erro ao salvar log no banco de dados')
+        toast.error('Erro ao salvar log no banco de dados')
       } else {
         console.log('Log salvo no Supabase com sucesso')
       }
     } catch (error) {
       console.error('Erro ao conectar com o Supabase para salvar log:', error)
-      alert('Erro ao conectar com o banco de dados')
+      toast.error('Erro ao conectar com o banco de dados')
     }
   }
 
   // Deletar log do Supabase (com proteção por senha)
-  const deletarLog = async (logId) => {
-    const senha = prompt('Digite a senha para deletar este log:')
-    if (senha !== import.meta.env.VITE_ADMIN_PASSWORD) {
-      alert('Senha incorreta!')
+  const handleDeleteLog = async () => {
+    if (!logSelecionado) return
+    if (deleteLogPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
+      toast.error('Senha incorreta!')
       return
     }
-    
-    if (!confirm('Tem certeza que deseja deletar este log?')) return
-    
+
     try {
       const { error } = await supabase
         .from('logs')
         .delete()
-        .eq('id', logId)
-      
+        .eq('id', logSelecionado.id)
+
       if (error) {
         console.error('Erro ao deletar log:', error)
-        alert('Erro ao deletar log')
+        toast.error('Erro ao deletar log')
       } else {
-        setLogs(logs.filter(log => log.id !== logId))
-        alert('Log deletado com sucesso!')
+        setLogs(logs.filter(log => log.id !== logSelecionado.id))
+        toast.success('Log deletado com sucesso!')
+        setDeleteLogOpen(false)
+        setDeleteLogPwd('')
+        setLogSelecionado(null)
       }
     } catch (error) {
       console.error('Erro ao deletar log:', error)
-      alert('Erro ao conectar com o banco de dados')
+      toast.error('Erro ao conectar com o banco de dados')
     }
   }
 
@@ -182,15 +193,14 @@ function App() {
 
   // Exportar para PDF (apenas itens selecionados)
   const exportarPDF = () => {
-    const responsavel = prompt('Nome do Responsável:')
-    if (!responsavel) return
-
-    const dataJob = prompt('Data ou Nome do Job (Ex: 10/06/2025 - Projeto X):')
-    if (!dataJob) return
+    if (!responsavel || !dataJob) {
+      toast.error('Preencha todos os campos')
+      return
+    }
 
     const equipamentosChecados = equipamentos.filter(eq => eq.checado)
     if (equipamentosChecados.length === 0) {
-      alert('Nenhum item selecionado para exportar!')
+      toast.error('Nenhum item selecionado para exportar!')
       return
     }
 
@@ -203,6 +213,9 @@ function App() {
       totalChecados: equipamentosChecados.length,
       nomeArquivo: `checklist-equipamentos-${new Date().toISOString().split('T')[0]}.pdf`
     })
+    setExportOpen(false)
+    setResponsavel('')
+    setDataJob('')
   }
 
   // Agrupar equipamentos por categoria
@@ -282,14 +295,48 @@ function App() {
         {abaAtiva === 'checklist' && (
           <>
           <div className="flex gap-2 mb-6">
-            <Button onClick={exportarPDF} variant="outline" size="sm">
-              <FileText className="w-4 h-4 mr-2" />
-              PDF
-            </Button>
-            <Button onClick={resetarTodos} variant="outline" size="sm">
-              <RotateCcw className="w-4 h-4 mr-2" />
-              Resetar
-            </Button>
+            <Dialog open={exportOpen} onOpenChange={(o) => { setExportOpen(o); if (!o) { setResponsavel(''); setDataJob(''); } }}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <FileText className="w-4 h-4 mr-2" />
+                  PDF
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Exportar PDF</DialogTitle>
+                  <DialogDescription>Informe os dados para gerar o PDF.</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-2">
+                  <Input value={responsavel} onChange={(e) => setResponsavel(e.target.value)} placeholder="Responsável" />
+                  <Input value={dataJob} onChange={(e) => setDataJob(e.target.value)} placeholder="Data ou Nome do Job" />
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancelar</Button>
+                  </DialogClose>
+                  <Button onClick={exportarPDF}>Exportar</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  Resetar
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Desmarcar todos?</AlertDialogTitle>
+                  <AlertDialogDescription>Essa ação irá desmarcar todos os itens.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={resetarTodos}>Confirmar</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
 
           {/* Barra de Progresso */}
@@ -497,7 +544,7 @@ function App() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => deletarLog(log.id)}
+                              onClick={() => { setLogSelecionado(log); setDeleteLogOpen(true) }}
                               className="text-red-600 hover:text-red-800"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -528,6 +575,20 @@ function App() {
           <p>Última atualização: {new Date().toLocaleDateString('pt-BR')}</p>
         </div>
       </div>
+      <AlertDialog open={deleteLogOpen} onOpenChange={(o) => { setDeleteLogOpen(o); if (!o) { setDeleteLogPwd(''); setLogSelecionado(null) } }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription>Digite a senha para deletar este log.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <Input type="password" value={deleteLogPwd} onChange={(e) => setDeleteLogPwd(e.target.value)} placeholder="Senha" />
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction className={buttonVariants({ variant: 'destructive' })} onClick={handleDeleteLog}>Excluir</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <QuickSearch
         open={searchOpen}
         onOpenChange={setSearchOpen}

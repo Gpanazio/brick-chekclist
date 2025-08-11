@@ -1,4 +1,5 @@
 import equipamentosData from '../data/equipamentos.json' with { type: 'json' }
+import { toast } from 'sonner'
 
 export function mergeEquipamentos(base = [], local = [], remote = []) {
   const map = new Map()
@@ -51,7 +52,7 @@ export async function fetchEquipamentos({ supabase, storage = globalThis.localSt
       }))
     } catch (err) {
       console.error('Erro ao carregar equipamentos do Supabase:', err)
-      alert('Erro ao carregar equipamentos do servidor. Verificando dados locais.')
+      toast.error('Erro ao carregar equipamentos do servidor. Verificando dados locais.')
     }
   }
 
