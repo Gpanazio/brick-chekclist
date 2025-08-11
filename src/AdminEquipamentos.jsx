@@ -124,12 +124,11 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       const { data, error } = await supabase
         .from('equipamentos')
         .select('*')
-        .order('id')
 
       if (error) throw error
 
       const lista = data || []
-      setEquipamentos(lista)
+      setEquipamentos([...lista].sort((a, b) => a.id - b.id))
       return lista
     } catch (err) {
       console.error('Erro ao carregar equipamentos:', err)
