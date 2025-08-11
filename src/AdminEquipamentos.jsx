@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase.js'
 import { sincronizarCacheEquipamentos } from '@/lib/cache.js'
+import {
+  carregarEquipamentos as carregarEquipamentosApi,
+  salvarNovo as salvarNovoApi,
+  deletarEquipamento as deletarEquipamentoApi,
+} from '@/lib/admin.js'
 import { Input } from '@/components/ui/input.jsx'
 import { Button, buttonVariants } from '@/components/ui/button.jsx'
 import {
@@ -122,14 +127,8 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
 
   const carregarEquipamentos = async () => {
     try {
-      const { data, error } = await supabase
-        .from('equipamentos')
-        .select('*')
-
-      if (error) throw error
-
-      const lista = data || []
-      setEquipamentos([...lista].sort((a, b) => a.id - b.id))
+      const lista = await carregarEquipamentosApi({ supabase })
+      setEquipamentos(lista)
       return lista
     } catch (err) {
       console.error('Erro ao carregar equipamentos:', err)
@@ -143,8 +142,9 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       alert('Senha incorreta')
       return
     }
-    const { error } = await supabase.from('equipamentos').insert([addValues])
-    if (error) {
+    try {
+      await salvarNovoApi({ supabase }, addValues)
+    } catch (error) {
       toast.error('Erro ao adicionar equipamento')
       return
     }
@@ -194,8 +194,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
 
   const deletarEquipamento = async (id) => {
     try {
-      const { error } = await supabase.from('equipamentos').delete().eq('id', id)
-      if (error) throw error
+      await deletarEquipamentoApi({ supabase }, id)
       const lista = await carregarEquipamentos()
       if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
       if (onEquipamentosChanged) onEquipamentosChanged()

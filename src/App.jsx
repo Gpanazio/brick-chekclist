@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input.jsx'
 import { CheckCircle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Search } from 'lucide-react'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
-import jsPDF from 'jspdf'
-import logoBrick from './assets/02.png'
 import { supabase } from '@/lib/supabase.js'
 import { fetchEquipamentos } from '@/lib/fetchEquipamentos.js'
+import { carregarLogs } from '@/lib/logs.js'
+import { gerarPDFDoLog, gerarPDFEquipamentos } from '@/lib/pdf.js'
+import logoBrick from './assets/02.png'
 import './App.css'
 
 function App() {
@@ -83,23 +84,14 @@ function App() {
   }
 
   // Carregar logs do Supabase
-  const carregarLogs = async () => {
+  const carregarLogsSupabase = async () => {
     setCarregandoLogs(true)
     try {
-      const { data, error } = await supabase
-        .from('logs')
-        .select('*')
-        .order('data_exportacao', { ascending: false })
-      
-      if (error) {
-        console.error('Erro ao carregar logs:', error)
-        alert('Erro ao carregar histórico de logs')
-      } else {
-        setLogs(data || [])
-      }
+      const data = await carregarLogs({ supabase })
+      setLogs(data)
     } catch (error) {
-      console.error('Erro ao conectar com o Supabase:', error)
-      alert('Erro ao conectar com o banco de dados')
+      console.error('Erro ao carregar logs:', error)
+      alert('Erro ao carregar histórico de logs')
     } finally {
       setCarregandoLogs(false)
     }
@@ -108,7 +100,7 @@ function App() {
   // Carregar logs quando a aba de logs for ativada
   useEffect(() => {
     if (abaAtiva === 'logs') {
-      carregarLogs()
+      carregarLogsSupabase()
     }
   }, [abaAtiva])
 
@@ -168,108 +160,6 @@ function App() {
     }
   }
 
-  // Gerar PDF a partir de um log existente
-  const gerarPDFDoLog = (log) => {
-    const pdf = new jsPDF()
-    const pageWidth = pdf.internal.pageSize.width
-    const margin = 20
-    let yPosition = margin
-
-    // Adicionar Logo
-    const img = new Image()
-    img.src = logoBrick
-    img.onload = function() {
-      const imgWidth = 30
-      const imgHeight = (this.height * imgWidth) / this.width
-      pdf.addImage(img, 'PNG', margin, yPosition, imgWidth, imgHeight)
-      yPosition += imgHeight + 5
-
-      // Título
-      pdf.setFontSize(18)
-      pdf.setFont("helvetica", "bold")
-      pdf.text("Checklist - Equipamentos Selecionados", margin, yPosition)
-      yPosition += 10
-
-      // Informações do Responsável e Job
-      pdf.setFontSize(10)
-      pdf.setFont("helvetica", "normal")
-      pdf.text(`Responsável: ${log.responsavel}`, margin, yPosition)
-      yPosition += 5
-      pdf.text(`Data/Job: ${log.data_job}`, margin, yPosition)
-      yPosition += 5
-      pdf.text(`Gerado originalmente em: ${new Date(log.data_exportacao).toLocaleString("pt-BR")}`, margin, yPosition)
-      yPosition += 5
-      pdf.text(`PDF regenerado em: ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR")}`, margin, yPosition)
-      yPosition += 15
-
-      // Progresso
-      pdf.text(`Equipamentos selecionados: ${log.total_checados}`, margin, yPosition)
-      yPosition += 10
-
-      // Agrupar equipamentos por categoria
-      const equipamentosPorCategoria = (log.itens_checados || []).reduce((acc, eq) => {
-        if (!acc[eq.categoria]) {
-          acc[eq.categoria] = []
-        }
-        acc[eq.categoria].push(eq)
-        return acc
-      }, {})
-
-      // Iterar por categoria
-      Object.entries(equipamentosPorCategoria).forEach(([categoria, itens]) => {
-        // Verificar se precisa de nova página
-        if (yPosition > 250) {
-          pdf.addPage()
-          yPosition = margin
-        }
-
-        // Título da categoria
-        pdf.setFontSize(14)
-        pdf.setFont("helvetica", "bold")
-        pdf.text(`${categoria} (${itens.length} itens)`, margin, yPosition)
-        yPosition += 10
-
-        // Itens da categoria
-        pdf.setFontSize(9)
-        pdf.setFont("helvetica", "normal")
-        
-        itens.forEach(item => {
-          // Verificar se precisa de nova página
-          if (yPosition > 270) {
-            pdf.addPage()
-            yPosition = margin
-          }
-
-          let texto = `${item.descricao}`
-          
-          // Adicionar informação de quantidade se relevante
-          if (item.quantidade > 1) {
-            texto += ` (Levando: ${item.quantidadeLevando} de ${item.quantidade})`
-          } else {
-            texto += ` (Qtd: ${item.quantidade})`
-          }
-          
-          texto += ` - ${item.estado}`
-          
-          if (item.observacoes) {
-            texto += ` | Obs: ${item.observacoes}`
-          }
-
-          // Quebrar texto se muito longo
-          const linhas = pdf.splitTextToSize(texto, pageWidth - 2 * margin)
-          pdf.text(linhas, margin + 5, yPosition)
-          yPosition += linhas.length * 4
-        })
-        
-        yPosition += 5 // Espaço entre categorias
-      })
-
-      // Salvar PDF
-      const nomeArquivo = `checklist-${log.responsavel.replace(/\s+/g, '-')}-${log.data_job.replace(/\s+/g, '-')}-${new Date().toISOString().split("T")[0]}.pdf`
-      pdf.save(nomeArquivo)
-    }
-  }
-
   // Exportar para PDF (apenas itens selecionados)
   const exportarPDF = () => {
     const responsavel = prompt("Nome do Responsável:")
@@ -289,102 +179,13 @@ function App() {
     // Salvar log no Supabase
     salvarLogSupabase(responsavel, dataJob, equipamentosChecados)
 
-    const pdf = new jsPDF()
-    const pageWidth = pdf.internal.pageSize.width
-    const margin = 20
-    let yPosition = margin
-
-    // Adicionar Logo
-    const img = new Image()
-    img.src = logoBrick
-    img.onload = function() {
-      const imgWidth = 30
-      const imgHeight = (this.height * imgWidth) / this.width
-      pdf.addImage(img, 'PNG', margin, yPosition, imgWidth, imgHeight)
-      yPosition += imgHeight + 5
-
-      // Título
-      pdf.setFontSize(18)
-      pdf.setFont("helvetica", "bold")
-      pdf.text("Checklist - Equipamentos Selecionados", margin, yPosition)
-      yPosition += 10
-
-      // Informações do Responsável e Job
-      pdf.setFontSize(10)
-      pdf.setFont("helvetica", "normal")
-      pdf.text(`Responsável: ${responsavel}`, margin, yPosition)
-      yPosition += 5
-      pdf.text(`Data/Job: ${dataJob}`, margin, yPosition)
-      yPosition += 5
-      pdf.text(`Gerado em: ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR")}`, margin, yPosition)
-      yPosition += 15
-
-      // Progresso
-      pdf.text(`Equipamentos selecionados: ${equipamentosChecados.length}`, margin, yPosition)
-      yPosition += 10
-
-      // Agrupar equipamentos checados por categoria
-      const equipamentosPorCategoria = equipamentosChecados.reduce((acc, eq) => {
-        if (!acc[eq.categoria]) {
-          acc[eq.categoria] = []
-        }
-        acc[eq.categoria].push(eq)
-        return acc
-      }, {})
-
-      // Iterar por categoria
-      Object.entries(equipamentosPorCategoria).forEach(([categoria, itens]) => {
-        // Verificar se precisa de nova página
-        if (yPosition > 250) {
-          pdf.addPage()
-          yPosition = margin
-        }
-
-        // Título da categoria
-        pdf.setFontSize(14)
-        pdf.setFont("helvetica", "bold")
-        pdf.text(`${categoria} (${itens.length} itens)`, margin, yPosition)
-        yPosition += 10
-
-        // Itens da categoria
-        pdf.setFontSize(9)
-        pdf.setFont("helvetica", "normal")
-        
-        itens.forEach(item => {
-          // Verificar se precisa de nova página
-          if (yPosition > 270) {
-            pdf.addPage()
-            yPosition = margin
-          }
-
-          let texto = `${item.descricao}`
-          
-          // Adicionar informação de quantidade se relevante
-          if (item.quantidade > 1) {
-            texto += ` (Levando: ${item.quantidadeLevando} de ${item.quantidade})`
-          } else {
-            texto += ` (Qtd: ${item.quantidade})`
-          }
-          
-          texto += ` - ${item.estado}`
-          
-          if (item.observacoes) {
-            texto += ` | Obs: ${item.observacoes}`
-          }
-
-          // Quebrar texto se muito longo
-          const linhas = pdf.splitTextToSize(texto, pageWidth - 2 * margin)
-          pdf.text(linhas, margin + 5, yPosition)
-          yPosition += linhas.length * 4
-        })
-        
-        yPosition += 5 // Espaço entre categorias
-      })
-
-      // Salvar PDF
-      const nomeArquivo = `checklist-equipamentos-${new Date().toISOString().split("T")[0]}.pdf`
-      pdf.save(nomeArquivo)
-    }
+    gerarPDFEquipamentos(
+      equipamentosChecados,
+      { responsavel, dataJob },
+      undefined,
+      undefined,
+      logoBrick
+    )
   }
 
   // Agrupar equipamentos por categoria
@@ -670,7 +471,7 @@ function App() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => gerarPDFDoLog(log)}
+                              onClick={() => gerarPDFDoLog(log, undefined, undefined, logoBrick)}
                               className="text-blue-600 hover:text-blue-800"
                             >
                               <FileText className="w-4 h-4 mr-1" />
