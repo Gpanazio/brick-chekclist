@@ -8,9 +8,9 @@ import { CheckCircle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2,
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
 import jsPDF from 'jspdf'
-import equipamentosData from './data/equipamentos.json'
 import logoBrick from './assets/02.png'
 import { supabase } from '@/lib/supabase.js'
+import { fetchEquipamentos } from '@/lib/fetchEquipamentos.js'
 import './App.css'
 
 function App() {
@@ -23,73 +23,12 @@ function App() {
   const [filtroInicio, setFiltroInicio] = useState('')
   const [filtroFim, setFiltroFim] = useState('')
 
-  async function fetchEquipamentos() {
-    try {
-      const { data, error } = await supabase
-        .from('equipamentos')
-        .select('*')
-        .order('id')
-
-      if (error) throw error
-
-      const local = JSON.parse(localStorage.getItem('equipamentos-checklist') || '[]')
-
-      const listaSupabase = (data || []).map(eq => ({
-        ...eq,
-        quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade,
-        checado: false,
-      }))
-
-      const lista = listaSupabase.map(eq => {
-        const itemLocal = local.find(l => l.id === eq.id)
-        return itemLocal
-          ? { ...eq, quantidadeLevando: itemLocal.quantidadeLevando, checado: itemLocal.checado }
-          : eq
-      })
-
-      const normalizar = lista =>
-        lista.map(({ id, categoria, quantidade, descricao, estado, observacoes }) => ({
-          id,
-          categoria,
-          quantidade,
-          descricao,
-          estado,
-          observacoes,
-        }))
-
-      const localNormalizado = normalizar(local)
-      const supabaseNormalizado = normalizar(listaSupabase)
-
-      if (JSON.stringify(localNormalizado) !== JSON.stringify(supabaseNormalizado)) {
-        console.warn('Diferença detectada entre cache local e Supabase. Cache local será atualizado.')
-        console.log({ local: localNormalizado, supabase: supabaseNormalizado })
-      }
-
-      localStorage.setItem('equipamentos-checklist', JSON.stringify(lista))
-      setEquipamentos(lista)
-    } catch (error) {
-      console.error('Erro ao carregar equipamentos do Supabase:', error)
-      alert('Erro ao carregar equipamentos do servidor. Verificando dados locais.')
-
-      const local = JSON.parse(localStorage.getItem('equipamentos-checklist') || '[]')
-      if (local.length) {
-        setEquipamentos(local)
-      } else {
-        const base = (equipamentosData || []).map(eq => ({
-          ...eq,
-          quantidadeLevando: eq.quantidade > 1 ? 0 : eq.quantidade,
-          checado: false,
-        }))
-        alert('Nenhum dado local encontrado. Utilizando arquivo interno de equipamentos.')
-        setEquipamentos(base)
-        localStorage.setItem('equipamentos-checklist', JSON.stringify(base))
-      }
-    }
-  }
+  const carregarEquipamentos = () =>
+    fetchEquipamentos({ supabase }).then(setEquipamentos)
 
   // Carregar dados dos equipamentos
   useEffect(() => {
-    fetchEquipamentos()
+    carregarEquipamentos()
   }, [])
 
   // Atualizar progresso quando equipamentos mudarem
@@ -760,7 +699,7 @@ function App() {
         {abaAtiva === 'admin' && (
           <Card>
             <CardContent>
-              <AdminEquipamentos onEquipamentosChanged={fetchEquipamentos} />
+              <AdminEquipamentos onEquipamentosChanged={carregarEquipamentos} />
             </CardContent>
           </Card>
         )}
