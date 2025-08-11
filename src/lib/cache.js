@@ -1,11 +1,10 @@
 export function sincronizarCacheEquipamentos(cacheKey, listaAtual) {
   try {
     const cache = JSON.parse(localStorage.getItem(cacheKey) || '[]')
-    const cacheHash = JSON.stringify(cache)
-    const dataHash = JSON.stringify(listaAtual || [])
+    const data = listaAtual || []
 
-    if (cacheHash !== dataHash) {
-      localStorage.setItem(cacheKey, JSON.stringify(listaAtual))
+    if (!deepEqualById(cache, data)) {
+      localStorage.setItem(cacheKey, JSON.stringify(data))
       if (cache.length) alert('Lista de equipamentos atualizada')
     }
     return true
@@ -14,4 +13,26 @@ export function sincronizarCacheEquipamentos(cacheKey, listaAtual) {
     alert('Erro ao sincronizar cache de equipamentos. Verifique manualmente.')
     return false
   }
+}
+
+function deepEqualById(a, b) {
+  const sortById = (list) =>
+    [...list].sort((x, y) => {
+      if (x.id < y.id) return -1
+      if (x.id > y.id) return 1
+      return 0
+    })
+
+  const sortedA = sortById(a)
+  const sortedB = sortById(b)
+
+  if (sortedA.length !== sortedB.length) return false
+
+  for (let i = 0; i < sortedA.length; i++) {
+    const itemA = sortedA[i]
+    const itemB = sortedB[i]
+    if (JSON.stringify(itemA) !== JSON.stringify(itemB)) return false
+  }
+
+  return true
 }
