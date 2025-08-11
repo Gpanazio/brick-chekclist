@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { ThemeProvider } from './theme-provider.jsx'
+import { Toaster } from '@/components/ui/sonner.jsx'
 
 // --- CÓDIGO PARA VERIFICAR VERSÃO E LIMPAR DADOS ---
 
@@ -36,6 +37,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
       <App />
+      <Toaster />
     </ThemeProvider>
   </StrictMode>,
 )
