@@ -46,6 +46,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { toast } from 'sonner'
 
 const equipamentoSchema = z.object({
   categoria: z.string().min(1, 'Informe a categoria'),
@@ -143,12 +144,15 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       return
     }
     const { error } = await supabase.from('equipamentos').insert([addValues])
-    if (!error) {
-      form.reset()
-      const lista = await carregarEquipamentos()
-      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
-      if (onEquipamentosChanged) onEquipamentosChanged()
+    if (error) {
+      toast.error('Erro ao adicionar equipamento')
+      return
     }
+    toast.success('Equipamento adicionado com sucesso')
+    form.reset()
+    const lista = await carregarEquipamentos()
+    if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
+    if (onEquipamentosChanged) onEquipamentosChanged()
     setAddPwd('')
     setAddOpen(false)
     setAddValues(null)
