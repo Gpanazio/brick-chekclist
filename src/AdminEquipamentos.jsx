@@ -155,7 +155,10 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
   }
 
   const handleAddSubmit = (values) => {
-    setAddValues(values)
+    const nextId = equipamentos.length
+      ? Math.max(...equipamentos.map((e) => e.id)) + 1
+      : 1
+    setAddValues({ ...values, id: nextId })
     setAddOpen(true)
   }
 
