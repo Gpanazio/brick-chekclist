@@ -1,3 +1,5 @@
+import { toast } from 'sonner'
+
 export function sincronizarCacheEquipamentos(cacheKey, listaAtual) {
   try {
     const cache = JSON.parse(localStorage.getItem(cacheKey) || '[]')
@@ -5,12 +7,12 @@ export function sincronizarCacheEquipamentos(cacheKey, listaAtual) {
 
     if (!deepEqualById(cache, data)) {
       localStorage.setItem(cacheKey, JSON.stringify(data))
-      if (cache.length) alert('Lista de equipamentos atualizada')
+      if (cache.length) toast('Lista de equipamentos atualizada')
     }
     return true
   } catch (err) {
     console.error('Erro ao sincronizar cache de equipamentos:', err)
-    alert('Erro ao sincronizar cache de equipamentos. Verifique manualmente.')
+    toast.error('Erro ao sincronizar cache de equipamentos. Verifique manualmente.')
     return false
   }
 }
