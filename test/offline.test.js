@@ -57,3 +57,55 @@ test('merge base and local data when supabase offline', async () => {
   assert(persisted.some((eq) => eq.id === 1), 'persisted base item')
   assert(persisted.some((eq) => eq.id === 999), 'persisted local item')
 })
+
+test('ignores invalid cached JSON and rewrites cache', async () => {
+  const storage = storageFactory({
+    'equipamentos-checklist': 'not json',
+  })
+
+  const remoteItem = {
+    id: 10000,
+    categoria: 'REMOTO',
+    quantidade: 2,
+    descricao: 'REMOTE ITEM',
+    estado: 'BOM',
+    observacoes: '',
+  }
+
+  const supabase = {
+    from() {
+      return {
+        select() {
+          return {
+            order() {
+              return Promise.resolve({ data: [remoteItem], error: null })
+            },
+          }
+        },
+      }
+    },
+  }
+
+  const originalError = console.error
+  const errors = []
+  console.error = (...args) => {
+    errors.push(args)
+  }
+
+  try {
+    const merged = await fetchEquipamentos({ supabase, storage })
+
+    assert(merged.some((eq) => eq.id === 1), 'includes base item')
+    assert(
+      merged.some((eq) => eq.id === remoteItem.id && eq.descricao === remoteItem.descricao),
+      'includes remote item'
+    )
+
+    const persisted = JSON.parse(storage.store['equipamentos-checklist'])
+    assert.deepStrictEqual(persisted, merged)
+  } finally {
+    console.error = originalError
+  }
+
+  assert(errors.length > 0, 'logs error when cache is invalid')
+})

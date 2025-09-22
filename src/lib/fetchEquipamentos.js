@@ -33,7 +33,15 @@ export async function fetchEquipamentos({ supabase, storage = globalThis.localSt
     checado: false,
   }))
 
-  const local = JSON.parse(storage.getItem('equipamentos-checklist') || '[]')
+  let local = []
+  try {
+    const cached = storage.getItem('equipamentos-checklist')
+    local = JSON.parse(cached || '[]')
+  } catch (err) {
+    console.error('Erro ao ler equipamentos do armazenamento local:', err)
+    storage.setItem('equipamentos-checklist', '[]')
+    local = []
+  }
   let remote = []
 
   if (supabase) {
