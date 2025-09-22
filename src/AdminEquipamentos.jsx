@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { supabase } from '@/lib/supabase.js'
 import { sincronizarCacheEquipamentos } from '@/lib/cache.js'
 import { Input } from '@/components/ui/input.jsx'
@@ -87,6 +87,24 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       observacoes: '',
     },
   })
+  const categoriasExistentes = useMemo(() => {
+    const categorias = equipamentos
+      .map((equipamento) => equipamento.categoria)
+      .filter((categoria) => Boolean(categoria))
+    return [...new Set(categorias)].sort((a, b) =>
+      a.localeCompare(b, 'pt-BR', { sensitivity: 'base' })
+    )
+  }, [equipamentos])
+
+  useEffect(() => {
+    const categoriaSelecionada = form.getValues('categoria')
+    if (
+      categoriaSelecionada &&
+      !categoriasExistentes.includes(categoriaSelecionada)
+    ) {
+      form.setValue('categoria', '')
+    }
+  }, [categoriasExistentes, form])
 
   useEffect(() => {
     (async () => {
@@ -341,9 +359,32 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
                 name="categoria"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
-                      <Input placeholder="Categoria" {...field} />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || undefined}
+                      disabled={!categoriasExistentes.length}
+                    >
+                      <FormControl>
+                        <SelectTrigger
+                          className="w-full"
+                          disabled={!categoriasExistentes.length}
+                        >
+                          <SelectValue placeholder="Categoria" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categoriasExistentes.map((categoria) => (
+                          <SelectItem key={categoria} value={categoria}>
+                            {categoria}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {!categoriasExistentes.length && (
+                      <p className="text-sm text-muted-foreground">
+                        Cadastre uma categoria antes de adicionar um equipamento.
+                      </p>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
