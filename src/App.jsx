@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.j
 import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
-import { CheckCircle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Search } from 'lucide-react'
+import { CheckCircle, Upload, RotateCcw, FileText, Minus, Plus, History, Trash2, Search, ArrowUpDown } from 'lucide-react'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
 import logoBrick from './assets/02.png'
@@ -15,6 +15,8 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, Dialo
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog.jsx'
 import { toast } from 'sonner'
 import './App.css'
+
+const ORDEM_CATEGORIAS_STORAGE_KEY = 'ordem-categorias-checklist'
 
 function App() {
   const [equipamentos, setEquipamentos] = useState([])
@@ -32,6 +34,7 @@ function App() {
   const [deleteLogOpen, setDeleteLogOpen] = useState(false)
   const [deleteLogPwd, setDeleteLogPwd] = useState('')
   const [logSelecionado, setLogSelecionado] = useState(null)
+  const [ordemCategorias, setOrdemCategorias] = useState({})
 
   const carregarEquipamentos = () =>
     fetchEquipamentos({ supabase }).then(setEquipamentos)
@@ -39,6 +42,20 @@ function App() {
   // Carregar dados dos equipamentos
   useEffect(() => {
     carregarEquipamentos()
+  }, [])
+
+  useEffect(() => {
+    try {
+      const armazenado = localStorage.getItem(ORDEM_CATEGORIAS_STORAGE_KEY)
+      if (armazenado) {
+        const parsed = JSON.parse(armazenado)
+        if (parsed && typeof parsed === 'object') {
+          setOrdemCategorias(parsed)
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar ordem das categorias:', error)
+    }
   }, [])
 
   // Atualizar progresso quando equipamentos mudarem
@@ -57,6 +74,14 @@ function App() {
   const salvarAutomaticamente = (novosEquipamentos) => {
     localStorage.setItem('equipamentos-checklist', JSON.stringify(novosEquipamentos))
   }
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(ORDEM_CATEGORIAS_STORAGE_KEY, JSON.stringify(ordemCategorias))
+    } catch (error) {
+      console.error('Erro ao salvar ordem das categorias:', error)
+    }
+  }, [ordemCategorias])
 
   // Resetar todos os checkboxes
   const resetarTodos = () => {
@@ -243,6 +268,13 @@ function App() {
     0
   )
 
+  const alternarOrdem = (categoria) => {
+    setOrdemCategorias((ordensAnteriores) => {
+      const proximaOrdem = ordensAnteriores[categoria] === 'asc' ? 'desc' : 'asc'
+      return { ...ordensAnteriores, [categoria]: proximaOrdem }
+    })
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="max-w-6xl mx-auto">
@@ -373,7 +405,16 @@ function App() {
 
           {/* Lista de equipamentos por categoria */}
           <div className="space-y-6">
-            {Object.entries(equipamentosPorCategoria).map(([categoria, itens]) => (
+            {Object.entries(equipamentosPorCategoria).map(([categoria, itens]) => {
+              const ordemAtual = ordemCategorias[categoria] ?? 'asc'
+              const itensOrdenados = [...itens].sort((a, b) => {
+                const descricaoA = a.descricao || ''
+                const descricaoB = b.descricao || ''
+                const comparacao = descricaoA.localeCompare(descricaoB, 'pt-BR', { sensitivity: 'base' })
+                return ordemAtual === 'asc' ? comparacao : -comparacao
+              })
+
+              return (
                 <Card
                   key={categoria}
                   id={getCategoriaId(categoria)}
@@ -381,7 +422,22 @@ function App() {
                 >
                   <CardHeader className="bg-gray-50">
                     <CardTitle className="flex items-center justify-between">
-                      <span>{categoria}</span>
+                      <div className="flex items-center gap-1">
+                        <span>{categoria}</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => alternarOrdem(categoria)}
+                          aria-label={`Alternar ordenação da categoria ${categoria}`}
+                        >
+                          <ArrowUpDown
+                            className={`h-4 w-4 transition-transform ${
+                              ordemAtual === 'desc' ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </Button>
+                      </div>
                       <Badge variant="secondary">
                         {itens.filter(item => item.checado).length}/{itens.length}
                       </Badge>
@@ -389,7 +445,7 @@ function App() {
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className="divide-y">
-                      {itens.map(equipamento => (
+                      {itensOrdenados.map(equipamento => (
                         <div
                           key={equipamento.id}
                           className={`p-4 flex items-center gap-4 hover:bg-gray-50 transition-colors ${
@@ -465,8 +521,9 @@ function App() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
+              )
+            })}
+          </div>
           </>
         )}
 
