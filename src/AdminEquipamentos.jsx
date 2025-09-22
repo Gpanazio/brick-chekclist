@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useId } from 'react'
 import { supabase } from '@/lib/supabase.js'
 import { sincronizarCacheEquipamentos } from '@/lib/cache.js'
 import { Input } from '@/components/ui/input.jsx'
@@ -49,11 +49,11 @@ import { z } from 'zod'
 import { toast } from 'sonner'
 
 const equipamentoSchema = z.object({
-  categoria: z.string().min(1, 'Informe a categoria'),
-  descricao: z.string().min(1, 'Informe a descrição'),
+  categoria: z.string().trim().min(1, 'Informe a categoria'),
+  descricao: z.string().trim().min(1, 'Informe a descrição'),
   quantidade: z.coerce.number().min(1, 'Quantidade mínima 1'),
-  estado: z.string().min(1, 'Informe o estado'),
-  observacoes: z.string().optional(),
+  estado: z.string().trim().min(1, 'Informe o estado'),
+  observacoes: z.string().trim().optional(),
 })
 
 const STORAGE_KEY = 'equipamentos-admin'
@@ -87,6 +87,8 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       observacoes: '',
     },
   })
+  const addCategoriaListId = useId()
+  const editCategoriaListId = useId()
   const categoriasExistentes = useMemo(() => {
     const categorias = equipamentos
       .map((equipamento) => equipamento.categoria)
@@ -95,23 +97,6 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       a.localeCompare(b, 'pt-BR', { sensitivity: 'base' })
     )
   }, [equipamentos])
-  const categoriasParaEdicao = useMemo(() => {
-    if (!editValues.categoria) return categoriasExistentes
-    if (categoriasExistentes.includes(editValues.categoria)) {
-      return categoriasExistentes
-    }
-    return [...categoriasExistentes, editValues.categoria]
-  }, [categoriasExistentes, editValues.categoria])
-
-  useEffect(() => {
-    const categoriaSelecionada = form.getValues('categoria')
-    if (
-      categoriaSelecionada &&
-      !categoriasExistentes.includes(categoriaSelecionada)
-    ) {
-      form.setValue('categoria', '')
-    }
-  }, [categoriasExistentes, form])
 
   useEffect(() => {
     (async () => {
@@ -170,26 +155,66 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       toast.error('Senha incorreta')
       return
     }
-    const { error } = await supabase.from('equipamentos').insert([addValues])
-    if (error) {
-      toast.error('Erro ao adicionar equipamento')
+    if (!addValues) {
+      toast.error('Nenhum equipamento para salvar')
       return
     }
-    toast.success('Equipamento adicionado com sucesso')
-    form.reset()
-    const lista = await carregarEquipamentos()
-    if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
-    if (onEquipamentosChanged) onEquipamentosChanged()
-    setAddPwd('')
-    setAddOpen(false)
-    setAddValues(null)
+    try {
+      const payload = {
+        ...addValues,
+        observacoes:
+          typeof addValues.observacoes === 'string'
+            ? addValues.observacoes
+            : '',
+      }
+      const { data, error } = await supabase
+        .from('equipamentos')
+        .insert([payload])
+        .select()
+
+      if (error) throw error
+
+      const inseridos = data ?? []
+      let listaAtualizada = null
+      if (inseridos.length) {
+        let proximaLista = null
+        setEquipamentos((prev) => {
+          proximaLista = [...prev, ...inseridos].sort((a, b) => a.id - b.id)
+          return proximaLista
+        })
+        listaAtualizada = proximaLista
+      } else {
+        const lista = await carregarEquipamentos()
+        if (lista) {
+          listaAtualizada = lista
+        }
+      }
+
+      if (listaAtualizada) {
+        sincronizarCacheEquipamentos(STORAGE_KEY, listaAtualizada)
+      }
+
+      toast.success('Equipamento adicionado com sucesso')
+      form.reset()
+      if (onEquipamentosChanged) onEquipamentosChanged()
+      setAddPwd('')
+      setAddOpen(false)
+      setAddValues(null)
+    } catch (error) {
+      console.error('Erro ao adicionar equipamento:', error)
+      toast.error('Erro ao adicionar equipamento')
+    }
   }
 
   const handleAddSubmit = (values) => {
-    const nextId = equipamentos.length
-      ? Math.max(...equipamentos.map((e) => e.id)) + 1
-      : 1
-    setAddValues({ ...values, id: nextId })
+    const valoresTratados = {
+      ...values,
+      categoria: values.categoria.trim(),
+      descricao: values.descricao.trim(),
+      estado: values.estado.trim(),
+      observacoes: values.observacoes ? values.observacoes.trim() : '',
+    }
+    setAddValues(valoresTratados)
     setAddOpen(true)
   }
 
@@ -282,6 +307,7 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       }
       return [...categoriasExistentes, equip.categoria]
     }, [categoriasExistentes, equip.categoria])
+    const categoriaListId = useId()
 
     const handleUpdate = async () => {
       if (updatePwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
@@ -298,22 +324,24 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
     return (
       <TableRow key={equip.id} className="odd:bg-gray-50">
         <TableCell>
-          <Select
-            value={equip.categoria || undefined}
-            onValueChange={(value) => atualizarLocal(equip.id, 'categoria', value)}
-            disabled={!categoriaOptions.length}
-          >
-            <SelectTrigger className="w-full" disabled={!categoriaOptions.length}>
-              <SelectValue placeholder="Categoria" />
-            </SelectTrigger>
-            <SelectContent>
-              {categoriaOptions.map((categoria) => (
-                <SelectItem key={categoria} value={categoria}>
-                  {categoria}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col">
+            <Input
+              className="w-full"
+              value={equip.categoria || ''}
+              onChange={(event) =>
+                atualizarLocal(equip.id, 'categoria', event.target.value)
+              }
+              placeholder="Categoria"
+              list={categoriaOptions.length ? categoriaListId : undefined}
+            />
+            {categoriaOptions.length ? (
+              <datalist id={categoriaListId}>
+                {categoriaOptions.map((categoria) => (
+                  <option key={categoria} value={categoria} />
+                ))}
+              </datalist>
+            ) : null}
+          </div>
         </TableCell>
         <TableCell>
           <Input
@@ -384,32 +412,30 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
                 name="categoria"
                 render={({ field }) => (
                   <FormItem>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value || undefined}
-                      disabled={!categoriasExistentes.length}
-                    >
-                      <FormControl>
-                        <SelectTrigger
-                          className="w-full"
-                          disabled={!categoriasExistentes.length}
-                        >
-                          <SelectValue placeholder="Categoria" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {categoriasExistentes.map((categoria) => (
-                          <SelectItem key={categoria} value={categoria}>
-                            {categoria}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {!categoriasExistentes.length && (
+                    <FormControl>
+                      <Input
+                        placeholder="Categoria (digite para criar ou selecionar)"
+                        list={categoriasExistentes.length ? addCategoriaListId : undefined}
+                        {...field}
+                        onChange={(event) => field.onChange(event.target.value)}
+                      />
+                    </FormControl>
+                    {categoriasExistentes.length ? (
+                      <p className="text-xs text-muted-foreground">
+                        Você pode digitar uma nova categoria ou selecionar uma existente.
+                      </p>
+                    ) : (
                       <p className="text-sm text-muted-foreground">
-                        Cadastre uma categoria antes de adicionar um equipamento.
+                        Digite o nome da categoria para cadastrar o primeiro equipamento.
                       </p>
                     )}
+                    {categoriasExistentes.length ? (
+                      <datalist id={addCategoriaListId}>
+                        {categoriasExistentes.map((categoria) => (
+                          <option key={categoria} value={categoria} />
+                        ))}
+                      </datalist>
+                    ) : null}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -492,22 +518,21 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
             </Select>
             {editId && (
               <form onSubmit={(e) => { e.preventDefault(); handleUpdateSelectedFromForm() }} className="grid grid-cols-2 gap-2">
-                <Select
-                  value={editValues.categoria || undefined}
-                  onValueChange={(value) => handleEditChange('categoria', value)}
-                  disabled={!categoriasParaEdicao.length}
-                >
-                  <SelectTrigger className="w-full" disabled={!categoriasParaEdicao.length}>
-                    <SelectValue placeholder="Categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categoriasParaEdicao.map((categoria) => (
-                      <SelectItem key={categoria} value={categoria}>
-                        {categoria}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex flex-col">
+                  <Input
+                    value={editValues.categoria}
+                    onChange={(event) => handleEditChange('categoria', event.target.value)}
+                    placeholder="Categoria (digite para criar ou selecionar)"
+                    list={categoriasExistentes.length ? editCategoriaListId : undefined}
+                  />
+                  {categoriasExistentes.length ? (
+                    <datalist id={editCategoriaListId}>
+                      {categoriasExistentes.map((categoria) => (
+                        <option key={categoria} value={categoria} />
+                      ))}
+                    </datalist>
+                  ) : null}
+                </div>
                 <Input
                   value={editValues.descricao}
                   onChange={(e) => handleEditChange('descricao', e.target.value)}
