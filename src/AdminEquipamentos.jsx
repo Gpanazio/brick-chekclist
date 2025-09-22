@@ -95,6 +95,13 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       a.localeCompare(b, 'pt-BR', { sensitivity: 'base' })
     )
   }, [equipamentos])
+  const categoriasParaEdicao = useMemo(() => {
+    if (!editValues.categoria) return categoriasExistentes
+    if (categoriasExistentes.includes(editValues.categoria)) {
+      return categoriasExistentes
+    }
+    return [...categoriasExistentes, editValues.categoria]
+  }, [categoriasExistentes, editValues.categoria])
 
   useEffect(() => {
     const categoriaSelecionada = form.getValues('categoria')
@@ -265,9 +272,16 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
     setEquipamentos(prev => prev.map(eq => (eq.id === id ? { ...eq, [campo]: valor } : eq)))
   }
 
-  const EquipmentRow = ({ equip }) => {
+  const EquipmentRow = ({ equip, categoriasExistentes }) => {
     const [updateOpen, setUpdateOpen] = useState(false)
     const [updatePwd, setUpdatePwd] = useState('')
+    const categoriaOptions = useMemo(() => {
+      if (!equip.categoria) return categoriasExistentes
+      if (categoriasExistentes.includes(equip.categoria)) {
+        return categoriasExistentes
+      }
+      return [...categoriasExistentes, equip.categoria]
+    }, [categoriasExistentes, equip.categoria])
 
     const handleUpdate = async () => {
       if (updatePwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
@@ -284,11 +298,22 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
     return (
       <TableRow key={equip.id} className="odd:bg-gray-50">
         <TableCell>
-          <Input
-            className="w-full"
-            value={equip.categoria}
-            onChange={(e) => atualizarLocal(equip.id, 'categoria', e.target.value)}
-          />
+          <Select
+            value={equip.categoria || undefined}
+            onValueChange={(value) => atualizarLocal(equip.id, 'categoria', value)}
+            disabled={!categoriaOptions.length}
+          >
+            <SelectTrigger className="w-full" disabled={!categoriaOptions.length}>
+              <SelectValue placeholder="Categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {categoriaOptions.map((categoria) => (
+                <SelectItem key={categoria} value={categoria}>
+                  {categoria}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </TableCell>
         <TableCell>
           <Input
@@ -467,11 +492,22 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
             </Select>
             {editId && (
               <form onSubmit={(e) => { e.preventDefault(); handleUpdateSelectedFromForm() }} className="grid grid-cols-2 gap-2">
-                <Input
-                  value={editValues.categoria}
-                  onChange={(e) => handleEditChange('categoria', e.target.value)}
-                  placeholder="Categoria"
-                />
+                <Select
+                  value={editValues.categoria || undefined}
+                  onValueChange={(value) => handleEditChange('categoria', value)}
+                  disabled={!categoriasParaEdicao.length}
+                >
+                  <SelectTrigger className="w-full" disabled={!categoriasParaEdicao.length}>
+                    <SelectValue placeholder="Categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categoriasParaEdicao.map((categoria) => (
+                      <SelectItem key={categoria} value={categoria}>
+                        {categoria}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Input
                   value={editValues.descricao}
                   onChange={(e) => handleEditChange('descricao', e.target.value)}
@@ -561,7 +597,11 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
         </TableHeader>
         <TableBody>
           {equipamentos.map((eq) => (
-            <EquipmentRow key={eq.id} equip={eq} />
+            <EquipmentRow
+              key={eq.id}
+              equip={eq}
+              categoriasExistentes={categoriasExistentes}
+            />
           ))}
         </TableBody>
       </Table>
