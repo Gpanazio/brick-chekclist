@@ -8,8 +8,8 @@ import { Toaster } from '@/components/ui/sonner.jsx'
 // --- CÓDIGO PARA VERIFICAR VERSÃO E LIMPAR DADOS ---
 
 // 1. Defina a versão atual do seu site aqui.
-//    Toda vez que você fizer uma grande atualização, MUDE ESTE NÚMERO (ex: para '1.0.3').
-const SUA_VERSAO_ATUAL = '1.0.3';
+//    Toda vez que você fizer uma grande atualização, MUDE ESTE NÚMERO.
+const SUA_VERSAO_ATUAL = '1.0.4';
 
 // 2. Este código faz a mágica acontecer. Não precisa mexer aqui.
 try {
