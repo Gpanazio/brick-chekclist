@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.j
 import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
-import { CheckCircle, RotateCcw, FileText, Minus, Plus, History, Trash2, Search, ArrowUpDown, Camera, FileDown } from 'lucide-react'
+import { CheckCircle, RotateCcw, FileText, Minus, Plus, History, Trash2, Search, ArrowUpDown, Camera, FileDown, ChevronDown } from 'lucide-react'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
 import logoBrick from './assets/02.png'
@@ -13,6 +13,7 @@ import { supabase } from '@/lib/supabase.js'
 import { fetchEquipamentos } from '@/lib/fetchEquipamentos.js'
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog.jsx'
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog.jsx'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible.jsx'
 import { toast } from 'sonner'
 import './App.css'
 
@@ -436,101 +437,113 @@ function App() {
                     id={getCategoriaId(categoria)}
                     className="overflow-hidden border-gray-200 shadow-sm scroll-mt-32"
                   >
-                    <CardHeader className="bg-gray-50/80 py-3 px-4 border-b border-gray-100 flex flex-row items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <CardTitle className="text-base font-bold text-gray-800">{categoria}</CardTitle>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 text-gray-400 hover:text-gray-600"
-                          onClick={() => alternarOrdem(categoria)}
-                        >
-                          <ArrowUpDown className={`h-3 w-3 transition-transform ${ordemAtual === 'desc' ? 'rotate-180' : ''}`} />
-                        </Button>
-                      </div>
-                      <Badge variant="secondary" className="bg-white border-gray-200 text-gray-600 font-normal">
-                        {itens.filter(item => item.checado).length} / {itens.length}
-                      </Badge>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                      <div className="divide-y divide-gray-100">
-                        {itensOrdenados.map(equipamento => (
-                          <div
-                            key={equipamento.id}
-                            className={`group p-3 sm:p-4 flex items-start sm:items-center gap-3 transition-all duration-200 ${
-                              equipamento.checado ? 'bg-blue-50/40' : 'hover:bg-gray-50'
-                            }`}
+                    <Collapsible defaultOpen className="group/collapsible">
+                      <CardHeader className="bg-gray-50/80 py-3 px-4 border-b border-gray-100 flex flex-row items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <CardTitle className="text-base font-bold text-gray-800">{categoria}</CardTitle>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 text-gray-400 hover:text-gray-600"
+                            onClick={() => alternarOrdem(categoria)}
                           >
-                            <Checkbox
-                              checked={equipamento.checado}
-                              onCheckedChange={() => alternarEquipamento(equipamento.id)}
-                              className="mt-1 sm:mt-0 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                            />
-                            
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className={`text-sm font-medium leading-tight ${equipamento.checado ? 'text-gray-500 line-through decoration-gray-300' : 'text-gray-900'}`}>
-                                  {equipamento.descricao}
-                                </span>
-                                {equipamento.checado && (
-                                  <CheckCircle className="w-3.5 h-3.5 text-blue-500 animate-in zoom-in spin-in-12 duration-300" />
-                                )}
-                              </div>
-                              
-                              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-1.5 text-xs text-gray-500">
-                                {/* Controle de Quantidade */}
-                                {equipamento.quantidade > 1 ? (
-                                  <div className="flex items-center gap-2 bg-white rounded-md border border-gray-200 px-1.5 py-0.5 shadow-sm">
-                                    <span className="text-[10px] uppercase font-semibold text-gray-400">Levando</span>
-                                    <div className="flex items-center gap-1">
-                                      <button
-                                        className="h-5 w-5 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 disabled:opacity-30"
-                                        onClick={() => alterarQuantidadeLevando(equipamento.id, equipamento.quantidadeLevando - 1)}
-                                        disabled={equipamento.quantidadeLevando <= 0}
-                                      >
-                                        <Minus className="w-3 h-3" />
-                                      </button>
-                                      <span className="font-mono font-medium w-4 text-center text-gray-900">
-                                        {equipamento.quantidadeLevando}
-                                      </span>
-                                      <button
-                                        className="h-5 w-5 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 disabled:opacity-30"
-                                        onClick={() => alterarQuantidadeLevando(equipamento.id, equipamento.quantidadeLevando + 1)}
-                                        disabled={equipamento.quantidadeLevando >= equipamento.quantidade}
-                                      >
-                                        <Plus className="w-3 h-3" />
-                                      </button>
-                                    </div>
-                                    <span className="text-gray-400">/ {equipamento.quantidade}</span>
-                                  </div>
-                                ) : (
-                                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-gray-200 text-gray-500 font-normal">
-                                    Qtd: {equipamento.quantidade}
-                                  </Badge>
-                                )}
-
-                                {/* Estado e Obs */}
-                                <div className="flex items-center gap-2">
-                                  <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ring-1 ring-inset ${
-                                    equipamento.estado === 'BOM' ? 'bg-green-50 text-green-700 ring-green-600/20' : 
-                                    equipamento.estado === 'REGULAR' ? 'bg-yellow-50 text-yellow-800 ring-yellow-600/20' : 
-                                    'bg-red-50 text-red-700 ring-red-600/10'
-                                  }`}>
-                                    {equipamento.estado}
-                                  </span>
-                                  
-                                  {equipamento.observacoes && (
-                                    <span className="text-gray-400 truncate max-w-[150px] sm:max-w-xs" title={equipamento.observacoes}>
-                                      • {equipamento.observacoes}
+                            <ArrowUpDown className={`h-3 w-3 transition-transform ${ordemAtual === 'desc' ? 'rotate-180' : ''}`} />
+                          </Button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="bg-white border-gray-200 text-gray-600 font-normal">
+                            {itens.filter(item => item.checado).length} / {itens.length}
+                          </Badge>
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-white/50">
+                              <ChevronDown className="h-4 w-4 text-gray-500 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                              <span className="sr-only">Toggle</span>
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
+                      </CardHeader>
+                      <CollapsibleContent>
+                        <CardContent className="p-0">
+                          <div className="divide-y divide-gray-100">
+                            {itensOrdenados.map(equipamento => (
+                              <div
+                                key={equipamento.id}
+                                className={`group p-3 sm:p-4 flex items-start sm:items-center gap-3 transition-all duration-200 ${
+                                  equipamento.checado ? 'bg-blue-50/40' : 'hover:bg-gray-50'
+                                }`}
+                              >
+                                <Checkbox
+                                  checked={equipamento.checado}
+                                  onCheckedChange={() => alternarEquipamento(equipamento.id)}
+                                  className="mt-1 sm:mt-0 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                />
+                                
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className={`text-sm font-medium leading-tight ${equipamento.checado ? 'text-gray-500 line-through decoration-gray-300' : 'text-gray-900'}`}>
+                                      {equipamento.descricao}
                                     </span>
-                                  )}
+                                    {equipamento.checado && (
+                                      <CheckCircle className="w-3.5 h-3.5 text-blue-500 animate-in zoom-in spin-in-12 duration-300" />
+                                    )}
+                                  </div>
+                                  
+                                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-1.5 text-xs text-gray-500">
+                                    {/* Controle de Quantidade */}
+                                    {equipamento.quantidade > 1 ? (
+                                      <div className="flex items-center gap-2 bg-white rounded-md border border-gray-200 px-1.5 py-0.5 shadow-sm">
+                                        <span className="text-[10px] uppercase font-semibold text-gray-400">Levando</span>
+                                        <div className="flex items-center gap-1">
+                                          <button
+                                            className="h-5 w-5 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 disabled:opacity-30"
+                                            onClick={() => alterarQuantidadeLevando(equipamento.id, equipamento.quantidadeLevando - 1)}
+                                            disabled={equipamento.quantidadeLevando <= 0}
+                                          >
+                                            <Minus className="w-3 h-3" />
+                                          </button>
+                                          <span className="font-mono font-medium w-4 text-center text-gray-900">
+                                            {equipamento.quantidadeLevando}
+                                          </span>
+                                          <button
+                                            className="h-5 w-5 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 disabled:opacity-30"
+                                            onClick={() => alterarQuantidadeLevando(equipamento.id, equipamento.quantidadeLevando + 1)}
+                                            disabled={equipamento.quantidadeLevando >= equipamento.quantidade}
+                                          >
+                                            <Plus className="w-3 h-3" />
+                                          </button>
+                                        </div>
+                                        <span className="text-gray-400">/ {equipamento.quantidade}</span>
+                                      </div>
+                                    ) : (
+                                      <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-gray-200 text-gray-500 font-normal">
+                                        Qtd: {equipamento.quantidade}
+                                      </Badge>
+                                    )}
+
+                                    {/* Estado e Obs */}
+                                    <div className="flex items-center gap-2">
+                                      <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ring-1 ring-inset ${
+                                        equipamento.estado === 'BOM' ? 'bg-green-50 text-green-700 ring-green-600/20' : 
+                                        equipamento.estado === 'REGULAR' ? 'bg-yellow-50 text-yellow-800 ring-yellow-600/20' : 
+                                        'bg-red-50 text-red-700 ring-red-600/10'
+                                      }`}>
+                                        {equipamento.estado}
+                                      </span>
+                                      
+                                      {equipamento.observacoes && (
+                                        <span className="text-gray-400 truncate max-w-[150px] sm:max-w-xs" title={equipamento.observacoes}>
+                                          • {equipamento.observacoes}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </CardContent>
+                        </CardContent>
+                      </CollapsibleContent>
+                    </Collapsible>
                   </Card>
                 )
               })}
