@@ -140,7 +140,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
     return [...new Set(equipamentos.map(e => e.categoria))].sort()
   }, [equipamentos])
 
-  // Ações de Banco
+  // Ações de Banco (CORRIGIDO)
   const handleSave = async (values) => {
     if (adminPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
       toast.error('Senha incorreta!')
@@ -160,22 +160,24 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
       if (editingItem) {
         const { error: updateError } = await supabase.from('equipamentos').update(payload).eq('id', editingItem.id)
         error = updateError
-        toast.success('Item atualizado!')
       } else {
         const { error: insertError } = await supabase.from('equipamentos').insert([payload])
         error = insertError
-        toast.success('Item criado!')
       }
 
+      // Verifica se houve erro ANTES de mostrar sucesso
       if (error) throw error
 
+      toast.success(editingItem ? 'Item atualizado!' : 'Item criado!')
+      
       await carregarEquipamentos()
       if (onEquipamentosChanged) onEquipamentosChanged()
       fecharModal()
 
     } catch (err) {
-      console.error(err)
-      toast.error('Erro ao salvar no banco.')
+      console.error('Erro Supabase:', err)
+      // Mostra a mensagem real do erro
+      toast.error(`Erro ao salvar: ${err.message || 'Verifique o console'}`)
     }
   }
 
@@ -196,7 +198,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
       setAdminPwd('')
     } catch (err) {
       console.error(err)
-      toast.error('Erro ao excluir item.')
+      toast.error(`Erro ao excluir: ${err.message}`)
     }
   }
 
