@@ -104,12 +104,12 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
 
   // --- SEPARAÇÃO DE DADOS ---
 
-  // 1. Itens em Manutenção (Topo)
+  // 1. Itens em Manutenção
   const itensManutencao = useMemo(() => {
     return equipamentos.filter(eq => eq.estado === 'MANUTENCAO')
   }, [equipamentos])
 
-  // 2. Itens à Venda (Fundo)
+  // 2. Itens à Venda
   const itensVenda = useMemo(() => {
     const termo = searchTerm.toLowerCase()
     return equipamentos.filter(eq => 
@@ -140,7 +140,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
     return [...new Set(equipamentos.map(e => e.categoria))].sort()
   }, [equipamentos])
 
-  // Ações de Banco (CORRIGIDO)
+  // Ações de Banco
   const handleSave = async (values) => {
     if (adminPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
       toast.error('Senha incorreta!')
@@ -165,7 +165,6 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
         error = insertError
       }
 
-      // Verifica se houve erro ANTES de mostrar sucesso
       if (error) throw error
 
       toast.success(editingItem ? 'Item atualizado!' : 'Item criado!')
@@ -176,7 +175,6 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
 
     } catch (err) {
       console.error('Erro Supabase:', err)
-      // Mostra a mensagem real do erro
       toast.error(`Erro ao salvar: ${err.message || 'Verifique o console'}`)
     }
   }
@@ -304,7 +302,27 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
         </Card>
       )}
 
-      {/* 2. LISTA DE ESTOQUE (Principal) */}
+      {/* 2. LISTA A VENDA (Logo abaixo da manutenção) */}
+      {itensVenda.length > 0 && (
+        <Card className="border-blue-200 bg-blue-50/30 overflow-hidden shadow-sm">
+          <CardHeader className="bg-blue-100/50 py-3 px-4 border-b border-blue-200 flex flex-row items-center gap-2">
+            <DollarSign className="w-5 h-5 text-blue-600" />
+            <CardTitle className="text-sm font-bold text-blue-700 uppercase tracking-wider">
+              Equipamentos à Venda
+            </CardTitle>
+            <Badge className="ml-auto bg-blue-600 hover:bg-blue-700 border-none">{itensVenda.length}</Badge>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y divide-blue-200/50">
+              {itensVenda.map(item => (
+                <ItemRow key={item.id} item={item} />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* 3. LISTA DE ESTOQUE (Principal) */}
       <div className="space-y-6">
         {loading ? (
           <div className="text-center py-12">
@@ -338,28 +356,6 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
           ))
         )}
       </div>
-
-      {/* 3. LISTA A VENDA (Fundo) */}
-      {itensVenda.length > 0 && (
-        <div className="pt-8 border-t border-gray-200 mt-8">
-          <Card className="border-blue-200 bg-blue-50/30 overflow-hidden shadow-sm">
-            <CardHeader className="bg-blue-100/50 py-3 px-4 border-b border-blue-200 flex flex-row items-center gap-2">
-              <DollarSign className="w-5 h-5 text-blue-600" />
-              <CardTitle className="text-sm font-bold text-blue-700 uppercase tracking-wider">
-                Equipamentos à Venda
-              </CardTitle>
-              <Badge className="ml-auto bg-blue-600 hover:bg-blue-700 border-none">{itensVenda.length}</Badge>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="divide-y divide-blue-200/50">
-                {itensVenda.map(item => (
-                  <ItemRow key={item.id} item={item} />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
 
       {/* --- MODAIS --- */}
       <EquipamentoFormDialog 
