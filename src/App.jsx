@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input.jsx'
 import { CheckCircle, RotateCcw, FileText, Minus, Plus, History, Trash2, Search, ArrowUpDown, Camera, FileDown, ChevronDown } from 'lucide-react'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
-// IMPORTANTE: Certifique-se de que o arquivo newlogo.png esteja em src/assets/
 import logoBrick from './assets/newlogo.png'
 import { gerarChecklistPDF } from '@/lib/pdf.js'
 import { supabase } from '@/lib/supabase.js'
@@ -255,11 +254,14 @@ function App() {
       <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
           <div className="flex items-center justify-between">
-            {/* Logo sem o texto "CHECKLIST" e com tamanho maior (h-20) */}
             <div className="flex items-center">
-              <img src={logoBrick} alt="Brick" className="h-20 w-auto object-contain" />
+              {/* LOGO AUMENTADO E COM MARGEM NEGATIVA PARA COMPENSAR ESPAÇO */}
+              <img 
+                src={logoBrick} 
+                alt="Brick" 
+                className="h-28 sm:h-36 w-auto object-contain -ml-3 sm:-ml-4" 
+              />
             </div>
-            {/* Espaço para itens futuros no canto direito */}
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <Button variant="outline" className="flex-1 justify-start text-gray-500 bg-gray-50 hover:bg-white border-gray-200 h-10" onClick={() => setSearchOpen(true)}>
@@ -393,7 +395,7 @@ function App() {
                                       <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-gray-200 text-gray-500 font-normal">Qtd: {eq.quantidade}</Badge>
                                     )}
                                     <div className="flex items-center gap-2">
-                                      <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ring-1 ring-inset ${eq.estado === 'BOM' ? 'bg-green-50 text-green-700 ring-green-600/20' : eq.estado === 'REGULAR' ? 'bg-yellow-50 text-yellow-800 ring-yellow-600/20' : eq.estado === 'MANUTENCAO' ? 'bg-red-600 text-white' : 'bg-red-50 text-red-700 ring-red-600/10'}`}>{eq.estado}</span>
+                                      <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ring-1 ring-inset ${eq.estado === 'BOM' ? 'bg-green-50 text-green-700 ring-green-600/20' : eq.estado === 'REGULAR' ? 'bg-yellow-50 text-yellow-800 ring-yellow-600/20' : 'bg-red-50 text-red-700 ring-red-600/10'}`}>{eq.estado}</span>
                                       {eq.observacoes && <span className="text-gray-400 truncate max-w-[150px] sm:max-w-xs" title={eq.observacoes}>• {eq.observacoes}</span>}
                                     </div>
                                   </div>
@@ -456,7 +458,7 @@ function App() {
           </div>
         )}
 
-        <div className="mt-4 mb-6 text-center"><p className="text-xs text-gray-400">Sistema de Checklist Brick • v1.0.4</p></div>
+        <div className="mt-4 mb-6 text-center"><p className="text-xs text-gray-400">Sistema de Checklist Brick • v1.0.5</p></div>
       </div>
 
       <AlertDialog open={deleteLogOpen} onOpenChange={(o) => { setDeleteLogOpen(o); if (!o) { setDeleteLogPwd(''); setLogSelecionado(null) } }}>
