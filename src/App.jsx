@@ -319,7 +319,7 @@ function App() {
                   abaAtiva === 'admin' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
-                <Camera className="w-4 h-4" /> Estoque
+                <Camera className="w-4 h-4" /> ADMIN
               </button>
             </div>
           </div>
