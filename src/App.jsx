@@ -256,11 +256,11 @@ function App() {
         <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              {/* LOGO ATUALIZADO: logochecklist.png, sem margem negativa e com altura ajustada */}
+              {/* LOGO COM TAMANHO REDUZIDO (h-16 mobile / h-24 desktop) */}
               <img 
                 src={logoBrick} 
                 alt="Brick" 
-                className="h-24 sm:h-32 w-auto object-contain" 
+                className="h-16 sm:h-24 w-auto object-contain" 
               />
             </div>
           </div>
