@@ -10,7 +10,7 @@ import {
   Trash2, 
   Plus, 
   Search, 
-  Package, 
+  Package, // Novo ícone sugerido
   Save,
   X
 } from 'lucide-react'
@@ -54,7 +54,7 @@ import {
 } from '@/components/ui/select.jsx'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card.jsx'
 
-// Schema de validação
+// Validação
 const equipamentoSchema = z.object({
   categoria: z.string().trim().min(1, 'Informe a categoria'),
   descricao: z.string().trim().min(1, 'Informe a descrição'),
@@ -70,13 +70,13 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   
-  // Estados para Modais
+  // Controle dos Modais
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
   const [deleteItem, setDeleteItem] = useState(null)
   const [adminPwd, setAdminPwd] = useState('')
 
-  // Carregar dados iniciais
+  // Carregar dados
   useEffect(() => {
     carregarEquipamentos()
   }, [])
@@ -93,6 +93,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
       if (error) throw error
 
       setEquipamentos(data || [])
+      // Atualiza o cache local para o app funcionar offline se precisar
       sincronizarCacheEquipamentos(STORAGE_KEY, data || [])
     } catch (err) {
       console.error('Erro:', err)
@@ -102,7 +103,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
     }
   }
 
-  // Lógica de Agrupamento e Filtro
+  // Agrupamento e Filtro Automático
   const dadosFiltrados = useMemo(() => {
     const termo = searchTerm.toLowerCase()
     const lista = equipamentos.filter(eq => 
@@ -118,20 +119,22 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
     }, {})
   }, [equipamentos, searchTerm])
 
+  // Extrai lista única de categorias para sugestão
   const categoriasDisponiveis = useMemo(() => {
     return [...new Set(equipamentos.map(e => e.categoria))].sort()
   }, [equipamentos])
 
-  // Ações do Banco de Dados
+  // Salvar (Criar ou Editar)
   const handleSave = async (values) => {
+    // Validação da senha hardcoded no .env (1234)
     if (adminPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
-      toast.error('Senha de administrador incorreta!')
+      toast.error('Senha incorreta!')
       return
     }
 
     try {
       const payload = {
-        categoria: values.categoria,
+        categoria: values.categoria.toUpperCase(), // Força maiúscula na categoria
         descricao: values.descricao,
         quantidade: values.quantidade,
         estado: values.estado,
@@ -140,20 +143,20 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
 
       let error
       if (editingItem) {
-        // Atualizar
+        // Update
         const { error: updateError } = await supabase
           .from('equipamentos')
           .update(payload)
           .eq('id', editingItem.id)
         error = updateError
-        toast.success('Equipamento atualizado!')
+        toast.success('Item atualizado!')
       } else {
-        // Criar
+        // Insert
         const { error: insertError } = await supabase
           .from('equipamentos')
           .insert([payload])
         error = insertError
-        toast.success('Equipamento adicionado!')
+        toast.success('Item criado!')
       }
 
       if (error) throw error
@@ -164,13 +167,14 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
 
     } catch (err) {
       console.error(err)
-      toast.error('Erro ao salvar no banco de dados.')
+      toast.error('Erro ao salvar no banco.')
     }
   }
 
+  // Excluir
   const handleDelete = async () => {
     if (adminPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
-      toast.error('Senha de administrador incorreta!')
+      toast.error('Senha incorreta!')
       return
     }
 
@@ -182,7 +186,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
 
       if (error) throw error
 
-      toast.success('Equipamento excluído.')
+      toast.success('Item removido.')
       await carregarEquipamentos()
       if (onEquipamentosChanged) onEquipamentosChanged()
       setDeleteItem(null)
@@ -193,6 +197,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
     }
   }
 
+  // Helpers de Modal
   const abrirModalNovo = () => {
     setEditingItem(null)
     setAdminPwd('')
@@ -212,68 +217,99 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Cabeçalho e Controles */}
+    <div className="space-y-6 max-w-5xl mx-auto pb-20">
+      {/* Topo: Título e Busca */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
         <div>
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
             <Package className="w-6 h-6 text-blue-600" />
-            Admin Equipamentos
+            Gestão de Estoque
           </h2>
-          <p className="text-sm text-gray-500">Gerencie o inventário do sistema</p>
+          <p className="text-sm text-gray-500">Adicione ou remova itens do checklist.</p>
         </div>
         
         <div className="flex gap-2 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Buscar equipamento..."
-              className="pl-9"
+              placeholder="Buscar item ou categoria..."
+              className="pl-9 bg-gray-50"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button onClick={abrirModalNovo} className="gap-2">
+          <Button onClick={abrirModalNovo} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
             <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Novo Item</span>
           </Button>
         </div>
       </div>
 
-      {/* Lista de Equipamentos (Agrupada) */}
+      {/* Lista de Itens */}
       <div className="space-y-6">
         {loading ? (
-          <p className="text-center text-gray-500 py-10">Carregando inventário...</p>
+          <div className="text-center py-12">
+            <Package className="w-12 h-12 text-gray-300 mx-auto animate-pulse mb-4" />
+            <p className="text-gray-500">Carregando inventário...</p>
+          </div>
         ) : Object.keys(dadosFiltrados).length === 0 ? (
-          <div className="text-center py-10 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-            <p className="text-gray-500">Nenhum equipamento encontrado.</p>
-            <Button variant="link" onClick={abrirModalNovo}>Adicionar o primeiro</Button>
+          <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+            <p className="text-gray-500 mb-2">Nenhum equipamento encontrado.</p>
+            <Button variant="link" onClick={abrirModalNovo}>Adicionar o primeiro item</Button>
           </div>
         ) : (
           Object.entries(dadosFiltrados).map(([categoria, itens]) => (
-            <Card key={categoria} className="overflow-hidden">
-              <CardHeader className="bg-gray-50/50 py-3 px-4 border-b">
-                <CardTitle className="text-sm font-bold text-gray-700 uppercase tracking-wider flex justify-between">
+            <Card key={categoria} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <CardHeader className="bg-gray-50/80 py-3 px-4 border-b flex flex-row items-center justify-between">
+                <CardTitle className="text-sm font-bold text-gray-700 uppercase tracking-wider">
                   {categoria}
-                  <Badge variant="secondary" className="ml-2">{itens.length}</Badge>
                 </CardTitle>
+                <Badge variant="secondary" className="bg-white text-gray-600 border-gray-200">
+                  {itens.length} itens
+                </Badge>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="divide-y divide-gray-100">
                   {itens.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors group">
+                    <div key={item.id} className="flex items-center justify-between p-3 hover:bg-blue-50/30 transition-colors group">
+                      
+                      {/* Dados do Item */}
                       <div className="flex-1 min-w-0 pr-4">
                         <div className="font-medium text-gray-900 truncate">{item.descricao}</div>
-                        <div className="text-xs text-gray-500 flex gap-2 mt-1 items-center">
-                          <span className="font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Qtd: {item.quantidade}</span>
-                          <span className={`${item.estado === 'BOM' ? 'text-green-600' : 'text-red-600'}`}>{item.estado}</span>
-                          {item.observacoes && <span className="text-gray-400 truncate max-w-[200px] hidden sm:block">• {item.observacoes}</span>}
+                        <div className="text-xs text-gray-500 flex flex-wrap gap-2 mt-1 items-center">
+                          <Badge variant="outline" className="text-xs py-0 h-5 font-normal">
+                            Qtd: {item.quantidade}
+                          </Badge>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                            item.estado === 'BOM' ? 'bg-green-100 text-green-700' : 
+                            item.estado === 'REGULAR' ? 'bg-yellow-100 text-yellow-700' : 
+                            'bg-red-100 text-red-700'
+                          }`}>
+                            {item.estado}
+                          </span>
+                          {item.observacoes && (
+                            <span className="text-gray-400 truncate max-w-[150px] sm:max-w-xs" title={item.observacoes}>
+                              • {item.observacoes}
+                            </span>
+                          )}
                         </div>
                       </div>
-                      <div className="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                        <Button size="icon" variant="ghost" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => abrirModalEditar(item)}>
+
+                      {/* Botões de Ação */}
+                      <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" 
+                          onClick={() => abrirModalEditar(item)}
+                        >
                           <Pencil className="w-4 h-4" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => { setDeleteItem(item); setAdminPwd(''); }}>
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50" 
+                          onClick={() => { setDeleteItem(item); setAdminPwd(''); }}
+                        >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
@@ -286,7 +322,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
         )}
       </div>
 
-      {/* Modal de Adicionar/Editar */}
+      {/* --- MODAL FORMULÁRIO (ADD/EDIT) --- */}
       <EquipamentoFormDialog 
         open={isFormOpen} 
         onOpenChange={setIsFormOpen}
@@ -297,23 +333,26 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
         setAdminPwd={setAdminPwd}
       />
 
-      {/* Alerta de Exclusão */}
+      {/* --- MODAL DELETE --- */}
       <AlertDialog open={!!deleteItem} onOpenChange={(open) => !open && setDeleteItem(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir Equipamento?</AlertDialogTitle>
             <AlertDialogDescription>
-              Você está prestes a excluir <b>{deleteItem?.descricao}</b>. Esta ação não pode ser desfeita.
+              Você vai apagar <b>{deleteItem?.descricao}</b>. <br/>
+              Essa ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           
-          <div className="py-2">
-            <label className="text-xs font-medium text-gray-500 mb-1 block">Senha de Administrador</label>
+          <div className="py-4">
+            <label className="text-xs font-bold text-gray-500 mb-1.5 block uppercase">Senha de Aprovação</label>
             <Input 
               type="password" 
               value={adminPwd} 
               onChange={(e) => setAdminPwd(e.target.value)}
-              placeholder="Digite a senha para confirmar"
+              placeholder="Digite a senha..."
+              className="text-center tracking-widest"
+              autoFocus
             />
           </div>
 
@@ -321,10 +360,10 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDelete} 
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-red-600 hover:bg-red-700 text-white"
               disabled={!adminPwd}
             >
-              Excluir
+              Confirmar Exclusão
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -333,20 +372,16 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
   )
 }
 
-// Componente Interno do Formulário
+// Subcomponente do Formulário para manter o código limpo
 function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, adminPwd, setAdminPwd }) {
   const form = useForm({
     resolver: zodResolver(equipamentoSchema),
     defaultValues: {
-      categoria: '',
-      descricao: '',
-      quantidade: 1,
-      estado: 'BOM',
-      observacoes: '',
+      categoria: '', descricao: '', quantidade: 1, estado: 'BOM', observacoes: '',
     },
   })
 
-  // Resetar formulário quando abrir/fechar ou mudar item
+  // Popula o form ao abrir
   useEffect(() => {
     if (open) {
       if (item) {
@@ -359,35 +394,25 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
         })
       } else {
         form.reset({
-          categoria: '',
-          descricao: '',
-          quantidade: 1,
-          estado: 'BOM',
-          observacoes: '',
+          categoria: '', descricao: '', quantidade: 1, estado: 'BOM', observacoes: '',
         })
       }
     }
   }, [open, item, form])
 
-  const onSubmit = (values) => {
-    onSave(values)
-  }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{item ? 'Editar Equipamento' : 'Novo Equipamento'}</DialogTitle>
-          <DialogDescription>
-            Preencha os dados abaixo. Necessário senha para salvar.
-          </DialogDescription>
+          <DialogTitle>{item ? 'Editar Item' : 'Novo Item'}</DialogTitle>
+          <DialogDescription>Preencha os dados e informe a senha para salvar.</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            
+          <form onSubmit={form.handleSubmit(onSave)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              {/* Categoria com Combobox simples (Datalist HTML nativo para leveza) */}
+              
+              {/* Categoria com Datalist (Sugestão + Digitação livre) */}
               <FormField
                 control={form.control}
                 name="categoria"
@@ -397,11 +422,12 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
                     <FormControl>
                       <div className="relative">
                         <Input 
-                          list="categorias-list" 
-                          placeholder="Ex: CÂMERAS, LENTES..." 
+                          list="cat-suggestions" 
+                          placeholder="Selecione ou digite uma nova..." 
                           {...field} 
+                          className="uppercase"
                         />
-                        <datalist id="categorias-list">
+                        <datalist id="cat-suggestions">
                           {categorias.map(cat => <option key={cat} value={cat} />)}
                         </datalist>
                       </div>
@@ -416,9 +442,9 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
                 name="descricao"
                 render={({ field }) => (
                   <FormItem className="col-span-2">
-                    <FormLabel>Descrição / Nome</FormLabel>
+                    <FormLabel>Nome do Equipamento</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: Blackmagic 6K Pro" {...field} />
+                      <Input placeholder="Ex: Câmera Sony A7s III" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -470,7 +496,7 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
                   <FormItem className="col-span-2">
                     <FormLabel>Observações (Opcional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Detalhes extras..." {...field} />
+                      <Input placeholder="Ex: Falta tampa, bateria viciada..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -478,24 +504,23 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
               />
             </div>
 
-            <div className="pt-4 border-t mt-4">
-              <FormLabel className="text-xs uppercase text-gray-500 font-bold">Autenticação</FormLabel>
-              <Input 
-                type="password" 
-                placeholder="Senha de Administrador" 
-                value={adminPwd}
-                onChange={(e) => setAdminPwd(e.target.value)}
-                className="mt-1"
-              />
+            <div className="pt-4 border-t mt-2 bg-gray-50 -mx-6 px-6 pb-2">
+              <FormLabel className="text-xs uppercase text-gray-500 font-bold block mb-2 mt-4">Senha de Aprovação</FormLabel>
+              <div className="flex gap-3">
+                <Input 
+                  type="password" 
+                  placeholder="Senha" 
+                  value={adminPwd}
+                  onChange={(e) => setAdminPwd(e.target.value)}
+                  className="flex-1"
+                />
+                <Button type="submit" disabled={!adminPwd} className="bg-green-600 hover:bg-green-700 text-white min-w-[100px]">
+                  <Save className="w-4 h-4 mr-2" />
+                  Salvar
+                </Button>
+              </div>
             </div>
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-              <Button type="submit" disabled={!adminPwd}>
-                <Save className="w-4 h-4 mr-2" />
-                Salvar
-              </Button>
-            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
