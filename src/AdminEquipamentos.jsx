@@ -10,11 +10,12 @@ import {
   Trash2, 
   Plus, 
   Search, 
-  Package, // Novo ícone mais adequado
-  Save
+  Camera, // Ícone alterado
+  Save,
+  X
 } from 'lucide-react'
 
-// Componentes UI
+// UI Components
 import { Input } from '@/components/ui/input.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -53,7 +54,7 @@ import {
 } from '@/components/ui/select.jsx'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card.jsx'
 
-// Schema de validação
+// Validação
 const equipamentoSchema = z.object({
   categoria: z.string().trim().min(1, 'Informe a categoria'),
   descricao: z.string().trim().min(1, 'Informe a descrição'),
@@ -69,13 +70,13 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   
-  // Estados dos Modais
+  // Controle dos Modais
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
   const [deleteItem, setDeleteItem] = useState(null)
   const [adminPwd, setAdminPwd] = useState('')
 
-  // Carregar dados iniciais
+  // Carregar dados
   useEffect(() => {
     carregarEquipamentos()
   }, [])
@@ -86,12 +87,13 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
       const { data, error } = await supabase
         .from('equipamentos')
         .select('*')
-        .order('categoria', { ascending: true }) // Ordena categorias
-        .order('descricao', { ascending: true }) // Ordena itens dentro da categoria
+        .order('categoria', { ascending: true })
+        .order('descricao', { ascending: true })
 
       if (error) throw error
 
       setEquipamentos(data || [])
+      // Atualiza o cache local para o app funcionar offline se precisar
       sincronizarCacheEquipamentos(STORAGE_KEY, data || [])
     } catch (err) {
       console.error('Erro:', err)
@@ -101,7 +103,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
     }
   }
 
-  // Filtragem e Agrupamento
+  // Agrupamento e Filtro Automático
   const dadosFiltrados = useMemo(() => {
     const termo = searchTerm.toLowerCase()
     const lista = equipamentos.filter(eq => 
@@ -109,7 +111,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
       eq.categoria.toLowerCase().includes(termo)
     )
 
-    // Agrupa por categoria para exibição
+    // Agrupar por categoria
     return lista.reduce((acc, item) => {
       if (!acc[item.categoria]) acc[item.categoria] = []
       acc[item.categoria].push(item)
@@ -117,14 +119,14 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
     }, {})
   }, [equipamentos, searchTerm])
 
-  // Lista de categorias únicas para o autocomplete
+  // Extrai lista única de categorias para sugestão
   const categoriasDisponiveis = useMemo(() => {
     return [...new Set(equipamentos.map(e => e.categoria))].sort()
   }, [equipamentos])
 
   // Salvar (Criar ou Editar)
   const handleSave = async (values) => {
-    // Validação da senha
+    // Validação da senha hardcoded no .env (1234)
     if (adminPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
       toast.error('Senha incorreta!')
       return
@@ -132,7 +134,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
 
     try {
       const payload = {
-        categoria: values.categoria.toUpperCase(), // Padroniza maiúsculas
+        categoria: values.categoria.toUpperCase(), // Força maiúscula na categoria
         descricao: values.descricao,
         quantidade: values.quantidade,
         estado: values.estado,
@@ -141,20 +143,20 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
 
       let error
       if (editingItem) {
-        // Atualizar existente
+        // Update
         const { error: updateError } = await supabase
           .from('equipamentos')
           .update(payload)
           .eq('id', editingItem.id)
         error = updateError
-        toast.success('Item atualizado com sucesso!')
+        toast.success('Item atualizado!')
       } else {
-        // Criar novo
+        // Insert
         const { error: insertError } = await supabase
           .from('equipamentos')
           .insert([payload])
         error = insertError
-        toast.success('Item criado com sucesso!')
+        toast.success('Item criado!')
       }
 
       if (error) throw error
@@ -165,11 +167,11 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
 
     } catch (err) {
       console.error(err)
-      toast.error('Erro ao salvar no banco de dados.')
+      toast.error('Erro ao salvar no banco.')
     }
   }
 
-  // Excluir Item
+  // Excluir
   const handleDelete = async () => {
     if (adminPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
       toast.error('Senha incorreta!')
@@ -195,7 +197,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
     }
   }
 
-  // Funções auxiliares de modal
+  // Helpers de Modal
   const abrirModalNovo = () => {
     setEditingItem(null)
     setAdminPwd('')
@@ -216,28 +218,28 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-20">
-      {/* Cabeçalho */}
+      {/* Topo: Título e Busca */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
         <div>
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <Package className="w-6 h-6 text-blue-600" />
-            Controle de Equipamentos
+            <Camera className="w-6 h-6 text-blue-600" />
+            Gestão de Estoque
           </h2>
-          <p className="text-sm text-gray-500">Adicione, edite ou remova itens do sistema.</p>
+          <p className="text-sm text-gray-500">Adicione ou remova itens do checklist.</p>
         </div>
         
         <div className="flex gap-2 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Buscar item..."
+              placeholder="Buscar item ou categoria..."
               className="pl-9 bg-gray-50"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <Button onClick={abrirModalNovo} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Novo</span>
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Novo Item</span>
           </Button>
         </div>
       </div>
@@ -246,8 +248,8 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
       <div className="space-y-6">
         {loading ? (
           <div className="text-center py-12">
-            <Package className="w-12 h-12 text-gray-300 mx-auto animate-pulse mb-4" />
-            <p className="text-gray-500">Carregando estoque...</p>
+            <Camera className="w-12 h-12 text-gray-300 mx-auto animate-pulse mb-4" />
+            <p className="text-gray-500">Carregando inventário...</p>
           </div>
         ) : Object.keys(dadosFiltrados).length === 0 ? (
           <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
@@ -262,7 +264,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
                   {categoria}
                 </CardTitle>
                 <Badge variant="secondary" className="bg-white text-gray-600 border-gray-200">
-                  {itens.length}
+                  {itens.length} itens
                 </Badge>
               </CardHeader>
               <CardContent className="p-0">
@@ -270,10 +272,11 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
                   {itens.map((item) => (
                     <div key={item.id} className="flex items-center justify-between p-3 hover:bg-blue-50/30 transition-colors group">
                       
+                      {/* Dados do Item */}
                       <div className="flex-1 min-w-0 pr-4">
                         <div className="font-medium text-gray-900 truncate">{item.descricao}</div>
                         <div className="text-xs text-gray-500 flex flex-wrap gap-2 mt-1 items-center">
-                          <Badge variant="outline" className="text-xs py-0 h-5 font-normal border-gray-300">
+                          <Badge variant="outline" className="text-xs py-0 h-5 font-normal">
                             Qtd: {item.quantidade}
                           </Badge>
                           <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
@@ -291,6 +294,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
                         </div>
                       </div>
 
+                      {/* Botões de Ação */}
                       <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                         <Button 
                           size="icon" 
@@ -318,7 +322,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
         )}
       </div>
 
-      {/* Modal Formulário (Adicionar/Editar) */}
+      {/* --- MODAL FORMULÁRIO (ADD/EDIT) --- */}
       <EquipamentoFormDialog 
         open={isFormOpen} 
         onOpenChange={setIsFormOpen}
@@ -329,14 +333,14 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
         setAdminPwd={setAdminPwd}
       />
 
-      {/* Modal Confirmação de Exclusão */}
+      {/* --- MODAL DELETE --- */}
       <AlertDialog open={!!deleteItem} onOpenChange={(open) => !open && setDeleteItem(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir Equipamento?</AlertDialogTitle>
             <AlertDialogDescription>
-              Você está prestes a excluir <b>{deleteItem?.descricao}</b>.
-              <br/>Esta ação não pode ser desfeita.
+              Você vai apagar <b>{deleteItem?.descricao}</b>. <br/>
+              Essa ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           
@@ -368,7 +372,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
   )
 }
 
-// Subcomponente do Formulário
+// Subcomponente do Formulário para manter o código limpo
 function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, adminPwd, setAdminPwd }) {
   const form = useForm({
     resolver: zodResolver(equipamentoSchema),
@@ -377,6 +381,7 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
     },
   })
 
+  // Popula o form ao abrir
   useEffect(() => {
     if (open) {
       if (item) {
@@ -407,7 +412,7 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
           <form onSubmit={form.handleSubmit(onSave)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               
-              {/* Campo Categoria com Sugestões */}
+              {/* Categoria com Datalist (Sugestão + Digitação livre) */}
               <FormField
                 control={form.control}
                 name="categoria"
@@ -418,7 +423,7 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
                       <div className="relative">
                         <Input 
                           list="cat-suggestions" 
-                          placeholder="Selecione ou digite..." 
+                          placeholder="Selecione ou digite uma nova..." 
                           {...field} 
                           className="uppercase"
                         />
