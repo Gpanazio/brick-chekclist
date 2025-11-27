@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input.jsx'
 import { CheckCircle, RotateCcw, FileText, Minus, Plus, History, Trash2, Search, ArrowUpDown, Camera, FileDown, ChevronDown } from 'lucide-react'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
-import logoBrick from './assets/02.png'
+// IMPORTANTE: O caminho do logo foi alterado para o novo arquivo
+import logoBrick from './assets/newlogo.png'
 import { gerarChecklistPDF } from '@/lib/pdf.js'
 import { supabase } from '@/lib/supabase.js'
 import { fetchEquipamentos } from '@/lib/fetchEquipamentos.js'
@@ -255,7 +256,8 @@ function App() {
         <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={logoBrick} alt="Brick" className="h-10 w-auto" />
+              {/* Logo ajustado para h-16 (maior) */}
+              <img src={logoBrick} alt="Brick" className="h-16 w-auto object-contain" />
               <h1 className="text-4xl font-bold text-gray-900 tracking-tight hidden sm:block">CHECKLIST</h1>
             </div>
           </div>
