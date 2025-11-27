@@ -1,40 +1,42 @@
-import React, { useEffect, useMemo, useState, useId } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { supabase } from '@/lib/supabase.js'
 import { sincronizarCacheEquipamentos } from '@/lib/cache.js'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { toast } from 'sonner'
+import { 
+  Pencil, 
+  Trash2, 
+  Plus, 
+  Search, 
+  Package, 
+  Save,
+  X
+} from 'lucide-react'
+
+// UI Components
 import { Input } from '@/components/ui/input.jsx'
-import { Button, buttonVariants } from '@/components/ui/button.jsx'
+import { Button } from '@/components/ui/button.jsx'
+import { Badge } from '@/components/ui/badge.jsx'
 import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from '@/components/ui/table.jsx'
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from '@/components/ui/dialog.jsx'
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,
-  AlertDialogFooter,
   AlertDialogTitle,
   AlertDialogDescription,
-  AlertDialogAction,
+  AlertDialogFooter,
   AlertDialogCancel,
+  AlertDialogAction,
 } from '@/components/ui/alert-dialog.jsx'
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from '@/components/ui/tabs.jsx'
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/select.jsx'
 import {
   Form,
   FormField,
@@ -43,40 +45,296 @@ import {
   FormControl,
   FormMessage,
 } from '@/components/ui/form.jsx'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { toast } from 'sonner'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select.jsx'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card.jsx'
 
+// Schema de validação
 const equipamentoSchema = z.object({
   categoria: z.string().trim().min(1, 'Informe a categoria'),
   descricao: z.string().trim().min(1, 'Informe a descrição'),
-  quantidade: z.coerce.number().min(1, 'Quantidade mínima 1'),
+  quantidade: z.coerce.number().min(1, 'Mínimo 1'),
   estado: z.string().trim().min(1, 'Informe o estado'),
-  observacoes: z.string().trim().optional(),
+  observacoes: z.string().optional(),
 })
 
 const STORAGE_KEY = 'equipamentos-admin'
 
-function AdminEquipamentos({ onEquipamentosChanged }) {
+export default function AdminEquipamentos({ onEquipamentosChanged }) {
   const [equipamentos, setEquipamentos] = useState([])
-  const [tab, setTab] = useState('adicionar')
-  const [selectedId, setSelectedId] = useState('')
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [deletePwd, setDeletePwd] = useState('')
-  const [addOpen, setAddOpen] = useState(false)
-  const [addPwd, setAddPwd] = useState('')
-  const [addValues, setAddValues] = useState(null)
-  const [editId, setEditId] = useState('')
-  const [editOpen, setEditOpen] = useState(false)
-  const [editPwd, setEditPwd] = useState('')
-  const [editValues, setEditValues] = useState({
-    categoria: '',
-    descricao: '',
-    quantidade: 1,
-    estado: 'BOM',
-    observacoes: '',
-  })
+  const [loading, setLoading] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  
+  // Estados para Modais
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState(null)
+  const [deleteItem, setDeleteItem] = useState(null)
+  const [adminPwd, setAdminPwd] = useState('')
+
+  // Carregar dados iniciais
+  useEffect(() => {
+    carregarEquipamentos()
+  }, [])
+
+  const carregarEquipamentos = async () => {
+    setLoading(true)
+    try {
+      const { data, error } = await supabase
+        .from('equipamentos')
+        .select('*')
+        .order('categoria', { ascending: true })
+        .order('descricao', { ascending: true })
+
+      if (error) throw error
+
+      setEquipamentos(data || [])
+      sincronizarCacheEquipamentos(STORAGE_KEY, data || [])
+    } catch (err) {
+      console.error('Erro:', err)
+      toast.error('Erro ao carregar equipamentos')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Lógica de Agrupamento e Filtro
+  const dadosFiltrados = useMemo(() => {
+    const termo = searchTerm.toLowerCase()
+    const lista = equipamentos.filter(eq => 
+      eq.descricao.toLowerCase().includes(termo) || 
+      eq.categoria.toLowerCase().includes(termo)
+    )
+
+    // Agrupar por categoria
+    return lista.reduce((acc, item) => {
+      if (!acc[item.categoria]) acc[item.categoria] = []
+      acc[item.categoria].push(item)
+      return acc
+    }, {})
+  }, [equipamentos, searchTerm])
+
+  const categoriasDisponiveis = useMemo(() => {
+    return [...new Set(equipamentos.map(e => e.categoria))].sort()
+  }, [equipamentos])
+
+  // Ações do Banco de Dados
+  const handleSave = async (values) => {
+    if (adminPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
+      toast.error('Senha de administrador incorreta!')
+      return
+    }
+
+    try {
+      const payload = {
+        categoria: values.categoria,
+        descricao: values.descricao,
+        quantidade: values.quantidade,
+        estado: values.estado,
+        observacoes: values.observacoes || ''
+      }
+
+      let error
+      if (editingItem) {
+        // Atualizar
+        const { error: updateError } = await supabase
+          .from('equipamentos')
+          .update(payload)
+          .eq('id', editingItem.id)
+        error = updateError
+        toast.success('Equipamento atualizado!')
+      } else {
+        // Criar
+        const { error: insertError } = await supabase
+          .from('equipamentos')
+          .insert([payload])
+        error = insertError
+        toast.success('Equipamento adicionado!')
+      }
+
+      if (error) throw error
+
+      await carregarEquipamentos()
+      if (onEquipamentosChanged) onEquipamentosChanged()
+      fecharModal()
+
+    } catch (err) {
+      console.error(err)
+      toast.error('Erro ao salvar no banco de dados.')
+    }
+  }
+
+  const handleDelete = async () => {
+    if (adminPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
+      toast.error('Senha de administrador incorreta!')
+      return
+    }
+
+    try {
+      const { error } = await supabase
+        .from('equipamentos')
+        .delete()
+        .eq('id', deleteItem.id)
+
+      if (error) throw error
+
+      toast.success('Equipamento excluído.')
+      await carregarEquipamentos()
+      if (onEquipamentosChanged) onEquipamentosChanged()
+      setDeleteItem(null)
+      setAdminPwd('')
+    } catch (err) {
+      console.error(err)
+      toast.error('Erro ao excluir item.')
+    }
+  }
+
+  const abrirModalNovo = () => {
+    setEditingItem(null)
+    setAdminPwd('')
+    setIsFormOpen(true)
+  }
+
+  const abrirModalEditar = (item) => {
+    setEditingItem(item)
+    setAdminPwd('')
+    setIsFormOpen(true)
+  }
+
+  const fecharModal = () => {
+    setIsFormOpen(false)
+    setEditingItem(null)
+    setAdminPwd('')
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Cabeçalho e Controles */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <Package className="w-6 h-6 text-blue-600" />
+            Admin Equipamentos
+          </h2>
+          <p className="text-sm text-gray-500">Gerencie o inventário do sistema</p>
+        </div>
+        
+        <div className="flex gap-2 w-full md:w-auto">
+          <div className="relative flex-1 md:w-64">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+            <Input
+              placeholder="Buscar equipamento..."
+              className="pl-9"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <Button onClick={abrirModalNovo} className="gap-2">
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Novo Item</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Lista de Equipamentos (Agrupada) */}
+      <div className="space-y-6">
+        {loading ? (
+          <p className="text-center text-gray-500 py-10">Carregando inventário...</p>
+        ) : Object.keys(dadosFiltrados).length === 0 ? (
+          <div className="text-center py-10 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+            <p className="text-gray-500">Nenhum equipamento encontrado.</p>
+            <Button variant="link" onClick={abrirModalNovo}>Adicionar o primeiro</Button>
+          </div>
+        ) : (
+          Object.entries(dadosFiltrados).map(([categoria, itens]) => (
+            <Card key={categoria} className="overflow-hidden">
+              <CardHeader className="bg-gray-50/50 py-3 px-4 border-b">
+                <CardTitle className="text-sm font-bold text-gray-700 uppercase tracking-wider flex justify-between">
+                  {categoria}
+                  <Badge variant="secondary" className="ml-2">{itens.length}</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="divide-y divide-gray-100">
+                  {itens.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors group">
+                      <div className="flex-1 min-w-0 pr-4">
+                        <div className="font-medium text-gray-900 truncate">{item.descricao}</div>
+                        <div className="text-xs text-gray-500 flex gap-2 mt-1 items-center">
+                          <span className="font-semibold bg-gray-100 px-1.5 py-0.5 rounded">Qtd: {item.quantidade}</span>
+                          <span className={`${item.estado === 'BOM' ? 'text-green-600' : 'text-red-600'}`}>{item.estado}</span>
+                          {item.observacoes && <span className="text-gray-400 truncate max-w-[200px] hidden sm:block">• {item.observacoes}</span>}
+                        </div>
+                      </div>
+                      <div className="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => abrirModalEditar(item)}>
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => { setDeleteItem(item); setAdminPwd(''); }}>
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+
+      {/* Modal de Adicionar/Editar */}
+      <EquipamentoFormDialog 
+        open={isFormOpen} 
+        onOpenChange={setIsFormOpen}
+        item={editingItem}
+        categorias={categoriasDisponiveis}
+        onSave={handleSave}
+        adminPwd={adminPwd}
+        setAdminPwd={setAdminPwd}
+      />
+
+      {/* Alerta de Exclusão */}
+      <AlertDialog open={!!deleteItem} onOpenChange={(open) => !open && setDeleteItem(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir Equipamento?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Você está prestes a excluir <b>{deleteItem?.descricao}</b>. Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="py-2">
+            <label className="text-xs font-medium text-gray-500 mb-1 block">Senha de Administrador</label>
+            <Input 
+              type="password" 
+              value={adminPwd} 
+              onChange={(e) => setAdminPwd(e.target.value)}
+              placeholder="Digite a senha para confirmar"
+            />
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDelete} 
+              className="bg-red-600 hover:bg-red-700"
+              disabled={!adminPwd}
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  )
+}
+
+// Componente Interno do Formulário
+function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, adminPwd, setAdminPwd }) {
   const form = useForm({
     resolver: zodResolver(equipamentoSchema),
     defaultValues: {
@@ -87,551 +345,160 @@ function AdminEquipamentos({ onEquipamentosChanged }) {
       observacoes: '',
     },
   })
-  const addCategoriaListId = useId()
-  const editCategoriaListId = useId()
-  const categoriasExistentes = useMemo(() => {
-    const categorias = equipamentos
-      .map((equipamento) => equipamento.categoria)
-      .filter((categoria) => Boolean(categoria))
-    return [...new Set(categorias)].sort((a, b) =>
-      a.localeCompare(b, 'pt-BR', { sensitivity: 'base' })
-    )
-  }, [equipamentos])
 
+  // Resetar formulário quando abrir/fechar ou mudar item
   useEffect(() => {
-    (async () => {
-      const lista = await carregarEquipamentos()
-      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
-    })()
-  }, [])
-
-  useEffect(() => {
-    if (!editId && equipamentos.length) {
-      setEditId(String(equipamentos[0].id))
-    }
-  }, [equipamentos, editId])
-
-  useEffect(() => {
-    if (editId) {
-      const eq = equipamentos.find((e) => String(e.id) === String(editId))
-      if (eq) {
-        setEditValues({
-          categoria: eq.categoria,
-          descricao: eq.descricao,
-          quantidade: eq.quantidade,
-          estado: eq.estado,
-          observacoes: eq.observacoes || '',
+    if (open) {
+      if (item) {
+        form.reset({
+          categoria: item.categoria,
+          descricao: item.descricao,
+          quantidade: item.quantidade,
+          estado: item.estado,
+          observacoes: item.observacoes || '',
         })
-      }
-    }
-  }, [editId, equipamentos])
-
-  useEffect(() => {
-    if (!selectedId && equipamentos.length) {
-      setSelectedId(String(equipamentos[0].id))
-    }
-  }, [equipamentos, selectedId])
-
-  const carregarEquipamentos = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('equipamentos')
-        .select('*')
-
-      if (error) throw error
-
-      const lista = data || []
-      setEquipamentos([...lista].sort((a, b) => a.id - b.id))
-      return lista
-    } catch (err) {
-      console.error('Erro ao carregar equipamentos:', err)
-      toast.error('Erro ao carregar equipamentos')
-      return null
-    }
-  }
-
-  const salvarNovo = async () => {
-    if (addPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
-      toast.error('Senha incorreta')
-      return
-    }
-    if (!addValues) {
-      toast.error('Nenhum equipamento para salvar')
-      return
-    }
-    try {
-      const payload = {
-        ...addValues,
-        observacoes:
-          typeof addValues.observacoes === 'string'
-            ? addValues.observacoes
-            : '',
-      }
-      const { data, error } = await supabase
-        .from('equipamentos')
-        .insert([payload])
-        .select()
-
-      if (error) throw error
-
-      const inseridos = data ?? []
-      let listaAtualizada = null
-      if (inseridos.length) {
-        let proximaLista = null
-        setEquipamentos((prev) => {
-          proximaLista = [...prev, ...inseridos].sort((a, b) => a.id - b.id)
-          return proximaLista
-        })
-        listaAtualizada = proximaLista
       } else {
-        const lista = await carregarEquipamentos()
-        if (lista) {
-          listaAtualizada = lista
-        }
-      }
-
-      if (listaAtualizada) {
-        sincronizarCacheEquipamentos(STORAGE_KEY, listaAtualizada)
-      }
-
-      toast.success('Equipamento adicionado com sucesso')
-      form.reset()
-      if (onEquipamentosChanged) onEquipamentosChanged()
-      setAddPwd('')
-      setAddOpen(false)
-      setAddValues(null)
-    } catch (error) {
-      console.error('Erro ao adicionar equipamento:', error)
-      toast.error('Erro ao adicionar equipamento')
-    }
-  }
-
-  const handleAddSubmit = (values) => {
-    const valoresTratados = {
-      ...values,
-      categoria: values.categoria.trim(),
-      descricao: values.descricao.trim(),
-      estado: values.estado.trim(),
-      observacoes: values.observacoes ? values.observacoes.trim() : '',
-    }
-    setAddValues(valoresTratados)
-    setAddOpen(true)
-  }
-
-  const atualizarEquipamento = async (equip) => {
-    try {
-      const { error } = await supabase
-        .from('equipamentos')
-        .update({
-          categoria: equip.categoria,
-          descricao: equip.descricao,
-          quantidade: equip.quantidade,
-          estado: equip.estado,
-          observacoes: equip.observacoes,
+        form.reset({
+          categoria: '',
+          descricao: '',
+          quantidade: 1,
+          estado: 'BOM',
+          observacoes: '',
         })
-        .eq('id', equip.id)
-      if (error) throw error
-      const lista = await carregarEquipamentos()
-      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
-      if (onEquipamentosChanged) onEquipamentosChanged()
-      return true
-    } catch (error) {
-      console.error('Erro ao atualizar equipamento:', error)
-      toast.error('Erro ao atualizar equipamento')
-      const lista = await carregarEquipamentos()
-      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
-      return false
-    }
-  }
-
-  const deletarEquipamento = async (id) => {
-    try {
-      const { error } = await supabase.from('equipamentos').delete().eq('id', id)
-      if (error) throw error
-      const lista = await carregarEquipamentos()
-      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
-      if (onEquipamentosChanged) onEquipamentosChanged()
-      return true
-    } catch (error) {
-      console.error('Erro ao excluir equipamento:', error)
-      toast.error('Erro ao excluir equipamento')
-      const lista = await carregarEquipamentos()
-      if (lista) sincronizarCacheEquipamentos(STORAGE_KEY, lista)
-      return false
-    }
-  }
-
-  const handleEditChange = (campo, valor) => {
-    setEditValues((prev) => ({ ...prev, [campo]: valor }))
-  }
-
-  const handleUpdateSelectedFromForm = async () => {
-    if (!editId) return
-    setEditOpen(true)
-  }
-
-  const handleUpdateSelected = async () => {
-    if (editPwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
-      toast.error('Senha incorreta')
-      return
-    }
-    await atualizarEquipamento({ id: parseInt(editId), ...editValues })
-    setEditOpen(false)
-    setEditPwd('')
-  }
-
-  const handleDeleteSelected = async () => {
-    if (!selectedId) return
-    if (deletePwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
-      toast.error('Senha incorreta')
-      return
-    }
-    const success = await deletarEquipamento(parseInt(selectedId))
-    if (success) {
-      setDeletePwd('')
-      setDeleteOpen(false)
-    }
-  }
-
-  const atualizarLocal = (id, campo, valor) => {
-    setEquipamentos(prev => prev.map(eq => (eq.id === id ? { ...eq, [campo]: valor } : eq)))
-  }
-
-  const EquipmentRow = ({ equip, categoriasExistentes }) => {
-    const [updateOpen, setUpdateOpen] = useState(false)
-    const [updatePwd, setUpdatePwd] = useState('')
-    const categoriaOptions = useMemo(() => {
-      if (!equip.categoria) return categoriasExistentes
-      if (categoriasExistentes.includes(equip.categoria)) {
-        return categoriasExistentes
-      }
-      return [...categoriasExistentes, equip.categoria]
-    }, [categoriasExistentes, equip.categoria])
-    const categoriaListId = useId()
-
-    const handleUpdate = async () => {
-      if (updatePwd !== import.meta.env.VITE_ADMIN_PASSWORD) {
-        toast.error('Senha incorreta')
-        return
-      }
-      const success = await atualizarEquipamento(equip)
-      if (success) {
-        setUpdateOpen(false)
-        setUpdatePwd('')
       }
     }
+  }, [open, item, form])
 
-    return (
-      <TableRow key={equip.id} className="odd:bg-gray-50">
-        <TableCell>
-          <div className="flex flex-col">
-            <Input
-              className="w-full"
-              value={equip.categoria || ''}
-              onChange={(event) =>
-                atualizarLocal(equip.id, 'categoria', event.target.value)
-              }
-              placeholder="Categoria"
-              list={categoriaOptions.length ? categoriaListId : undefined}
-            />
-            {categoriaOptions.length ? (
-              <datalist id={categoriaListId}>
-                {categoriaOptions.map((categoria) => (
-                  <option key={categoria} value={categoria} />
-                ))}
-              </datalist>
-            ) : null}
-          </div>
-        </TableCell>
-        <TableCell>
-          <Input
-            className="w-full"
-            value={equip.descricao}
-            onChange={(e) => atualizarLocal(equip.id, 'descricao', e.target.value)}
-          />
-        </TableCell>
-        <TableCell>
-          <Input
-            type="number"
-            className="w-16"
-            value={equip.quantidade}
-            onChange={(e) => atualizarLocal(equip.id, 'quantidade', parseInt(e.target.value) || 1)}
-          />
-        </TableCell>
-        <TableCell>
-          <Input
-            className="w-full"
-            value={equip.estado}
-            onChange={(e) => atualizarLocal(equip.id, 'estado', e.target.value)}
-          />
-        </TableCell>
-        <TableCell>
-          <Input
-            className="w-full"
-            value={equip.observacoes || ''}
-            onChange={(e) => atualizarLocal(equip.id, 'observacoes', e.target.value)}
-          />
-        </TableCell>
-        <TableCell className="space-x-2">
-          <AlertDialog open={updateOpen} onOpenChange={(o) => { setUpdateOpen(o); if (!o) setUpdatePwd('') }}>
-            <AlertDialogTrigger asChild>
-              <Button size="sm">Salvar</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Confirmar atualização</AlertDialogTitle>
-                <AlertDialogDescription>Digite a senha para salvar as alterações.</AlertDialogDescription>
-              </AlertDialogHeader>
-              <Input type="password" value={updatePwd} onChange={(e) => setUpdatePwd(e.target.value)} placeholder="Senha" />
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={handleUpdate}>Confirmar</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </TableCell>
-      </TableRow>
-    )
+  const onSubmit = (values) => {
+    onSave(values)
   }
 
   return (
-    <div className="space-y-4 p-4">
-      <h2 className="text-xl font-bold">Administração de Equipamentos</h2>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>{item ? 'Editar Equipamento' : 'Novo Equipamento'}</DialogTitle>
+          <DialogDescription>
+            Preencha os dados abaixo. Necessário senha para salvar.
+          </DialogDescription>
+        </DialogHeader>
 
-      <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="adicionar">Incluir</TabsTrigger>
-          <TabsTrigger value="alterar">Alterar</TabsTrigger>
-          <TabsTrigger value="excluir">Excluir</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="adicionar">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleAddSubmit)} className="grid grid-cols-2 gap-2">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            
+            <div className="grid grid-cols-2 gap-4">
+              {/* Categoria com Combobox simples (Datalist HTML nativo para leveza) */}
               <FormField
+                control={form.control}
                 name="categoria"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="col-span-2">
+                    <FormLabel>Categoria</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Categoria (digite para criar ou selecionar)"
-                        list={categoriasExistentes.length ? addCategoriaListId : undefined}
-                        {...field}
-                        onChange={(event) => field.onChange(event.target.value)}
-                      />
+                      <div className="relative">
+                        <Input 
+                          list="categorias-list" 
+                          placeholder="Ex: CÂMERAS, LENTES..." 
+                          {...field} 
+                        />
+                        <datalist id="categorias-list">
+                          {categorias.map(cat => <option key={cat} value={cat} />)}
+                        </datalist>
+                      </div>
                     </FormControl>
-                    {categoriasExistentes.length ? (
-                      <p className="text-xs text-muted-foreground">
-                        Você pode digitar uma nova categoria ou selecionar uma existente.
-                      </p>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">
-                        Digite o nome da categoria para cadastrar o primeiro equipamento.
-                      </p>
-                    )}
-                    {categoriasExistentes.length ? (
-                      <datalist id={addCategoriaListId}>
-                        {categoriasExistentes.map((categoria) => (
-                          <option key={categoria} value={categoria} />
-                        ))}
-                      </datalist>
-                    ) : null}
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
+                control={form.control}
                 name="descricao"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="col-span-2">
+                    <FormLabel>Descrição / Nome</FormLabel>
                     <FormControl>
-                      <Input placeholder="Descrição" {...field} />
+                      <Input placeholder="Ex: Blackmagic 6K Pro" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
+                control={form.control}
                 name="quantidade"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Quantidade</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Quantidade" {...field} />
+                      <Input type="number" min="1" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
+                control={form.control}
                 name="estado"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
-                      <Input placeholder="Estado" {...field} />
-                    </FormControl>
+                    <FormLabel>Estado</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="BOM">BOM</SelectItem>
+                        <SelectItem value="REGULAR">REGULAR</SelectItem>
+                        <SelectItem value="RUIM">RUIM</SelectItem>
+                        <SelectItem value="MANUTENCAO">MANUTENÇÃO</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
+                control={form.control}
                 name="observacoes"
                 render={({ field }) => (
                   <FormItem className="col-span-2">
+                    <FormLabel>Observações (Opcional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Observações" {...field} />
+                      <Input placeholder="Detalhes extras..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="col-span-2">Adicionar</Button>
-            </form>
-          </Form>
-          <AlertDialog open={addOpen} onOpenChange={(o) => { setAddOpen(o); if (!o) { setAddPwd(''); setAddValues(null) } }}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Confirmar inclusão</AlertDialogTitle>
-                <AlertDialogDescription>Digite a senha para adicionar o equipamento.</AlertDialogDescription>
-              </AlertDialogHeader>
-              <Input type="password" value={addPwd} onChange={(e) => setAddPwd(e.target.value)} placeholder="Senha" />
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={salvarNovo}>Confirmar</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </TabsContent>
+            </div>
 
-        <TabsContent value="alterar">
-          <div className="space-y-2">
-            <Select value={editId} onValueChange={setEditId}>
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione o equipamento" />
-              </SelectTrigger>
-              <SelectContent>
-                {equipamentos.map((eq) => (
-                  <SelectItem key={eq.id} value={String(eq.id)}>
-                    {eq.descricao}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {editId && (
-              <form onSubmit={(e) => { e.preventDefault(); handleUpdateSelectedFromForm() }} className="grid grid-cols-2 gap-2">
-                <div className="flex flex-col">
-                  <Input
-                    value={editValues.categoria}
-                    onChange={(event) => handleEditChange('categoria', event.target.value)}
-                    placeholder="Categoria (digite para criar ou selecionar)"
-                    list={categoriasExistentes.length ? editCategoriaListId : undefined}
-                  />
-                  {categoriasExistentes.length ? (
-                    <datalist id={editCategoriaListId}>
-                      {categoriasExistentes.map((categoria) => (
-                        <option key={categoria} value={categoria} />
-                      ))}
-                    </datalist>
-                  ) : null}
-                </div>
-                <Input
-                  value={editValues.descricao}
-                  onChange={(e) => handleEditChange('descricao', e.target.value)}
-                  placeholder="Descrição"
-                />
-                <Input
-                  type="number"
-                  value={editValues.quantidade}
-                  onChange={(e) => handleEditChange('quantidade', parseInt(e.target.value) || 1)}
-                  placeholder="Quantidade"
-                  className="w-20"
-                />
-                <Input
-                  value={editValues.estado}
-                  onChange={(e) => handleEditChange('estado', e.target.value)}
-                  placeholder="Estado"
-                />
-                <Input
-                  value={editValues.observacoes}
-                  onChange={(e) => handleEditChange('observacoes', e.target.value)}
-                  placeholder="Observações"
-                  className="col-span-2"
-                />
-                <Button type="submit" className="col-span-2">Salvar</Button>
-              </form>
-            )}
-          </div>
-          <AlertDialog open={editOpen} onOpenChange={(o) => { setEditOpen(o); if (!o) setEditPwd('') }}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Confirmar atualização</AlertDialogTitle>
-                <AlertDialogDescription>Digite a senha para salvar as alterações.</AlertDialogDescription>
-              </AlertDialogHeader>
-              <Input type="password" value={editPwd} onChange={(e) => setEditPwd(e.target.value)} placeholder="Senha" />
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={handleUpdateSelected}>Confirmar</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </TabsContent>
+            <div className="pt-4 border-t mt-4">
+              <FormLabel className="text-xs uppercase text-gray-500 font-bold">Autenticação</FormLabel>
+              <Input 
+                type="password" 
+                placeholder="Senha de Administrador" 
+                value={adminPwd}
+                onChange={(e) => setAdminPwd(e.target.value)}
+                className="mt-1"
+              />
+            </div>
 
-        <TabsContent value="excluir">
-          <div className="flex items-end gap-2">
-            <Select value={selectedId} onValueChange={setSelectedId}>
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione o equipamento" />
-              </SelectTrigger>
-              <SelectContent>
-                {equipamentos.map((eq) => (
-                  <SelectItem key={eq.id} value={String(eq.id)}>
-                    {eq.descricao}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <AlertDialog open={deleteOpen} onOpenChange={(o) => { setDeleteOpen(o); if (!o) setDeletePwd('') }}>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive">Excluir</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-                  <AlertDialogDescription>Digite a senha para excluir o equipamento.</AlertDialogDescription>
-                </AlertDialogHeader>
-                <Input type="password" value={deletePwd} onChange={(e) => setDeletePwd(e.target.value)} placeholder="Senha" />
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                  <AlertDialogAction className={buttonVariants({ variant: 'destructive' })} onClick={handleDeleteSelected}>Excluir</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Categoria</TableHead>
-            <TableHead>Descrição</TableHead>
-            <TableHead>Qtd.</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Observações</TableHead>
-            <TableHead>Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {equipamentos.map((eq) => (
-            <EquipmentRow
-              key={eq.id}
-              equip={eq}
-              categoriasExistentes={categoriasExistentes}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
+              <Button type="submit" disabled={!adminPwd}>
+                <Save className="w-4 h-4 mr-2" />
+                Salvar
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   )
 }
-
-export default AdminEquipamentos
