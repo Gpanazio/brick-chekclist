@@ -223,7 +223,7 @@ export default function AdminEquipamentos({ onEquipamentosChanged }) {
         <div>
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
             <Package className="w-6 h-6 text-blue-600" />
-            Gestão de Estoque
+            Gestão de Equipamentos
           </h2>
           <p className="text-sm text-gray-500">Adicione ou remova itens do checklist.</p>
         </div>
