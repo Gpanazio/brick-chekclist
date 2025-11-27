@@ -4,11 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.j
 import { Checkbox } from '@/components/ui/checkbox.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
-import { 
-  CheckCircle, RotateCcw, FileText, Minus, Plus, History, 
-  Trash2, Search, ArrowUpDown, Camera, FileDown, ChevronDown,
-  ClipboardCheck, PackageCheck, AlertTriangle, CheckCircle2 
-} from 'lucide-react'
+import { CheckCircle, RotateCcw, FileText, Minus, Plus, History, Trash2, Search, ArrowUpDown, Camera, FileDown, ChevronDown } from 'lucide-react'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
 import logoBrick from './assets/logochecklist.png'
@@ -40,11 +36,6 @@ function App() {
   const [deleteLogPwd, setDeleteLogPwd] = useState('')
   const [logSelecionado, setLogSelecionado] = useState(null)
   const [ordemCategorias, setOrdemCategorias] = useState({})
-
-  // --- Novos Estados para Devolução (Check-in) ---
-  const [isReturnOpen, setIsReturnOpen] = useState(false)
-  const [returnLog, setReturnLog] = useState(null)
-  const [returnItems, setReturnItems] = useState([])
 
   const carregarEquipamentos = () =>
     fetchEquipamentos({ supabase }).then(setEquipamentos)
@@ -162,79 +153,6 @@ function App() {
     }
   }, [abaAtiva])
 
-  // --- FUNÇÕES DE DEVOLUÇÃO (CHECK-IN) ---
-
-  const abrirDevolucao = (log) => {
-    setReturnLog(log)
-    // Prepara os itens. Se for log antigo sem campo 'devolvido', assume false.
-    const items = (log.itens_checados || []).map(item => ({
-      ...item,
-      devolvido: !!item.devolvido, 
-      devolucao_obs: item.devolucao_obs || ''
-    }))
-    setReturnItems(items)
-    setIsReturnOpen(true)
-  }
-
-  const toggleItemDevolvido = (index) => {
-    const novosItens = [...returnItems]
-    novosItens[index].devolvido = !novosItens[index].devolvido
-    setReturnItems(novosItens)
-  }
-
-  const marcarTodosDevolvidos = () => {
-    const todos = returnItems.map(i => ({ ...i, devolvido: true }))
-    setReturnItems(todos)
-  }
-
-  const alterarObsItem = (index, texto) => {
-    const novosItens = [...returnItems]
-    novosItens[index].devolucao_obs = texto
-    setReturnItems(novosItens)
-  }
-
-  const salvarDevolucao = async () => {
-    try {
-      const { error } = await supabase
-        .from('logs')
-        .update({ itens_checados: returnItems })
-        .eq('id', returnLog.id)
-
-      if (error) throw error
-
-      toast.success('Devolução atualizada!')
-      setIsReturnOpen(false)
-      carregarLogs() // Recarrega para ver os status novos
-    } catch (err) {
-      console.error(err)
-      toast.error('Erro ao salvar devolução')
-    }
-  }
-
-  const getStatusDevolucao = (log) => {
-    const items = log.itens_checados || []
-    if (!items.length) return null
-    
-    const countDevolvidos = items.filter(i => i.devolvido).length
-    
-    if (countDevolvidos === 0) {
-      return <Badge variant="outline" className="text-gray-500 border-gray-200 bg-gray-50 ml-2">Pendente</Badge>
-    }
-    if (countDevolvidos === items.length) {
-      return <Badge variant="outline" className="text-green-700 border-green-200 bg-green-50 ml-2">Devolvido</Badge>
-    }
-    return <Badge variant="outline" className="text-amber-700 border-amber-200 bg-amber-50 ml-2">Parcial ({countDevolvidos}/{items.length})</Badge>
-  }
-
-  // Estatísticas do Check-in
-  const checkInStats = useMemo(() => {
-    const total = returnItems.length
-    const ok = returnItems.filter(i => i.devolvido).length
-    return { total, ok, pendente: total - ok }
-  }, [returnItems])
-
-  // --- FIM FUNÇÕES DE DEVOLUÇÃO ---
-
   const salvarLogSupabase = async (responsavel, dataJob, equipamentosChecados) => {
     try {
       const { error } = await supabase
@@ -283,16 +201,31 @@ function App() {
     })
   }
 
+  // --- NOVA FUNÇÃO PARA ABRIR O MODAL DE EXPORTAÇÃO ---
+  // Verifica se há itens selecionados ANTES de abrir o modal
+  const handleOpenExport = () => {
+    const checados = equipamentosChecklist.filter(eq => eq.checado)
+    if (checados.length === 0) {
+      toast.error('Selecione pelo menos um item para exportar!', {
+        description: 'Marque os equipamentos na lista antes de gerar o PDF.'
+      })
+      return
+    }
+    setExportOpen(true)
+  }
+
   const exportarPDF = () => {
     if (!responsavel || !dataJob) {
       toast.error('Preencha todos os campos')
       return
     }
+    // Validação redundante por segurança
     const checados = equipamentosChecklist.filter(eq => eq.checado)
     if (checados.length === 0) {
       toast.error('Nenhum item selecionado!')
       return
     }
+    
     salvarLogSupabase(responsavel, dataJob, checados)
     gerarChecklistPDF({
       responsavel,
@@ -307,7 +240,7 @@ function App() {
     toast.success('PDF gerado e log salvo!')
   }
 
-  // Agrupamento para exibição no Checklist
+  // Agrupamento para exibição no Checklist (usando a lista filtrada)
   const equipamentosPorCategoria = equipamentosChecklist.reduce((acc, eq) => {
     if (!acc[eq.categoria]) acc[eq.categoria] = []
     acc[eq.categoria].push(eq)
@@ -377,17 +310,22 @@ function App() {
       </div>
 
       <div className="max-w-5xl mx-auto p-4 pt-6">
-        
-        {/* ----- CONTEÚDO: CHECKLIST ----- */}
         {abaAtiva === 'checklist' && (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="flex flex-wrap gap-2 mb-6 items-center justify-between bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
               <div className="text-sm font-medium text-gray-600 pl-2">Ações Rápidas:</div>
               <div className="flex gap-2">
+                
+                {/* --- BOTÃO DE EXPORTAR NO TOPO --- */}
+                <Button 
+                    onClick={handleOpenExport} 
+                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                >
+                    <FileDown className="w-4 h-4 mr-2" />Exportar PDF
+                </Button>
+
                 <Dialog open={exportOpen} onOpenChange={(o) => { setExportOpen(o); if (!o) { setResponsavel(''); setDataJob(''); } }}>
-                  <DialogTrigger asChild>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"><FileDown className="w-4 h-4 mr-2" />Exportar PDF</Button>
-                  </DialogTrigger>
+                  {/* Removido DialogTrigger para controle manual via handleOpenExport */}
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>Exportar PDF</DialogTitle>
@@ -403,6 +341,7 @@ function App() {
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
+
                 <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
                   <AlertDialogTrigger asChild><Button variant="outline" className="text-red-600 border-red-100 hover:bg-red-50 hover:text-red-700"><RotateCcw className="w-4 h-4 mr-2" />Limpar Tudo</Button></AlertDialogTrigger>
                   <AlertDialogContent>
@@ -496,23 +435,12 @@ function App() {
           </div>
         )}
 
-        {/* ----- CONTEÚDO: LOGS (HISTÓRICO) ----- */}
         {abaAtiva === 'logs' && (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
             <Card className="border-none shadow-md">
               <CardHeader className="border-b bg-gray-50/50">
-                <CardTitle className="flex items-center justify-between text-lg">
-                  <span>Histórico</span>
-                  <Button onClick={carregarLogs} variant="ghost" size="sm" disabled={carregandoLogs}>
-                    <RotateCcw className={`w-4 h-4 mr-2 ${carregandoLogs ? 'animate-spin' : ''}`} />
-                    Atualizar
-                  </Button>
-                </CardTitle>
-                <div className="flex flex-wrap items-center gap-2 mt-4">
-                  <Input type="date" className="w-auto" value={filtroInicio} onChange={(e) => setFiltroInicio(e.target.value)} />
-                  <span className="text-gray-400">até</span>
-                  <Input type="date" className="w-auto" value={filtroFim} onChange={(e) => setFiltroFim(e.target.value)} />
-                </div>
+                <CardTitle className="flex items-center justify-between text-lg"><span>Histórico</span><Button onClick={carregarLogs} variant="ghost" size="sm" disabled={carregandoLogs}><RotateCcw className={`w-4 h-4 mr-2 ${carregandoLogs ? 'animate-spin' : ''}`} />Atualizar</Button></CardTitle>
+                <div className="flex flex-wrap items-center gap-2 mt-4"><Input type="date" className="w-auto" value={filtroInicio} onChange={(e) => setFiltroInicio(e.target.value)} /><span className="text-gray-400">até</span><Input type="date" className="w-auto" value={filtroFim} onChange={(e) => setFiltroFim(e.target.value)} /></div>
               </CardHeader>
               <CardContent className="p-0">
                 {carregandoLogs ? <div className="text-center py-12 text-gray-500">Carregando registros...</div> : logsFiltrados.length === 0 ? <div className="text-center py-12 text-gray-400">Nenhum histórico encontrado.</div> : (
@@ -520,29 +448,13 @@ function App() {
                     {logsFiltrados.map(log => (
                       <div key={log.id} className="p-4 hover:bg-gray-50 transition-colors flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
                         <div className="flex-1 space-y-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-semibold text-gray-900">{log.data_job}</span>
-                            <Badge variant="outline" className="text-xs font-normal text-gray-500 bg-white">
-                              {new Date(log.data_exportacao).toLocaleDateString('pt-BR')}
-                            </Badge>
-                            {/* STATUS VISUAL DE DEVOLUÇÃO */}
-                            {getStatusDevolucao(log)}
-                          </div>
+                          <div className="flex items-center gap-2"><span className="font-semibold text-gray-900">{log.data_job}</span><Badge variant="outline" className="text-xs font-normal text-gray-500 bg-white">{new Date(log.data_exportacao).toLocaleDateString('pt-BR')}</Badge></div>
                           <div className="text-sm text-gray-600">Responsável: <span className="font-medium">{log.responsavel}</span></div>
                           <div className="text-xs text-gray-400">{log.total_checados} itens selecionados</div>
                         </div>
                         <div className="flex items-center gap-2 self-end sm:self-center">
-                          {/* BOTÃO DEVOLUÇÃO */}
-                          <Button variant="outline" size="sm" onClick={() => abrirDevolucao(log)} className="text-green-700 border-green-200 hover:bg-green-50">
-                            <ClipboardCheck className="w-3.5 h-3.5 mr-1.5" /> Devolução
-                          </Button>
-
-                          <Button variant="ghost" size="icon" onClick={() => gerarPDFDoLog(log)} className="text-blue-600 hover:bg-blue-50">
-                            <FileText className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" onClick={() => { setLogSelecionado(log); setDeleteLogOpen(true) }} className="text-red-400 hover:text-red-600 hover:bg-red-50">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => gerarPDFDoLog(log)} className="text-blue-600 border-blue-200 hover:bg-blue-50"><FileText className="w-3.5 h-3.5 mr-1.5" /> PDF</Button>
+                          <Button variant="ghost" size="icon" onClick={() => { setLogSelecionado(log); setDeleteLogOpen(true) }} className="text-red-400 hover:text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></Button>
                         </div>
                       </div>
                     ))}
@@ -553,17 +465,19 @@ function App() {
           </div>
         )}
 
-        {/* ----- CONTEÚDO: ADMIN ----- */}
         {abaAtiva === 'admin' && (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
             <AdminEquipamentos onEquipamentosChanged={carregarEquipamentos} />
           </div>
         )}
 
-        {/* ----- BOTÃO EXPORTAR (Rodapé) ----- */}
         {abaAtiva === 'checklist' && (
           <div className="mt-8 mb-6 text-center">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg w-full sm:w-auto px-8 py-6 text-lg mb-8" onClick={() => setExportOpen(true)}>
+            {/* BOTÃO DE EXPORTAR NO RODAPÉ (COM VALIDAÇÃO) */}
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg w-full sm:w-auto px-8 py-6 text-lg mb-8" 
+              onClick={handleOpenExport}
+            >
               <FileDown className="w-6 h-6 mr-2" />
               Finalizar e Exportar PDF
             </Button>
@@ -573,51 +487,6 @@ function App() {
         <div className="mt-4 mb-6 text-center"><p className="text-xs text-gray-400">Sistema de Checklist Brick • v1.0.6</p></div>
       </div>
 
-      {/* ----- MODAL: DEVOLUÇÃO (CHECK-IN) ----- */}
-      <Dialog open={isReturnOpen} onOpenChange={setIsReturnOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[85vh] flex flex-col">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <PackageCheck className="w-5 h-5 text-green-600" />
-              Check-in de Equipamentos
-            </DialogTitle>
-            <DialogDescription>Confirme os itens que retornaram. Adicione observações caso haja avarias.</DialogDescription>
-          </DialogHeader>
-          <div className="flex-1 overflow-y-auto py-2 px-1">
-            {returnItems.length > 0 ? (
-              <div className="space-y-2">
-                 <div className="flex justify-end pb-2">
-                    <Button variant="ghost" size="sm" onClick={marcarTodosDevolvidos} className="text-xs h-7 text-blue-600 hover:text-blue-800">Marcar todos como devolvidos</Button>
-                 </div>
-                 {returnItems.map((item, index) => (
-                   <div key={index} className={`p-3 rounded-lg border transition-all ${item.devolvido ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`}>
-                     <div className="flex items-start gap-3">
-                       <Checkbox id={`return-item-${index}`} checked={item.devolvido} onCheckedChange={() => toggleItemDevolvido(index)} className="mt-1 data-[state=checked]:bg-green-600" />
-                       <div className="flex-1 grid gap-1">
-                          <label htmlFor={`return-item-${index}`} className="text-sm font-medium leading-none cursor-pointer select-none text-gray-900">
-                            {item.descricao} {item.quantidade > 1 && <span className="ml-1 text-gray-500 font-normal text-xs">(Qtd: {item.quantidadeLevando})</span>}
-                          </label>
-                          <Input placeholder="Obs: Tudo ok? Alguma avaria?" value={item.devolucao_obs} onChange={(e) => alterarObsItem(index, e.target.value)} className={`h-6 text-[11px] bg-transparent border-0 border-b rounded-none px-0 focus-visible:ring-0 focus-visible:border-gray-400 placeholder:text-gray-300 ${item.devolucao_obs ? 'text-red-600 border-red-300 font-medium' : ''}`} />
-                       </div>
-                     </div>
-                   </div>
-                 ))}
-              </div>
-            ) : <p className="text-center text-gray-500 py-8">Nenhum item neste checklist.</p>}
-          </div>
-          <DialogFooter className="sm:justify-between flex-col sm:flex-row gap-3 border-t pt-4 items-center">
-            <div className="flex items-center gap-2 text-sm w-full sm:w-auto justify-center sm:justify-start">
-              {checkInStats.pendente === 0 ? <span className="flex items-center gap-1.5 text-green-700 font-semibold bg-green-50 px-3 py-1 rounded-full"><CheckCircle2 className="w-4 h-4" /> Tudo Devolvido ({checkInStats.ok}/{checkInStats.total})</span> : <span className="flex items-center gap-1.5 text-amber-700 font-semibold bg-amber-50 px-3 py-1 rounded-full"><AlertTriangle className="w-4 h-4" /> Pendente: {checkInStats.pendente} item(s)</span>}
-            </div>
-            <div className="flex gap-2 w-full sm:w-auto">
-              <Button variant="outline" onClick={() => setIsReturnOpen(false)} className="flex-1 sm:flex-none">Cancelar</Button>
-              <Button onClick={salvarDevolucao} className="bg-green-600 hover:bg-green-700 text-white flex-1 sm:flex-none">Salvar Check-in</Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* --- MODAL DE EXCLUSÃO --- */}
       <AlertDialog open={deleteLogOpen} onOpenChange={(o) => { setDeleteLogOpen(o); if (!o) { setDeleteLogPwd(''); setLogSelecionado(null) } }}>
         <AlertDialogContent>
           <AlertDialogHeader><AlertDialogTitle>Confirmar exclusão</AlertDialogTitle><AlertDialogDescription>Digite a senha para deletar este log.</AlertDialogDescription></AlertDialogHeader>
