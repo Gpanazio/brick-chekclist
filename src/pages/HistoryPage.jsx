@@ -115,7 +115,7 @@ export default function HistoryPage() {
     return { label: `Parcial (${devolvidos}/${items.length})`, color: 'bg-amber-100 text-amber-700 border-amber-200' }
   }
 
-  // --- Lógica de Delete e PDF (Existentes) ---
+  // --- Lógica de Delete e PDF ---
 
   const handleDeleteLog = async () => {
     if (!logSelecionado) return
