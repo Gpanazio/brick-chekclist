@@ -425,18 +425,47 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSave)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <FormField control={form.control} name="categoria" render={({ field }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>Categoria</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input list="cat-suggestions" placeholder="Selecione ou digite..." {...field} className="uppercase" />
-                      <datalist id="cat-suggestions">{categorias.map(cat => <option key={cat} value={cat} />)}</datalist>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
+              
+              {/* Categoria com novo design de Select */}
+              <FormField
+                control={form.control}
+                name="categoria"
+                render={({ field }) => (
+                  <FormItem className="col-span-2">
+                    <FormLabel>Categoria</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="bg-white border-gray-200 text-gray-900 hover:bg-gray-50 transition-colors">
+                          <SelectValue placeholder="Selecione ou digite..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-white border-gray-200 text-gray-900">
+                        {categorias.map(cat => <SelectItem key={cat} value={cat} className="hover:bg-gray-50 focus:bg-gray-50 cursor-pointer">{cat}</SelectItem>)}
+                        {/* Opção para permitir digitar uma nova categoria (simplificada para este exemplo) */}
+                        <div className="p-2 border-t border-gray-100">
+                            <Input 
+                                placeholder="Nova Categoria..." 
+                                className="h-8 text-sm"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        field.onChange(e.currentTarget.value.toUpperCase());
+                                    }
+                                }}
+                                onBlur={(e) => {
+                                    if (e.currentTarget.value) {
+                                        field.onChange(e.currentTarget.value.toUpperCase());
+                                    }
+                                }}
+                             />
+                        </div>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField control={form.control} name="descricao" render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Nome do Equipamento</FormLabel>
@@ -451,17 +480,23 @@ function EquipamentoFormDialog({ open, onOpenChange, item, categorias, onSave, a
                   <FormMessage />
                 </FormItem>
               )} />
+              
+              {/* Estado com novo design de Select */}
               <FormField control={form.control} name="estado" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Estado</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
-                    <FormControl><SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger></FormControl>
-                    <SelectContent>
-                      <SelectItem value="BOM">BOM</SelectItem>
-                      <SelectItem value="REGULAR">REGULAR</SelectItem>
-                      <SelectItem value="RUIM">RUIM</SelectItem>
-                      <SelectItem value="MANUTENCAO">MANUTENÇÃO</SelectItem>
-                      <SelectItem value="A VENDA">A VENDA</SelectItem>
+                    <FormControl>
+                      <SelectTrigger className="bg-white border-gray-200 text-gray-900 hover:bg-gray-50 transition-colors">
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-white border-gray-200 text-gray-900">
+                      <SelectItem value="BOM" className="hover:bg-gray-50 focus:bg-gray-50 cursor-pointer">BOM</SelectItem>
+                      <SelectItem value="REGULAR" className="hover:bg-gray-50 focus:bg-gray-50 cursor-pointer">REGULAR</SelectItem>
+                      <SelectItem value="RUIM" className="hover:bg-gray-50 focus:bg-gray-50 cursor-pointer">RUIM</SelectItem>
+                      <SelectItem value="MANUTENCAO" className="hover:bg-gray-50 focus:bg-gray-50 cursor-pointer text-red-600 font-medium">MANUTENÇÃO</SelectItem>
+                      <SelectItem value="A VENDA" className="hover:bg-gray-50 focus:bg-gray-50 cursor-pointer text-blue-600 font-medium">A VENDA</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
