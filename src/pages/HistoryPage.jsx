@@ -53,11 +53,10 @@ export default function HistoryPage() {
 
   const abrirDevolucao = (log) => {
     setReturnLog(log)
-    // Pega os itens existentes e garante que tenham os campos de devolução
-    // Se 'devolvido' não existir (logs antigos), assume false
+    // Prepara os itens. Se for log antigo sem campo 'devolvido', assume false.
     const items = (log.itens_checados || []).map(item => ({
       ...item,
-      devolvido: !!item.devolvido, // Força booleano (undefined vira false)
+      devolvido: !!item.devolvido, 
       devolucao_obs: item.devolucao_obs || ''
     }))
     setReturnItems(items)
@@ -70,7 +69,7 @@ export default function HistoryPage() {
     setReturnItems(novosItens)
   }
 
-  const marcarTodos = () => {
+  const marcarTodosDevolvidos = () => {
     const todos = returnItems.map(i => ({ ...i, devolvido: true }))
     setReturnItems(todos)
   }
@@ -83,7 +82,6 @@ export default function HistoryPage() {
 
   const salvarDevolucao = async () => {
     try {
-      // Atualiza o JSON no Supabase com os novos status
       const { error } = await supabase
         .from('logs')
         .update({ itens_checados: returnItems })
@@ -91,34 +89,32 @@ export default function HistoryPage() {
 
       if (error) throw error
 
-      toast.success('Devolução atualizada com sucesso!')
+      toast.success('Devolução atualizada!')
       setIsReturnOpen(false)
-      carregarLogs() // Recarrega a lista para ver os status atualizados
+      carregarLogs() // Recarrega para ver os status novos
     } catch (err) {
       console.error(err)
       toast.error('Erro ao salvar devolução')
     }
   }
 
-  // Calcula o status visual do card (Pendente, Parcial, Devolvido)
   const getStatusDevolucao = (log) => {
     const items = log.itens_checados || []
     if (!items.length) return null
     
-    // Conta quantos estão marcados como true
     const countDevolvidos = items.filter(i => i.devolvido).length
     
     if (countDevolvidos === 0) {
-      return <Badge variant="outline" className="text-gray-500 border-gray-200 bg-gray-50">Pendente</Badge>
+      return <Badge variant="outline" className="text-gray-500 border-gray-200 bg-gray-50 ml-2">Pendente</Badge>
     }
     if (countDevolvidos === items.length) {
-      return <Badge variant="outline" className="text-green-700 border-green-200 bg-green-50">Devolvido</Badge>
+      return <Badge variant="outline" className="text-green-700 border-green-200 bg-green-50 ml-2">Devolvido</Badge>
     }
-    return <Badge variant="outline" className="text-amber-700 border-amber-200 bg-amber-50">Parcial ({countDevolvidos}/{items.length})</Badge>
+    return <Badge variant="outline" className="text-amber-700 border-amber-200 bg-amber-50 ml-2">Parcial ({countDevolvidos}/{items.length})</Badge>
   }
 
-  // Estatísticas do Modal
-  const stats = useMemo(() => {
+  // Estatísticas do Check-in
+  const checkInStats = useMemo(() => {
     const total = returnItems.length
     const ok = returnItems.filter(i => i.devolvido).length
     return { total, ok, pendente: total - ok }
@@ -147,7 +143,13 @@ export default function HistoryPage() {
     }
   }
 
+  // --- PROTEÇÃO CONTRA PDF VAZIO ---
   const gerarPDF = (log) => {
+    if (!log.itens_checados || log.itens_checados.length === 0) {
+      toast.error('Erro: Este histórico não contém equipamentos.')
+      return
+    }
+
     gerarChecklistPDF({
       responsavel: log.responsavel,
       dataJob: log.data_job,
@@ -197,6 +199,7 @@ export default function HistoryPage() {
                       <Badge variant="outline" className="text-xs font-normal text-gray-500 bg-white">
                         {new Date(log.data_exportacao).toLocaleDateString('pt-BR')}
                       </Badge>
+                      {/* STATUS VISUAL DE DEVOLUÇÃO */}
                       {getStatusDevolucao(log)}
                     </div>
                     <div className="text-sm text-gray-600">
@@ -205,7 +208,7 @@ export default function HistoryPage() {
                     <div className="text-xs text-gray-400">{log.total_checados} itens selecionados</div>
                   </div>
                   <div className="flex items-center gap-2 self-end sm:self-center">
-                    {/* Botão de Devolução - AGORA INCLUÍDO */}
+                    {/* BOTÃO DEVOLUÇÃO */}
                     <Button 
                       variant="outline" 
                       size="sm" 
@@ -247,7 +250,7 @@ export default function HistoryPage() {
             {returnItems.length > 0 ? (
               <div className="space-y-2">
                  <div className="flex justify-end pb-2">
-                    <Button variant="ghost" size="sm" onClick={marcarTodos} className="text-xs h-7 text-blue-600 hover:text-blue-800">
+                    <Button variant="ghost" size="sm" onClick={marcarTodosDevolvidos} className="text-xs h-7 text-blue-600 hover:text-blue-800">
                       Marcar todos como devolvidos
                     </Button>
                  </div>
@@ -286,13 +289,13 @@ export default function HistoryPage() {
           <DialogFooter className="sm:justify-between flex-col sm:flex-row gap-3 border-t pt-4 items-center">
             {/* Resumo Visual */}
             <div className="flex items-center gap-2 text-sm w-full sm:w-auto justify-center sm:justify-start">
-              {stats.pendente === 0 ? (
+              {checkInStats.pendente === 0 ? (
                 <span className="flex items-center gap-1.5 text-green-700 font-semibold bg-green-50 px-3 py-1 rounded-full">
-                  <CheckCircle2 className="w-4 h-4" /> Tudo Devolvido ({stats.ok}/{stats.total})
+                  <CheckCircle2 className="w-4 h-4" /> Tudo Devolvido ({checkInStats.ok}/{checkInStats.total})
                 </span>
               ) : (
                 <span className="flex items-center gap-1.5 text-amber-700 font-semibold bg-amber-50 px-3 py-1 rounded-full">
-                  <AlertTriangle className="w-4 h-4" /> Pendente: {stats.pendente} item(s)
+                  <AlertTriangle className="w-4 h-4" /> Pendente: {checkInStats.pendente} item(s)
                 </span>
               )}
             </div>
