@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input.jsx'
 import { CheckCircle, RotateCcw, FileText, Minus, Plus, History, Trash2, Search, ArrowUpDown, Camera, FileDown, ChevronDown } from 'lucide-react'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
-// IMPORTANTE: O caminho do logo foi alterado para o novo arquivo
+// IMPORTANTE: Certifique-se de que o arquivo newlogo.png esteja em src/assets/
 import logoBrick from './assets/newlogo.png'
 import { gerarChecklistPDF } from '@/lib/pdf.js'
 import { supabase } from '@/lib/supabase.js'
@@ -255,11 +255,11 @@ function App() {
       <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* Logo ajustado para h-16 (maior) */}
-              <img src={logoBrick} alt="Brick" className="h-16 w-auto object-contain" />
-              <h1 className="text-4xl font-bold text-gray-900 tracking-tight hidden sm:block">CHECKLIST</h1>
+            {/* Logo sem o texto "CHECKLIST" e com tamanho maior (h-20) */}
+            <div className="flex items-center">
+              <img src={logoBrick} alt="Brick" className="h-20 w-auto object-contain" />
             </div>
+            {/* Espaço para itens futuros no canto direito */}
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <Button variant="outline" className="flex-1 justify-start text-gray-500 bg-gray-50 hover:bg-white border-gray-200 h-10" onClick={() => setSearchOpen(true)}>
