@@ -205,6 +205,7 @@ export default function HistoryPage() {
                     <div className="text-xs text-gray-400">{log.total_checados} itens selecionados</div>
                   </div>
                   <div className="flex items-center gap-2 self-end sm:self-center">
+                    {/* Botão de Devolução - AGORA INCLUÍDO */}
                     <Button 
                       variant="outline" 
                       size="sm" 
@@ -214,6 +215,7 @@ export default function HistoryPage() {
                       <ClipboardCheck className="w-3.5 h-3.5 mr-1.5" /> 
                       Devolução
                     </Button>
+                    
                     <Button variant="ghost" size="icon" onClick={() => gerarPDF(log)} className="text-blue-600 hover:bg-blue-50">
                       <FileText className="w-4 h-4" />
                     </Button>
