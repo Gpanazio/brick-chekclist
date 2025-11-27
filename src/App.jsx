@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input.jsx'
 import { CheckCircle, RotateCcw, FileText, Minus, Plus, History, Trash2, Search, ArrowUpDown, Camera, FileDown, ChevronDown } from 'lucide-react'
 import AdminEquipamentos from './AdminEquipamentos.jsx'
 import QuickSearch from './QuickSearch.jsx'
-import logoBrick from './assets/newlogo.png'
+// IMPORTANTE: Agora importando o novo logo
+import logoBrick from './assets/logochecklist.png'
 import { gerarChecklistPDF } from '@/lib/pdf.js'
 import { supabase } from '@/lib/supabase.js'
 import { fetchEquipamentos } from '@/lib/fetchEquipamentos.js'
@@ -255,11 +256,11 @@ function App() {
         <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              {/* LOGO AUMENTADO E COM MARGEM NEGATIVA PARA COMPENSAR ESPAÇO */}
+              {/* LOGO ATUALIZADO: logochecklist.png, sem margem negativa e com altura ajustada */}
               <img 
                 src={logoBrick} 
                 alt="Brick" 
-                className="h-28 sm:h-36 w-auto object-contain -ml-3 sm:-ml-4" 
+                className="h-24 sm:h-32 w-auto object-contain" 
               />
             </div>
           </div>
