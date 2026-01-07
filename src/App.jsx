@@ -121,9 +121,15 @@ function App() {
   }
 
   const alternarEquipamento = (id) => {
-    const novosEquipamentos = equipamentos.map(eq => 
-      eq.id === id ? { ...eq, checado: !eq.checado } : eq
-    )
+    const novosEquipamentos = equipamentos.map(eq => {
+      if (eq.id !== id) return eq
+      const nextChecked = !eq.checado
+      if (eq.quantidade > 1) {
+        const nextQuantidade = nextChecked ? (eq.quantidadeLevando > 0 ? eq.quantidadeLevando : 1) : 0
+        return { ...eq, checado: nextChecked, quantidadeLevando: nextQuantidade }
+      }
+      return { ...eq, checado: nextChecked }
+    })
     setEquipamentos(novosEquipamentos)
     salvarAutomaticamente(novosEquipamentos)
   }
